@@ -13,8 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load users table
   loadUsers();
 
-  // Load trial requests
-  loadTrialRequests();
+  // Load trial requests after a short delay
+  setTimeout(() => {
+    loadTrialRequests();
+  }, 500);
 
   // Add user form handler
   const addUserForm = document.getElementById('addUserForm');
@@ -136,19 +138,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadTrialRequests() {
+    console.log('Loading trial requests...');
+    
     try {
       const response = await fetch('api/trial-requests.php');
+      console.log('Response status:', response.status);
+      
       const data = await response.json();
+      console.log('Trial requests data:', data);
       
       if (data.error) {
+        console.error('API error:', data.error);
         showAlert('danger', data.error);
         return;
       }
       
       const requests = data.requests || [];
+      console.log('Processing requests:', requests.length);
       const tbody = document.getElementById('trialRequestsTable');
       
       if (requests.length === 0) {
+        console.log('No trial requests found');
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="text-center text-light opacity-75 py-4">
@@ -159,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      console.log('Rendering trial requests table...');
       tbody.innerHTML = requests.map(request => `
         <tr>
           <td>
@@ -193,10 +204,22 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
         </tr>
       `).join('');
+      
+      console.log('Trial requests table rendered successfully');
 
     } catch (error) {
       console.error('Error loading trial requests:', error);
-      showAlert('danger', 'Error al cargar solicitudes de prueba');
+      showAlert('danger', 'Error al cargar solicitudes de prueba: ' + error.message);
+      
+      // Show error in table
+      const tbody = document.getElementById('trialRequestsTable');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-danger py-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar solicitudes
+          </td>
+        </tr>
+      `;
     }
   }
 

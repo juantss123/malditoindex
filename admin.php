@@ -212,7 +212,11 @@ try {
                   </tr>
                 </thead>
                 <tbody id="trialRequestsTable">
-                  <!-- Trial requests will be loaded here -->
+                  <tr>
+                    <td colspan="5" class="text-center text-light opacity-75 py-4">
+                      <span class="spinner-border spinner-border-sm me-2"></span>Cargando solicitudes...
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

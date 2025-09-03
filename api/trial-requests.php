@@ -42,15 +42,55 @@ function handleGetRequests() {
     }
     
     try {
-        $stmt = $db->prepare("SELECT * FROM v_trial_requests ORDER BY request_date DESC");
+        // Verificar si existe la tabla trial_requests primero
+        $stmt = $db->prepare("SHOW TABLES LIKE 'trial_requests'");
         $stmt->execute();
-        $requests = $stmt->fetchAll();
+        $tableExists = $stmt->fetch();
+        
+        if (!$tableExists) {
+            // Si no existe la tabla, devolver array vacío
+            echo json_encode(['requests' => []]);
+            return;
+        }
+        
+        // Intentar usar la vista, si no existe usar consulta directa
+        try {
+            $stmt = $db->prepare("SELECT * FROM v_trial_requests ORDER BY request_date DESC");
+            $stmt->execute();
+            $requests = $stmt->fetchAll();
+        } catch (Exception $viewError) {
+            // Si la vista no existe, usar consulta directa
+            $stmt = $db->prepare("
+                SELECT 
+                    tr.id,
+                    tr.user_id,
+                    tr.request_date,
+                    tr.status,
+                    tr.admin_notes,
+                    tr.processed_at,
+                    CONCAT(up.first_name, ' ', up.last_name) as user_name,
+                    up.email,
+                    up.clinic_name,
+                    up.phone,
+                    up.subscription_status,
+                    CONCAT(admin.first_name, ' ', admin.last_name) as processed_by_name
+                FROM trial_requests tr
+                JOIN user_profiles up ON tr.user_id = up.user_id
+                LEFT JOIN user_profiles admin ON tr.processed_by = admin.user_id
+                ORDER BY tr.request_date DESC
+            ");
+            $stmt->execute();
+            $requests = $stmt->fetchAll();
+        }
         
         echo json_encode(['requests' => $requests]);
         
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(['error' => 'Error al cargar solicitudes: ' . $e->getMessage()]);
+        echo json_encode([
+            'error' => 'Error al cargar solicitudes: ' . $e->getMessage(),
+            'requests' => []
+        ]);
     }
 }
 

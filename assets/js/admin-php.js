@@ -144,16 +144,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const response = await fetch('api/trial-requests.php');
       console.log('Response status:', response.status);
       
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
       const data = await response.json();
       console.log('Trial requests data:', data);
       
       if (data.error) {
         console.error('API error:', data.error);
-        showAlert('danger', data.error);
-        return;
+        showAlert('warning', `${data.error} - Mostrando estado vacío.`);
+        // Continuar con array vacío en lugar de retornar
       }
       
-      const requests = data.requests || [];
+      const requests = (data && data.requests) ? data.requests : [];
       console.log('Processing requests:', requests.length);
       const tbody = document.getElementById('trialRequestsTable');
       
@@ -162,7 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="text-center text-light opacity-75 py-4">
-              <i class="bi bi-inbox me-2"></i>No hay solicitudes de prueba pendientes
+              <i class="bi bi-inbox me-2"></i>No hay solicitudes de prueba gratuita
+              <br><small class="mt-2 d-block">Las solicitudes aparecerán aquí cuando los usuarios las envíen desde el dashboard</small>
             </td>
           </tr>
         `;
@@ -209,14 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (error) {
       console.error('Error loading trial requests:', error);
-      showAlert('danger', 'Error al cargar solicitudes de prueba: ' + error.message);
+      showAlert('warning', 'No se pudieron cargar las solicitudes de prueba. Esto es normal si no hay solicitudes aún.');
       
       // Show error in table
       const tbody = document.getElementById('trialRequestsTable');
       tbody.innerHTML = `
         <tr>
-          <td colspan="5" class="text-center text-danger py-4">
-            <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar solicitudes
+          <td colspan="5" class="text-center text-light opacity-75 py-4">
+            <i class="bi bi-inbox me-2"></i>No hay solicitudes de prueba gratuita
+            <br><small class="mt-2 d-block">Las solicitudes aparecerán aquí cuando los usuarios las envíen desde el dashboard</small>
           </td>
         </tr>
       `;

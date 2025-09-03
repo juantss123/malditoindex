@@ -152,50 +152,6 @@ try {
         </div>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="row g-4 mb-5">
-        <div class="col-md-6 col-lg-3" data-aos="slide-up" data-aos-duration="800" data-aos-delay="200">
-          <div class="feature-card glass-card h-100 text-center">
-            <div class="feature-icon mx-auto mb-3">
-              <i class="bi bi-calendar-plus"></i>
-            </div>
-            <h3>Agendar turno</h3>
-            <p class="mb-3">Crear nuevo turno para un paciente</p>
-            <button class="btn btn-primary-soft w-100">Nuevo turno</button>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3" data-aos="slide-up" data-aos-duration="800" data-aos-delay="300">
-          <div class="feature-card glass-card h-100 text-center">
-            <div class="feature-icon mx-auto mb-3">
-              <i class="bi bi-person-plus"></i>
-            </div>
-            <h3>Nuevo paciente</h3>
-            <p class="mb-3">Registrar un nuevo paciente</p>
-            <button class="btn btn-primary-soft w-100">Agregar paciente</button>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3" data-aos="slide-up" data-aos-duration="800" data-aos-delay="400">
-          <div class="feature-card glass-card h-100 text-center">
-            <div class="feature-icon mx-auto mb-3">
-              <i class="bi bi-journal-medical"></i>
-            </div>
-            <h3>Historia clínica</h3>
-            <p class="mb-3">Acceder a historiales médicos</p>
-            <button class="btn btn-primary-soft w-100">Ver historiales</button>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3" data-aos="slide-up" data-aos-duration="800" data-aos-delay="500">
-          <div class="feature-card glass-card h-100 text-center">
-            <div class="feature-icon mx-auto mb-3">
-              <i class="bi bi-graph-up"></i>
-            </div>
-            <h3>Reportes</h3>
-            <p class="mb-3">Ver estadísticas y reportes</p>
-            <button class="btn btn-primary-soft w-100">Ver reportes</button>
-          </div>
-        </div>
-      </div>
-
       <!-- Subscription Status -->
       <?php if ($userProfile && $userProfile['subscription_status'] === 'trial'): ?>
       <div class="row">

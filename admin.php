@@ -188,10 +188,103 @@ try {
               </table>
             </div>
           </div>
+
+          <!-- Trial Requests -->
+          <div class="glass-card p-4 mt-4" data-aos="fade-up" data-aos-duration="800" data-aos-delay="700">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="text-white mb-0">
+                <i class="bi bi-clock-history me-2"></i>Solicitudes de prueba gratuita
+              </h4>
+              <button class="btn btn-primary-soft" onclick="loadTrialRequests()">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+              </button>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
+                    <th>Consultorio</th>
+                    <th>Fecha solicitud</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="trialRequestsTable">
+                  <!-- Trial requests will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Trial Request Modal -->
+  <div class="modal fade" id="trialRequestModal" tabindex="-1" aria-labelledby="trialRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="trialRequestModalLabel">
+            <i class="bi bi-clock-history me-2"></i>Procesar solicitud de prueba
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="trialRequestForm">
+            <input type="hidden" id="requestId" name="requestId">
+            
+            <div class="mb-4">
+              <h6 class="text-white mb-3">Información del usuario</h6>
+              <div class="glass-card p-3">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <strong class="text-light">Usuario:</strong>
+                    <div class="text-white" id="modalUserName"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <strong class="text-light">Email:</strong>
+                    <div class="text-white" id="modalUserEmail"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <strong class="text-light">Consultorio:</strong>
+                    <div class="text-white" id="modalClinicName"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <strong class="text-light">Teléfono:</strong>
+                    <div class="text-white" id="modalUserPhone"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label class="form-label text-light">Decisión *</label>
+              <select name="status" class="form-select form-select-lg glass-input" required>
+                <option value="">Seleccionar acción</option>
+                <option value="approved">Aprobar prueba gratuita</option>
+                <option value="rejected">Rechazar solicitud</option>
+              </select>
+            </div>
+            
+            <div class="mb-4">
+              <label class="form-label text-light">Notas del administrador</label>
+              <textarea name="admin_notes" class="form-control glass-input" rows="3" placeholder="Comentarios opcionales sobre la decisión..."></textarea>
+            </div>
+            
+            <div class="text-end">
+              <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-2"></i>Procesar solicitud
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Add User Modal -->
   <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">

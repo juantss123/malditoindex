@@ -133,7 +133,7 @@ try {
               <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 d-lg-flex justify-content-lg-end align-items-center">
     <?php if ($userProfile && $userProfile['subscription_status'] === 'trial'): ?>
         
-        <button class="btn btn-primary btn-lg me-2">
+        <button class="btn btn-primary btn-lg me-2" id="startTrialBtn">
             <i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita
         </button>
 

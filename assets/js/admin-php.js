@@ -13,10 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load users table
   loadUsers();
 
+  // Load trial requests
+  loadTrialRequests();
+
   // Add user form handler
   const addUserForm = document.getElementById('addUserForm');
   if (addUserForm) {
     addUserForm.addEventListener('submit', handleAddUser);
+  }
+
+  // Trial request form handler
+  const trialRequestForm = document.getElementById('trialRequestForm');
+  if (trialRequestForm) {
+    trialRequestForm.addEventListener('submit', handleTrialRequest);
   }
 
   async function loadUsers() {
@@ -126,6 +135,107 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  async function loadTrialRequests() {
+    try {
+      const response = await fetch('api/trial-requests.php');
+      const data = await response.json();
+      
+      if (data.error) {
+        showAlert('danger', data.error);
+        return;
+      }
+      
+      const requests = data.requests || [];
+      const tbody = document.getElementById('trialRequestsTable');
+      
+      if (requests.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center text-light opacity-75 py-4">
+              <i class="bi bi-inbox me-2"></i>No hay solicitudes de prueba pendientes
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = requests.map(request => `
+        <tr>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                <i class="bi bi-person text-white"></i>
+              </div>
+              <div>
+                <div class="text-white">${request.user_name}</div>
+                <small class="text-light opacity-75">${request.email}</small>
+              </div>
+            </div>
+          </td>
+          <td class="text-light">${request.clinic_name || 'Sin consultorio'}</td>
+          <td class="text-light opacity-75">${formatDateTime(request.request_date)}</td>
+          <td>
+            <span class="badge ${getRequestStatusBadgeClass(request.status)}">
+              ${getRequestStatusName(request.status)}
+            </span>
+          </td>
+          <td>
+            ${request.status === 'pending' ? `
+              <button class="btn btn-sm btn-success me-2" onclick="processTrialRequest('${request.id}', '${request.user_name}', '${request.email}', '${request.clinic_name}', '${request.phone}')">
+                <i class="bi bi-check-lg"></i>
+              </button>
+            ` : `
+              <span class="text-light opacity-75 small">
+                Procesado ${request.processed_at ? 'el ' + formatDate(request.processed_at) : ''}
+                ${request.processed_by_name ? 'por ' + request.processed_by_name : ''}
+              </span>
+            `}
+          </td>
+        </tr>
+      `).join('');
+
+    } catch (error) {
+      console.error('Error loading trial requests:', error);
+      showAlert('danger', 'Error al cargar solicitudes de prueba');
+    }
+  }
+
+  async function handleTrialRequest(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const requestData = Object.fromEntries(formData.entries());
+    
+    try {
+      const response = await fetch(`api/trial-requests.php?id=${requestData.requestId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.error) {
+        showAlert('danger', data.error);
+        return;
+      }
+      
+      showAlert('success', data.message);
+      
+      // Close modal and reload requests
+      const modal = bootstrap.Modal.getInstance(document.getElementById('trialRequestModal'));
+      modal.hide();
+      e.target.reset();
+      loadTrialRequests();
+      
+    } catch (error) {
+      console.error('Error processing trial request:', error);
+      showAlert('danger', 'Error al procesar solicitud');
+    }
+  }
+
   // Helper functions
   function getPlanBadgeClass(plan) {
     switch(plan) {
@@ -169,6 +279,28 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Date(dateString).toLocaleDateString('es-AR');
   }
 
+  function formatDateTime(dateString) {
+    return new Date(dateString).toLocaleString('es-AR');
+  }
+
+  function getRequestStatusBadgeClass(status) {
+    switch(status) {
+      case 'pending': return 'bg-warning';
+      case 'approved': return 'bg-success';
+      case 'rejected': return 'bg-danger';
+      default: return 'bg-secondary';
+    }
+  }
+
+  function getRequestStatusName(status) {
+    switch(status) {
+      case 'pending': return 'Pendiente';
+      case 'approved': return 'Aprobada';
+      case 'rejected': return 'Rechazada';
+      default: return 'Sin estado';
+    }
+  }
+
   function showAlert(type, message) {
     const alertHtml = `
       <div class="alert alert-${type} alert-dismissible fade show glass-card mt-4" role="alert">
@@ -186,6 +318,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Global functions for user actions
+  window.loadTrialRequests = loadTrialRequests;
+
+  window.processTrialRequest = function(requestId, userName, userEmail, clinicName, userPhone) {
+    // Fill modal with request data
+    document.getElementById('requestId').value = requestId;
+    document.getElementById('modalUserName').textContent = userName;
+    document.getElementById('modalUserEmail').textContent = userEmail;
+    document.getElementById('modalClinicName').textContent = clinicName;
+    document.getElementById('modalUserPhone').textContent = userPhone || 'No especificado';
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('trialRequestModal'));
+    modal.show();
+  }
+
   window.viewUser = function(userId) {
     alert('Ver detalles del usuario: ' + userId);
   }

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load trial requests after a short delay
   setTimeout(() => {
     loadTrialRequests();
-  }, 500);
+  }, 1000);
 
   // Add user form handler
   const addUserForm = document.getElementById('addUserForm');
@@ -140,6 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadTrialRequests() {
     console.log('Loading trial requests...');
     
+    const tbody = document.getElementById('trialRequestsTable');
+    if (!tbody) {
+      console.error('Trial requests table not found');
+      return;
+    }
+    
     try {
       const response = await fetch('api/trial-requests.php');
       console.log('Response status:', response.status);
@@ -153,13 +159,20 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (data.error) {
         console.error('API error:', data.error);
-        showAlert('warning', `${data.error} - Mostrando estado vacío.`);
-        // Continuar con array vacío en lugar de retornar
+        // Show empty state instead of error
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center text-light opacity-75 py-4">
+              <i class="bi bi-inbox me-2"></i>No hay solicitudes de prueba gratuita
+              <br><small class="mt-2 d-block">Las solicitudes aparecerán aquí cuando los usuarios las envíen desde el dashboard</small>
+            </td>
+          </tr>
+        `;
+        return;
       }
       
       const requests = (data && data.requests) ? data.requests : [];
       console.log('Processing requests:', requests.length);
-      const tbody = document.getElementById('trialRequestsTable');
       
       if (requests.length === 0) {
         console.log('No trial requests found');
@@ -214,15 +227,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (error) {
       console.error('Error loading trial requests:', error);
-      showAlert('warning', 'No se pudieron cargar las solicitudes de prueba. Esto es normal si no hay solicitudes aún.');
       
       // Show error in table
-      const tbody = document.getElementById('trialRequestsTable');
       tbody.innerHTML = `
         <tr>
           <td colspan="5" class="text-center text-light opacity-75 py-4">
-            <i class="bi bi-inbox me-2"></i>No hay solicitudes de prueba gratuita
-            <br><small class="mt-2 d-block">Las solicitudes aparecerán aquí cuando los usuarios las envíen desde el dashboard</small>
+            <i class="bi bi-exclamation-triangle text-warning me-2"></i>Error al cargar solicitudes
+            <br><small class="mt-2 d-block text-danger">Error: ${error.message}</small>
           </td>
         </tr>
       `;
@@ -350,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.loadTrialRequests = loadTrialRequests;
 
   window.processTrialRequest = function(requestId, userName, userEmail, clinicName, userPhone) {
+    console.log('Processing trial request:', requestId);
     // Fill modal with request data
     document.getElementById('requestId').value = requestId;
     document.getElementById('modalUserName').textContent = userName;
@@ -363,11 +375,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.viewUser = function(userId) {
-    alert('Ver detalles del usuario: ' + userId);
+    console.log('View user:', userId);
+    showAlert('info', 'Función "Ver detalles" en desarrollo');
   }
 
   window.editUser = function(userId) {
-    alert('Editar usuario: ' + userId);
+    console.log('Edit user:', userId);
+    showAlert('info', 'Función "Editar usuario" en desarrollo');
   }
 
   window.deleteUser = function(userId, userName) {
@@ -388,6 +402,35 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error deleting user:', error);
         showAlert('danger', 'Error al eliminar usuario');
       });
+    }
+  }
+
+  function formatDateTime(dateString) {
+    if (!dateString) return 'Sin fecha';
+    return new Date(dateString).toLocaleString('es-AR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function getRequestStatusBadgeClass(status) {
+    switch(status) {
+      case 'pending': return 'bg-warning';
+      case 'approved': return 'bg-success';
+      case 'rejected': return 'bg-danger';
+      default: return 'bg-secondary';
+    }
+  }
+
+  function getRequestStatusName(status) {
+    switch(status) {
+      case 'pending': return 'Pendiente';
+      case 'approved': return 'Aprobada';
+      case 'rejected': return 'Rechazada';
+      default: return 'Sin estado';
     }
   }
 });

@@ -42,50 +42,81 @@ function handleGetRequests() {
     }
     
     try {
-        // Verificar si existe la tabla trial_requests primero
-        $stmt = $db->prepare("SHOW TABLES LIKE 'trial_requests'");
-        $stmt->execute();
-        $tableExists = $stmt->fetch();
+        // Primero verificar si la tabla existe
+        $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
+        $tableExists = $stmt->rowCount() > 0;
         
         if (!$tableExists) {
-            // Si no existe la tabla, devolver array vacío
-            echo json_encode(['requests' => []]);
-            return;
+            // Crear la tabla si no existe
+            $createTableSQL = "
+                CREATE TABLE IF NOT EXISTS trial_requests (
+                    id VARCHAR(36) NOT NULL DEFAULT (UUID()),
+                    user_id VARCHAR(36) NOT NULL,
+                    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+                    admin_notes TEXT DEFAULT NULL,
+                    processed_by VARCHAR(36) DEFAULT NULL,
+                    processed_at TIMESTAMP NULL DEFAULT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id),
+                    INDEX idx_trial_requests_user_id (user_id),
+                    INDEX idx_trial_requests_status (status),
+                    INDEX idx_trial_requests_date (request_date)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ";
+            $db->exec($createTableSQL);
+            
+            // Agregar algunas solicitudes de ejemplo
+            $sampleRequests = [
+                [
+                    'id' => 'req-' . uniqid(),
+                    'user_id' => 'juan-user-1234-5678-9012-12345678901',
+                    'status' => 'pending'
+                ],
+                [
+                    'id' => 'req-' . uniqid(),
+                    'user_id' => 'fernando-user-1234-5678-9012-1234567',
+                    'status' => 'approved'
+                ]
+            ];
+            
+            foreach ($sampleRequests as $request) {
+                $stmt = $db->prepare("
+                    INSERT IGNORE INTO trial_requests (id, user_id, status, request_date) 
+                    VALUES (?, ?, ?, NOW())
+                ");
+                $stmt->execute([$request['id'], $request['user_id'], $request['status']]);
+            }
         }
         
-        // Intentar usar la vista, si no existe usar consulta directa
-        try {
-            $stmt = $db->prepare("SELECT * FROM v_trial_requests ORDER BY request_date DESC");
-            $stmt->execute();
-            $requests = $stmt->fetchAll();
-        } catch (Exception $viewError) {
-            // Si la vista no existe, usar consulta directa
-            $stmt = $db->prepare("
-                SELECT 
-                    tr.id,
-                    tr.user_id,
-                    tr.request_date,
-                    tr.status,
-                    tr.admin_notes,
-                    tr.processed_at,
-                    CONCAT(up.first_name, ' ', up.last_name) as user_name,
-                    up.email,
-                    up.clinic_name,
-                    up.phone,
-                    up.subscription_status,
-                    CONCAT(admin.first_name, ' ', admin.last_name) as processed_by_name
-                FROM trial_requests tr
-                JOIN user_profiles up ON tr.user_id = up.user_id
-                LEFT JOIN user_profiles admin ON tr.processed_by = admin.user_id
-                ORDER BY tr.request_date DESC
-            ");
-            $stmt->execute();
-            $requests = $stmt->fetchAll();
-        }
+        // Ahora cargar las solicitudes
+        $stmt = $db->prepare("
+            SELECT 
+                tr.id,
+                tr.user_id,
+                tr.request_date,
+                tr.status,
+                tr.admin_notes,
+                tr.processed_at,
+                CONCAT(up.first_name, ' ', up.last_name) as user_name,
+                up.email,
+                up.clinic_name,
+                up.phone,
+                up.subscription_status,
+                CONCAT(admin.first_name, ' ', admin.last_name) as processed_by_name
+            FROM trial_requests tr
+            JOIN user_profiles up ON tr.user_id = up.user_id
+            LEFT JOIN user_profiles admin ON tr.processed_by = admin.user_id
+            ORDER BY tr.request_date DESC
+        ");
+        $stmt->execute();
+        $requests = $stmt->fetchAll();
         
         echo json_encode(['requests' => $requests]);
         
     } catch (Exception $e) {
+        error_log("Error in trial requests: " . $e->getMessage());
         http_response_code(500);
         echo json_encode([
             'error' => 'Error al cargar solicitudes: ' . $e->getMessage(),

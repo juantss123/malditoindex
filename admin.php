@@ -195,7 +195,7 @@ try {
               <h4 class="text-white mb-0">
                 <i class="bi bi-clock-history me-2"></i>Solicitudes de prueba gratuita
               </h4>
-              <button class="btn btn-primary-soft" onclick="loadTrialRequests()">
+              <button class="btn btn-primary-soft" onclick="window.loadTrialRequests()">
                 <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
               </button>
             </div>
@@ -212,11 +212,7 @@ try {
                   </tr>
                 </thead>
                 <tbody id="trialRequestsTable">
-                  <tr>
-                    <td colspan="5" class="text-center text-light opacity-75 py-4">
-                      <span class="spinner-border spinner-border-sm me-2"></span>Cargando solicitudes...
-                    </td>
-                  </tr>
+                  <!-- Content will be loaded by JavaScript -->
                 </tbody>
               </table>
             </div>

@@ -238,6 +238,11 @@ function renderUsers() {
                 <i class="bi bi-pencil me-2"></i>Editar
               </a>
             </li>
+            <li>
+              <a class="dropdown-item" href="#" onclick="managePlanAccess('${user.user_id}')">
+                <i class="bi bi-globe me-2"></i>Datos del plan
+              </a>
+            </li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <a class="dropdown-item ${user.subscription_status === 'active' ? 'text-warning' : 'text-success'}" href="#" onclick="toggleUserStatus('${user.user_id}', '${user.subscription_status}')">

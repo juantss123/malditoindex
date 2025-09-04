@@ -39,6 +39,44 @@ if (isLoggedIn()) {
   <link href="assets/css/styles.css" rel="stylesheet">
 </head>
 <body class="bg-dark-ink text-body">
+  <!-- Promotion Banner -->
+  <?php
+  // Get marketing settings for promotion banner
+  try {
+      $stmt = $db->prepare("SELECT * FROM marketing_settings WHERE id = 1 AND promotion_enabled = TRUE");
+      $stmt->execute();
+      $promotion = $stmt->fetch();
+  } catch (Exception $e) {
+      $promotion = null;
+  }
+  ?>
+  
+  <?php if ($promotion && $promotion['promotion_text']): ?>
+  <div id="promotionBanner" class="position-sticky" style="top: 0; z-index: 1030; background-color: <?php echo htmlspecialchars($promotion['promotion_bg_color']); ?>; color: <?php echo htmlspecialchars($promotion['promotion_text_color']); ?>;">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center justify-content-center py-2 px-3">
+        <div class="d-flex align-items-center flex-grow-1 justify-content-center">
+          <i class="bi bi-megaphone me-3"></i>
+          <span class="fw-medium">
+            <?php echo htmlspecialchars($promotion['promotion_text']); ?>
+          </span>
+          <?php if ($promotion['promotion_button_text'] && $promotion['promotion_link']): ?>
+          <a href="<?php echo htmlspecialchars($promotion['promotion_link']); ?>" 
+             class="btn btn-light btn-sm ms-3" 
+             style="color: <?php echo htmlspecialchars($promotion['promotion_bg_color']); ?>;">
+            <?php echo htmlspecialchars($promotion['promotion_button_text']); ?>
+          </a>
+          <?php endif; ?>
+        </div>
+        <button type="button" class="btn-close ms-3" aria-label="Cerrar" 
+                onclick="document.getElementById('promotionBanner').style.display='none'"
+                style="filter: <?php echo $promotion['promotion_text_color'] === '#ffffff' ? 'invert(1)' : 'none'; ?>;">
+        </button>
+      </div>
+    </div>
+  </div>
+  <?php endif; ?>
+
   <!-- Decorative animated blobs -->
   <div class="bg-blobs" aria-hidden="true">
     <span></span><span></span><span></span>
@@ -47,7 +85,7 @@ if (isLoggedIn()) {
   
 
   <!-- Nav -->
-  <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-nav">
+  <nav class="navbar navbar-expand-lg navbar-dark <?php echo ($promotion && $promotion['promotion_text']) ? '' : 'sticky-top'; ?> glass-nav">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="#">
         <img src="assets/img/logo.svg" width="28" height="28" alt="DentexaPro logo" />

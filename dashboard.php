@@ -107,13 +107,13 @@ try {
   <!-- Nav -->
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-nav">
     <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
         <img src="assets/img/logo.svg" width="28" height="28" alt="DentexaPro logo" />
         <strong>DentexaPro</strong>
       </a>
       <div class="ms-auto d-flex align-items-center gap-3">
         <span class="text-light small"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-        <a href="logout.php" class="btn btn-outline-light">
+        <a href="/salir" class="btn btn-outline-light">
           <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
         </a>
       </div>

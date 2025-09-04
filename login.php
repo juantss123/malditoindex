@@ -106,18 +106,18 @@ if (isLoggedIn()) {
                 <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" id="loginBtn">
                   <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
                 </button>
+                
+                <!-- Register Link -->
+                <div class="text-center">
+                  <p class="text-light opacity-75 mb-0">
+                    ¿No tenés cuenta? <a href="registro.php" class="text-primary">Crear cuenta gratis</a>
+                  </p>
+                </div>
               </div>
             </form>
 
             <!-- Success/Error Messages -->
             <div id="alertContainer" class="mt-4"></div>
-          </div>
-
-          <!-- Register Link -->
-          <div class="text-center mt-4" data-aos="fade-up" data-aos-duration="800" data-aos-delay="900">
-            <p class="text-light opacity-75">
-              ¿No tenés cuenta? <a href="registro.php" class="text-primary">Crear cuenta gratis</a>
-            </p>
           </div>
 
           <!-- Quick Access -->

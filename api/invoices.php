@@ -64,9 +64,22 @@ function handleGetInvoices() {
                 plan_type ENUM('start','clinic','enterprise') DEFAULT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_invoices_clinic_id (clinic_id),
+                INDEX idx_invoices_status (status),
+                INDEX idx_invoices_date (invoice_date),
                 FOREIGN KEY (clinic_id) REFERENCES user_profiles(user_id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
+        
+        // Add plan_type column if it doesn't exist
+        try {
+            $stmt = $db->query("SHOW COLUMNS FROM invoices LIKE 'plan_type'");
+            if ($stmt->rowCount() == 0) {
+                $db->exec("ALTER TABLE invoices ADD COLUMN plan_type ENUM('start','clinic','enterprise') DEFAULT NULL");
+            }
+        } catch (Exception $e) {
+            // Column might already exist, ignore error
+        }
         
         $stmt = $db->prepare("
             SELECT 
@@ -95,7 +108,7 @@ function handleCreateInvoice() {
     $input = json_decode(file_get_contents('php://input'), true);
     
     // Validate required fields
-    $required = ['clinic_id', 'invoice_number', 'plan_type', 'amount', 'invoice_date'];
+    $required = ['clinic_id', 'invoice_number', 'amount', 'invoice_date'];
     foreach ($required as $field) {
         if (empty($input[$field])) {
             http_response_code(400);
@@ -135,7 +148,7 @@ function handleCreateInvoice() {
         $stmt->execute([
             $input['invoice_number'],
             $input['clinic_id'],
-            $input['plan_type'],
+            $input['plan_type'] ?? null,
             $baseAmount,
             $taxAmount,
             $totalAmount,

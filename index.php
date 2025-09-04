@@ -347,18 +347,17 @@ $db = $database->getConnection();
       </div>
     </div>
   </section>
-
-  <!-- CTA mid -->
+<!-- CTA mid -->
   <section class="section-py" id="cta" data-aos="slide-right" data-aos-duration="1300" data-aos-offset="150">
     <div class="container">
-      <div class="cta-banner glass-gradient glow-border" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="400">
+      <div class="cta-banner glass-gradient" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="400">
         <div class="row align-items-center g-4">
           <div class="col-lg-8" data-aos="slide-right" data-aos-delay="600" data-aos-duration="1000">
             <h3 class="mb-1 text-white">Comenzá hoy con 15 días gratis</h3>
             <p class="mb-0 text-light opacity-85">Sin tarjetas, cancelás cuando quieras. Migración asistida incluida.</p>
           </div>
           <div class="col-lg-4 text-lg-end" data-aos="slide-left" data-aos-delay="800" data-aos-duration="1000">
-            <a href="registro.php" class="btn btn-primary btn-lg btn-glow pulse-on-hover"><i class="bi bi-magic me-2"></i>Crear mi cuenta</a>
+            <a href="registro.php" class="btn btn-primary btn-lg"><i class="bi bi-magic me-2"></i>Crear mi cuenta</a>
           </div>
         </div>
       </div>

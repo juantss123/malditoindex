@@ -69,40 +69,24 @@ if (isLoggedIn()) {
   </nav>
 
   <?php if (isset($_GET['logout'])): ?>
-  <div id="logoutMessage" 
-       style="max-width:600px; margin:20px auto; 
-              padding:15px 20px; 
-              border-radius:12px;
-              text-align:center;
-              font-family: 'Inter', sans-serif;
-              font-weight:500;
-              color:#fff;
-              background: rgba(40, 167, 69, 0.25); /* Verde translúcido */
-              backdrop-filter: blur(10px) saturate(180%);
-              -webkit-backdrop-filter: blur(10px) saturate(180%);
-              box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-              animation: fadeIn 0.5s ease;">
-    ✅ Su sesión fue cerrada correctamente.
+  <div class="container mt-4">
+    <div class="alert alert-success alert-dismissible fade show glass-card" role="alert" id="logoutMessage" style="max-width: 600px; margin: 0 auto;">
+      <i class="bi bi-check-circle me-2"></i>
+      Su sesión fue cerrada correctamente.
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   </div>
 
   <script>
-    // Desaparecer después de 3s con fade-out
+    // Auto-dismiss después de 4 segundos
     setTimeout(() => {
       const msg = document.getElementById("logoutMessage");
       if (msg) {
-        msg.style.transition = "opacity 0.8s ease";
-        msg.style.opacity = "0";
-        setTimeout(() => msg.remove(), 800);
+        const alert = bootstrap.Alert.getOrCreateInstance(msg);
+        alert.close();
       }
-    }, 3000);
+    }, 4000);
   </script>
-
-  <style>
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-  </style>
 <?php endif; ?>
 
   <!-- Hero -->

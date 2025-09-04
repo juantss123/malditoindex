@@ -121,6 +121,18 @@ try {
                   } else {
                       echo "Bienvenido a tu panel de control.";
                   }
+                } else {
+                  console.log('Dashboard: No features found for start plan or features array is empty');
+                  // Set default features if none found
+                  const modalStartFeaturesEl = document.getElementById('modalStartFeatures');
+                  if (modalStartFeaturesEl) {
+                    modalStartFeaturesEl.innerHTML = `
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Agenda & turnos</li>
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Historia clínica</li>
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Recordatorios</li>
+                    `;
+                  }
                   ?>
                 </p>
                 <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -437,10 +449,7 @@ try {
                   <div class="display-6 fw-bold text-white">$<span id="modalStartPrice">14.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
                 </div>
                 <ul class="list-unstyled mb-4" id="modalStartFeatures">
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Agenda & turnos</li>
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Historia clínica</li>
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Recordatorios</li>
+                  <!-- Features will be loaded dynamically -->
                 </ul>
                 <button class="btn btn-outline-light w-100" onclick="selectPlan('start')">
                   Seleccionar Start
@@ -458,10 +467,7 @@ try {
                 </div>
                 <ul class="list-unstyled mb-4">
                   <div id="modalClinicFeatures">
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
+                    <!-- Features will be loaded dynamically -->
                   </div>
                 </ul>
                 <button class="btn btn-primary w-100" onclick="selectPlan('clinic')">
@@ -548,6 +554,18 @@ try {
                     `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
                   ).join('');
                   console.log('Dashboard: Updated clinic features:', clinicPlan.features);
+                }
+              } else {
+                console.log('Dashboard: No features found for clinic plan or features array is empty');
+                // Set default features if none found
+                const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
+                if (modalClinicFeaturesEl) {
+                  modalClinicFeaturesEl.innerHTML = `
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
+                  `;
                 }
               }
             }

@@ -406,7 +406,7 @@ try {
               <div class="glass-card p-4 h-100">
                 <div class="text-center mb-3">
                   <h4 class="text-white">Start</h4>
-                  <div class="display-6 fw-bold text-white">$14.99<small class="fs-6 text-light">/mes</small></div>
+                  <div class="display-6 fw-bold text-white">$14.999<small class="fs-6 text-light"> ARS/mes</small></div>
                 </div>
                 <ul class="list-unstyled mb-4">
                   <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
@@ -426,7 +426,7 @@ try {
                 <div class="text-center mb-3">
                   <span class="badge bg-primary mb-2">Recomendado</span>
                   <h4 class="text-white">Clinic</h4>
-                  <div class="display-6 fw-bold text-white">$24.99<small class="fs-6 text-light">/mes</small></div>
+                  <div class="display-6 fw-bold text-white">$24.999<small class="fs-6 text-light"> ARS/mes</small></div>
                 </div>
                 <ul class="list-unstyled mb-4">
                   <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>

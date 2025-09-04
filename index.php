@@ -216,7 +216,7 @@ if (isLoggedIn()) {
           <div class="price-card glass-card h-100">
             <div class="price-badge">Popular</div>
             <h3 class="mb-2">Start</h3>
-            <div class="display-6 fw-bold text-white mb-3">$<span class="price-amount" data-monthly="14.99" data-yearly="9.99">14.99</span><small class="fs-6 text-light">/mes</small></div>
+            <div class="display-6 fw-bold text-white mb-3">$<span class="price-amount" data-monthly="14.999" data-yearly="9.999">14.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
             <ul class="list-unstyled mb-4">
               <li><i class="bi bi-check2-circle me-2"></i>1 profesional</li>
               <li><i class="bi bi-check2-circle me-2"></i>Agenda & turnos</li>
@@ -230,7 +230,7 @@ if (isLoggedIn()) {
           <div class="price-card glass-card h-100 border-primary">
             <div class="price-badge bg-primary">Recomendado</div>
             <h3 class="mb-2">Clinic</h3>
-            <div class="display-6 fw-bold text-white mb-3">$<span class="price-amount" data-monthly="24.99" data-yearly="19.99">24.99</span><small class="fs-6 text-light">/mes</small></div>
+            <div class="display-6 fw-bold text-white mb-3">$<span class="price-amount" data-monthly="24.999" data-yearly="19.999">24.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
             <ul class="list-unstyled mb-4">
               <li><i class="bi bi-check2-circle me-2"></i>Hasta 3 profesionales</li>
               <li><i class="bi bi-check2-circle me-2"></i>Portal del paciente</li>

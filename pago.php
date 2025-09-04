@@ -41,17 +41,17 @@ try {
 $planDetails = [
     'start' => [
         'name' => 'Start',
-        'price' => 14.99,
+        'price' => 14999,
         'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
     ],
     'clinic' => [
         'name' => 'Clinic',
-        'price' => 24.99,
+        'price' => 24999,
         'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
     ],
     'enterprise' => [
         'name' => 'Enterprise',
-        'price' => 49.99,
+        'price' => 49999,
         'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
     ]
 ];
@@ -137,9 +137,9 @@ $selectedPlan = $planDetails[$plan];
               </div>
               <div class="col-md-4 text-md-end mt-3 mt-md-0">
                 <div class="display-6 fw-bold text-white">
-                  $<?php echo number_format($selectedPlan['price'], 2); ?>
+                  $<?php echo number_format($selectedPlan['price'], 0, ',', '.'); ?>
                 </div>
-                <small class="text-light opacity-75">USD por mes</small>
+                <small class="text-light opacity-75">ARS por mes</small>
               </div>
             </div>
           </div>
@@ -257,7 +257,7 @@ $selectedPlan = $planDetails[$plan];
                         <i class="bi bi-currency-dollar text-success me-2"></i>
                         <strong class="text-white">Monto</strong>
                       </div>
-                      <div class="text-success fw-bold fs-5">$<?php echo number_format($selectedPlan['price'], 2); ?> USD</div>
+                      <div class="text-success fw-bold fs-5">$<?php echo number_format($selectedPlan['price'], 0, ',', '.'); ?> ARS</div>
                     </div>
                   </div>
                 </div>

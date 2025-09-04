@@ -227,7 +227,7 @@ try {
                     <th class="text-end">Acciones</th>
                   </tr>
                 </thead>
-                <tbody id="ticketsTable">
+                <tbody id="ticketsTable" style="position: relative;">
                   <!-- Tickets will be loaded here -->
                 </tbody>
               </table>

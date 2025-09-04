@@ -190,12 +190,12 @@ console.log('Dashboard: No features found for start plan or features array is em
                     <button class="btn btn-primary btn-lg me-2" id="startTrialBtn">
                         <i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita
                     </button>
-                    <?php endif; ?>
+              <h3 class="text-white mb-1">Plan activo: <?php echo $userProfile ? getPlanDisplayName($userProfile['subscription_plan']) : 'Sin plan'; ?></h3>
 
                     <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#plansModal">
                         <i class="bi bi-star me-2"></i>Actualizar plan
                     </button>
-
+                  Suscripción activa - <?php echo getPlanDisplayName($userProfile['subscription_plan']); ?>
                 <?php else: ?>
                 
                     <button class="btn btn-primary-soft btn-lg" data-bs-toggle="modal" data-bs-target="#managePlanModal">

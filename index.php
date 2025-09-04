@@ -663,16 +663,11 @@ $db = $database->getConnection();
     </div>
   </footer>
 
-  <!-- Floating action -->
-  <a href="#cta" class="fab-cta" aria-label="Comenzar prueba">
-    <i class="bi bi-lightning-charge"></i>
-  </a>
-
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491112345678?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20DentexaPro" 
      target="_blank" 
      rel="noopener" 
-     class="whatsapp-float" 
+     class="fab-cta" 
      aria-label="Contactar por WhatsApp">
     <i class="bi bi-whatsapp"></i>
   </a>

@@ -189,39 +189,89 @@ try {
                 <div class="row g-3">
                   <div class="col-12">
                     <div class="glass-card p-3">
-                      <div class="mb-3">
-                        <strong class="text-light">Página web:</strong>
-                        <div class="mt-1">
-                          <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="text-primary">
-                            <?php echo htmlspecialchars($trialRequest['trial_website']); ?>
-                            <i class="bi bi-box-arrow-up-right ms-1"></i>
-                          </a>
+                      <!-- Website Access -->
+                      <div class="mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <i class="bi bi-globe text-white"></i>
+                          </div>
+                          <div>
+                            <strong class="text-white">Página web de tu prueba</strong>
+                            <div class="text-light opacity-75 small">Accede a tu demo personalizada</div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="row g-3">
-                        <div class="col-md-6">
-                          <strong class="text-light">Usuario:</strong>
-                          <div class="mt-1">
-                            <code class="text-white bg-dark px-2 py-1 rounded"><?php echo htmlspecialchars($trialRequest['trial_username']); ?></code>
-                            <button class="btn btn-sm btn-outline-light ms-2" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_username']); ?>')">
+                        <div class="glass-card p-3 ms-5">
+                          <div class="d-flex align-items-center justify-content-between">
+                            <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="text-primary text-decoration-none">
+                              <i class="bi bi-link-45deg me-2"></i><?php echo htmlspecialchars($trialRequest['trial_website']); ?>
+                            </a>
+                            <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_website']); ?>')">
                               <i class="bi bi-clipboard"></i>
                             </button>
                           </div>
                         </div>
+                      </div>
+
+                      <!-- Login Credentials -->
+                      <div class="row g-3">
                         <div class="col-md-6">
-                          <strong class="text-light">Contraseña:</strong>
-                          <div class="mt-1">
-                            <code class="text-white bg-dark px-2 py-1 rounded"><?php echo htmlspecialchars($trialRequest['trial_password']); ?></code>
-                            <button class="btn btn-sm btn-outline-light ms-2" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_password']); ?>')">
-                              <i class="bi bi-clipboard"></i>
-                            </button>
+                          <div class="d-flex align-items-center mb-2">
+                            <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                              <i class="bi bi-person-circle text-white"></i>
+                            </div>
+                            <div>
+                              <strong class="text-white">Usuario</strong>
+                              <div class="text-light opacity-75 small">Tu nombre de usuario</div>
+                            </div>
+                          </div>
+                          <div class="glass-card p-3 ms-5">
+                            <div class="d-flex align-items-center justify-content-between">
+                              <code class="text-primary bg-transparent border border-primary rounded px-3 py-2 flex-grow-1 me-2">
+                                <?php echo htmlspecialchars($trialRequest['trial_username']); ?>
+                              </code>
+                              <button class="btn btn-sm btn-outline-info" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_username']); ?>')" title="Copiar usuario">
+                                <i class="bi bi-clipboard"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-center mb-2">
+                            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                              <i class="bi bi-key text-dark"></i>
+                            </div>
+                            <div>
+                              <strong class="text-white">Contraseña</strong>
+                              <div class="text-light opacity-75 small">Tu contraseña de acceso</div>
+                            </div>
+                          </div>
+                          <div class="glass-card p-3 ms-5">
+                            <div class="d-flex align-items-center justify-content-between">
+                              <code class="text-warning bg-transparent border border-warning rounded px-3 py-2 flex-grow-1 me-2">
+                                <?php echo htmlspecialchars($trialRequest['trial_password']); ?>
+                              </code>
+                              <button class="btn btn-sm btn-outline-warning" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_password']); ?>')" title="Copiar contraseña">
+                                <i class="bi bi-clipboard"></i>
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                       <?php if ($trialRequest['admin_notes']): ?>
-                      <div class="mt-3">
-                        <strong class="text-light">Notas del administrador:</strong>
-                        <div class="text-light opacity-85 mt-1"><?php echo htmlspecialchars($trialRequest['admin_notes']); ?></div>
+                      <div class="mt-4">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <i class="bi bi-chat-square-text text-white"></i>
+                          </div>
+                          <div>
+                            <strong class="text-white">Notas del administrador</strong>
+                            <div class="text-light opacity-75 small">Información adicional</div>
+                          </div>
+                        </div>
+                        <div class="glass-card p-3 ms-5">
+                          <div class="text-light opacity-85"><?php echo htmlspecialchars($trialRequest['admin_notes']); ?></div>
+                        </div>
                       </div>
                       <?php endif; ?>
                     </div>

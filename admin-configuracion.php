@@ -810,6 +810,57 @@ try {
       });
     }
 
+    // Toggle Maintenance fields
+    const maintenanceToggle = document.getElementById('maintenance_enabled');
+    const maintenanceFields = document.getElementById('maintenanceFields');
+
+    if (maintenanceToggle && maintenanceFields) {
+      // Set initial state based on current settings
+      <?php if ($maintenanceSettings && $maintenanceSettings['maintenance_enabled']): ?>
+      maintenanceToggle.checked = true;
+      maintenanceFields.style.display = 'block';
+      updateMaintenanceStatus(true);
+      <?php endif; ?>
+      
+      maintenanceToggle.addEventListener('change', (e) => {
+        maintenanceFields.style.display = e.target.checked ? 'block' : 'none';
+        updateMaintenanceStatus(e.target.checked);
+      });
+    }
+
+    // Load current maintenance settings
+    <?php if ($maintenanceSettings): ?>
+    if (document.querySelector('input[name="maintenance_title"]')) {
+      document.querySelector('input[name="maintenance_title"]').value = '<?php echo addslashes($maintenanceSettings['maintenance_title']); ?>';
+    }
+    if (document.querySelector('textarea[name="maintenance_message"]')) {
+      document.querySelector('textarea[name="maintenance_message"]').value = '<?php echo addslashes($maintenanceSettings['maintenance_message']); ?>';
+    }
+    if (document.querySelector('input[name="maintenance_end_time"]') && '<?php echo $maintenanceSettings['maintenance_end_time']; ?>') {
+      document.querySelector('input[name="maintenance_end_time"]').value = '<?php echo date('Y-m-d\TH:i', strtotime($maintenanceSettings['maintenance_end_time'])); ?>';
+    }
+    if (document.querySelector('input[name="maintenance_contact_email"]')) {
+      document.querySelector('input[name="maintenance_contact_email"]').value = '<?php echo addslashes($maintenanceSettings['maintenance_contact_email']); ?>';
+    }
+    <?php endif; ?>
+
+    function updateMaintenanceStatus(enabled) {
+      const systemStatus = document.getElementById('systemStatus');
+      const userAccessStatus = document.getElementById('userAccessStatus');
+      
+      if (enabled) {
+        systemStatus.textContent = 'En mantenimiento';
+        systemStatus.className = 'badge bg-warning text-dark';
+        userAccessStatus.textContent = 'Restringido';
+        userAccessStatus.className = 'badge bg-danger';
+      } else {
+        systemStatus.textContent = 'Operativo';
+        systemStatus.className = 'badge bg-success';
+        userAccessStatus.textContent = 'Permitido';
+        userAccessStatus.className = 'badge bg-success';
+      }
+    }
+
     // Password toggle function
     function togglePassword(inputId, iconId) {
       const input = document.getElementById(inputId);

@@ -48,7 +48,7 @@ try {
     if ($planData) {
         $planDetails = [
             'name' => $planData['name'],
-            'price' => $planData['price_monthly'] / 100, // Convert from cents to pesos
+            'price' => $planData['price_monthly'], // Use direct value from database
             'features' => json_decode($planData['features'], true)
         ];
     }

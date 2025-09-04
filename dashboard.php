@@ -540,7 +540,7 @@ console.log('Dashboard: No features found for start plan or features array is em
             
             if (clinicPlan) {
               console.log('Dashboard: Clinic plan data:', clinicPlan);
-              const monthlyPrice = Math.round(clinicPlan.price_monthly / 100).toLocaleString('es-AR');
+              const monthlyPrice = Math.round(clinicPlan.price_monthly).toLocaleString('es-AR');
               console.log('Dashboard: Updating modal clinic price to:', monthlyPrice);
               
               const modalClinicPriceEl = document.getElementById('modalClinicPrice');
@@ -575,7 +575,7 @@ console.log('Dashboard: No features found for start plan or features array is em
             // Update Start plan in modal if needed
             if (startPlan) {
               console.log('Dashboard: Start plan data:', startPlan);
-              const startMonthlyPrice = Math.round(startPlan.price_monthly / 100).toLocaleString('es-AR');
+              const startMonthlyPrice = Math.round(startPlan.price_monthly).toLocaleString('es-AR');
               console.log('Dashboard: Start plan price:', startMonthlyPrice);
               
               // Update Start plan price if element exists

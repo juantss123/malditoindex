@@ -291,6 +291,8 @@ async function handleEditPlan(e) {
       name: formData.get('name'),
       price_monthly: parseFloat(formData.get('price_monthly')) * 100 || 0, // Convert to cents
       price_yearly: parseFloat(formData.get('price_yearly')) * 100 || 0,   // Convert to cents
+      price_monthly: parseFloat(formData.get('price_monthly')) || 0, // Use direct values
+      price_yearly: parseFloat(formData.get('price_yearly')) || 0,   // Use direct values
       features: formData.getAll('features').filter(f => f.trim() !== ''),
       change_reason: formData.get('change_reason')
     };

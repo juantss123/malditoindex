@@ -662,8 +662,8 @@ if (isLoggedIn()) {
       const startPlan = plans.find(p => p.plan_type === 'start');
       if (startPlan) {
         console.log('Start plan data:', startPlan);
-        const monthlyPrice = Math.round(startPlan.price_monthly / 100).toLocaleString('es-AR');
-        const yearlyPrice = Math.round(startPlan.price_yearly / 100).toLocaleString('es-AR');
+        const monthlyPrice = Math.round(startPlan.price_monthly).toLocaleString('es-AR');
+        const yearlyPrice = Math.round(startPlan.price_yearly).toLocaleString('es-AR');
         
         const startPriceEl = document.getElementById('startPrice');
         if (startPriceEl) {
@@ -688,8 +688,8 @@ if (isLoggedIn()) {
       const clinicPlan = plans.find(p => p.plan_type === 'clinic');
       if (clinicPlan) {
         console.log('Clinic plan data:', clinicPlan);
-        const monthlyPrice = Math.round(clinicPlan.price_monthly / 100).toLocaleString('es-AR');
-        const yearlyPrice = Math.round(clinicPlan.price_yearly / 100).toLocaleString('es-AR');
+        const monthlyPrice = Math.round(clinicPlan.price_monthly).toLocaleString('es-AR');
+        const yearlyPrice = Math.round(clinicPlan.price_yearly).toLocaleString('es-AR');
         
         const clinicPriceEl = document.getElementById('clinicPrice');
         if (clinicPriceEl) {

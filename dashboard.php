@@ -333,6 +333,14 @@ console.log('Dashboard: No features found for start plan or features array is em
                     </div>
                   </div>
                 </div>
+                <div class="d-flex gap-3 flex-wrap">
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#plansModal">
+                    <i class="bi bi-arrow-up-circle me-2"></i>Actualizar plan
+                  </button>
+                  <a href="guia-usuario.php" class="btn btn-outline-light">
+                    <i class="bi bi-book me-2"></i>Guía de usuario
+                  </a>
+                </div>
               </div>
               <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
                 <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="btn btn-success btn-lg w-100">

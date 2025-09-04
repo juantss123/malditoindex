@@ -39,12 +39,12 @@ if (isLoggedIn()) {
 
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-nav">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
         <img src="assets/img/logo.svg" width="28" height="28" alt="DentexaPro logo" />
         <strong>DentexaPro</strong>
       </a>
       <div class="ms-auto">
-        <a href="/" class="btn btn-outline-light">
+        <a href="index.php" class="btn btn-outline-light">
           <i class="bi bi-arrow-left me-2"></i>Volver al inicio
         </a>
       </div>

@@ -15,38 +15,38 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
       <a class="nav-link text-light <?php echo ($currentPage === 'admin') ? 'active' : ''; ?>" href="admin.php">
         <i class="bi bi-house me-2"></i>Dashboard
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-usuarios') ? 'active' : ''; ?>" href="/admin/usuarios">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-usuarios') ? 'active' : ''; ?>" href="admin-usuarios.php">
         <i class="bi bi-people me-2"></i>Usuarios
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-comprobantes') ? 'active' : ''; ?>" href="/admin/comprobantes" id="comprobantesLink">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-comprobantes') ? 'active' : ''; ?>" href="admin-comprobantes.php" id="comprobantesLink">
         <span class="d-inline-flex align-items-center">
           <i class="bi bi-receipt me-2"></i>
           Comprobantes
           <span class="badge bg-danger ms-2" id="comprobantesNotification" style="display: none;">0</span>
         </span>
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-tickets') ? 'active' : ''; ?>" href="/admin/tickets">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-tickets') ? 'active' : ''; ?>" href="admin-tickets.php">
         <i class="bi bi-headset me-2"></i>Soporte
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-facturas') ? 'active' : ''; ?>" href="/admin/facturas">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-facturas') ? 'active' : ''; ?>" href="admin-facturas.php">
         <i class="bi bi-file-earmark-text me-2"></i>Facturas
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-suscripciones') ? 'active' : ''; ?>" href="/admin/suscripciones">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-suscripciones') ? 'active' : ''; ?>" href="admin-suscripciones.php">
         <i class="bi bi-credit-card me-2"></i>Suscripciones
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-analiticas') ? 'active' : ''; ?>" href="/admin/analiticas">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-analiticas') ? 'active' : ''; ?>" href="admin-analiticas.php">
         <i class="bi bi-graph-up me-2"></i>Analíticas
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-blog') ? 'active' : ''; ?>" href="/admin/blog">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-blog') ? 'active' : ''; ?>" href="admin-blog.php">
         <i class="bi bi-journal-text me-2"></i>Blog
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-newsletter') ? 'active' : ''; ?>" href="/admin/newsletter">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-newsletter') ? 'active' : ''; ?>" href="admin-newsletter.php">
         <i class="bi bi-envelope-heart me-2"></i>Newsletter
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-marketing') ? 'active' : ''; ?>" href="/admin/marketing">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-marketing') ? 'active' : ''; ?>" href="admin-marketing.php">
         <i class="bi bi-megaphone me-2"></i>Marketing
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-configuracion') ? 'active' : ''; ?>" href="/admin/configuracion">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-configuracion') ? 'active' : ''; ?>" href="admin-configuracion.php">
         <i class="bi bi-gear me-2"></i>Configuración
       </a>
     </nav>

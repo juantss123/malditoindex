@@ -38,16 +38,6 @@ try {
     $userProfile = null;
     $trialDaysRemaining = 0;
 }
-
-// Helper function to display plan names
-function getPlanDisplayName($plan) {
-    switch($plan) {
-        case 'start': return 'Start';
-        case 'clinic': return 'Clinic';
-        case 'enterprise': return 'Enterprise';
-        default: return 'Sin plan';
-    }
-}
 ?>
 <!doctype html>
 <html lang="es" class="h-100">
@@ -200,18 +190,17 @@ console.log('Dashboard: No features found for start plan or features array is em
                     <button class="btn btn-primary btn-lg me-2" id="startTrialBtn">
                         <i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita
                     </button>
-              <h3 class="text-white mb-1">Plan activo: <?php echo $userProfile ? getPlanDisplayName($userProfile['subscription_plan']) : 'Sin plan'; ?></h3>
+                    <?php endif; ?>
 
                     <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#plansModal">
                         <i class="bi bi-star me-2"></i>Actualizar plan
                     </button>
-                  Suscripción activa - <?php echo getPlanDisplayName($userProfile['subscription_plan']); ?>
+
                 <?php else: ?>
                 
                     <button class="btn btn-primary-soft btn-lg" data-bs-toggle="modal" data-bs-target="#managePlanModal">
                         <i class="bi bi-gear me-2"></i>Gestionar plan
                     </button>
-                <?php endif; ?>
                 <?php endif; ?>
               </div>
             </div>
@@ -257,4 +246,1305 @@ console.log('Dashboard: No features found for start plan or features array is em
                   <div class="col-12">
                     <div class="glass-card p-3">
                       <!-- Website Access -->
-                      <div class="
+                      <div class="mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <i class="bi bi-globe text-white"></i>
+                          </div>
+                          <div>
+                            <strong class="text-white">Página web de tu prueba</strong>
+                            <div class="text-light opacity-75 small">Accede a tu demo personalizada</div>
+                          </div>
+                        </div>
+                        <div class="glass-card p-3 ms-5">
+                          <div class="d-flex align-items-center justify-content-between">
+                            <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="text-primary text-decoration-none">
+                              <i class="bi bi-link-45deg me-2"></i><span class="text-white"><?php echo htmlspecialchars($trialRequest['trial_website']); ?></span>
+                            </a>
+                            <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_website']); ?>')">
+                              <i class="bi bi-clipboard"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Login Credentials -->
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-center mb-2">
+                            <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                              <i class="bi bi-person-circle text-white"></i>
+                            </div>
+                            <div>
+                              <strong class="text-white">Usuario</strong>
+                              <div class="text-light opacity-75 small">Tu nombre de usuario</div>
+                            </div>
+                          </div>
+                          <div class="glass-card p-3 ms-5">
+                            <div class="d-flex align-items-center justify-content-between">
+                              <code class="text-white bg-transparent border border-primary rounded px-3 py-2 flex-grow-1 me-2">
+                                <?php echo htmlspecialchars($trialRequest['trial_username']); ?>
+                              </code>
+                              <button class="btn btn-sm btn-outline-info" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_username']); ?>')" title="Copiar usuario">
+                                <i class="bi bi-clipboard"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <div class="d-flex align-items-center mb-2">
+                            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                              <i class="bi bi-key text-dark"></i>
+                            </div>
+                            <div>
+                              <strong class="text-white">Contraseña</strong>
+                              <div class="text-light opacity-75 small">Tu contraseña de acceso</div>
+                            </div>
+                          </div>
+                          <div class="glass-card p-3 ms-5">
+                            <div class="d-flex align-items-center justify-content-between">
+                              <code class="text-white bg-transparent border border-warning rounded px-3 py-2 flex-grow-1 me-2">
+                                <?php echo htmlspecialchars($trialRequest['trial_password']); ?>
+                              </code>
+                              <button class="btn btn-sm btn-outline-warning" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_password']); ?>')" title="Copiar contraseña">
+                                <i class="bi bi-clipboard"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <?php if ($trialRequest['admin_notes']): ?>
+                      <div class="mt-4">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <i class="bi bi-chat-square-text text-white"></i>
+                          </div>
+                          <div>
+                            <strong class="text-white">Notas del administrador</strong>
+                            <div class="text-light opacity-75 small">Información adicional</div>
+                          </div>
+                        </div>
+                        <div class="glass-card p-3 ms-5">
+                          <div class="text-light opacity-85"><?php echo htmlspecialchars($trialRequest['admin_notes']); ?></div>
+                        </div>
+                      </div>
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="btn btn-success btn-lg w-100">
+                  <i class="bi bi-play-circle me-2"></i>Acceder a la prueba
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php elseif ($trialRequest && $trialRequest['status'] === 'pending'): ?>
+      <div class="row mb-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+          <div class="glass-card p-4 p-sm-5 border-warning">
+            <div class="text-center">
+              <h3 class="text-warning mb-2">
+                <i class="bi bi-clock-history me-2"></i>Solicitud en revisión
+              </h3>
+              <p class="text-light opacity-85 mb-0">
+                Tu solicitud de prueba gratuita está siendo revisada por nuestro equipo. Te notificaremos cuando esté lista.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php elseif ($trialRequest && $trialRequest['status'] === 'rejected'): ?>
+      <div class="row mb-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+          <div class="glass-card p-4 p-sm-5 border-danger">
+            <div class="text-center">
+              <h3 class="text-danger mb-2">
+                <i class="bi bi-x-circle-fill me-2"></i>Solicitud no aprobada
+              </h3>
+              <p class="text-light opacity-85 mb-3">
+                Tu solicitud de prueba gratuita no pudo ser aprobada en este momento.
+              </p>
+              <?php if ($trialRequest['admin_notes']): ?>
+              <div class="glass-card p-3">
+                <strong class="text-light">Motivo:</strong>
+                <div class="text-light opacity-85 mt-1"><?php echo htmlspecialchars($trialRequest['admin_notes']); ?></div>
+              </div>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
+      
+      <div class="row">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="600">
+          <div class="glass-card p-4 p-sm-5">
+            <div class="row align-items-center">
+              <div class="col-lg-8">
+                <h3 class="text-white mb-2">
+                  <i class="bi bi-gift me-2"></i>Tu suscripción gratuita
+                </h3>
+                <p class="text-light opacity-85 mb-3">
+                  Estás usando DentexaPro con todas las funciones incluidas. Cuando termine tu prueba, elegí el plan que mejor se adapte a tu consultorio.
+                </p>
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-check-circle-fill text-success me-2"></i>
+                      <span>Agenda ilimitada</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-check-circle-fill text-success me-2"></i>
+                      <span>Historia clínica completa</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-check-circle-fill text-success me-2"></i>
+                      <span>Recordatorios automáticos</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-check-circle-fill text-success me-2"></i>
+                      <span>Soporte incluido</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <button class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#plansModal">
+                  <i class="bi bi-arrow-up-circle me-2"></i>Ver planes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
+
+      <!-- Support Section -->
+      <div class="row mt-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="800">
+          <div class="glass-card p-4 p-sm-5">
+            <div class="row align-items-center">
+              <div class="col-lg-8">
+                <h3 class="text-white mb-2">
+                  <i class="bi bi-headset me-2"></i>¿Necesitas ayuda?
+                </h3>
+                <p class="text-light opacity-85 mb-3">
+                  Nuestro equipo de soporte está aquí para ayudarte. Crea un ticket y te responderemos lo antes posible.
+                </p>
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-clock-fill text-info me-2"></i>
+                      <span>Respuesta en 24 horas</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-chat-dots-fill text-success me-2"></i>
+                      <span>Soporte en español</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <button class="btn btn-info btn-lg w-100" data-bs-toggle="modal" data-bs-target="#createTicketModal">
+                  <i class="bi bi-plus-circle me-2"></i>Crear ticket de soporte
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Tickets Section -->
+      <div class="row mt-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="900">
+          <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="text-white mb-0">
+                <i class="bi bi-ticket-perforated me-2"></i>Mis tickets de soporte
+              </h4>
+              <button class="btn btn-primary-soft" onclick="loadMyTickets()">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+              </button>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Asunto</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Última actualización</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="myTicketsTable">
+                  <!-- User tickets will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Plans Modal -->
+  <div class="modal fade" id="plansModal" tabindex="-1" aria-labelledby="plansModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="plansModalLabel">
+            <i class="bi bi-star me-2"></i>Elegí tu plan
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row g-4">
+            <!-- Start Plan -->
+            <div class="col-md-6">
+              <div class="glass-card p-4 h-100">
+                <div class="text-center mb-3">
+                  <h4 class="text-white">Start</h4>
+                  <div class="display-6 fw-bold text-white">$<span id="modalStartPrice">14.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
+                </div>
+                <ul class="list-unstyled mb-4" id="modalStartFeatures">
+                  <!-- Features will be loaded dynamically -->
+                </ul>
+                <button class="btn btn-outline-light w-100" onclick="selectPlan('start')">
+                  Seleccionar Start
+                </button>
+              </div>
+            </div>
+
+            <!-- Clinic Plan -->
+            <div class="col-md-6">
+              <div class="glass-card p-4 h-100 border-primary">
+                <div class="text-center mb-3">
+                  <span class="badge bg-primary mb-2">Recomendado</span>
+                  <h4 class="text-white">Clinic</h4>
+                  <div class="display-6 fw-bold text-white">$<span id="modalClinicPrice">24.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
+                </div>
+                <ul class="list-unstyled mb-4">
+                  <div id="modalClinicFeatures">
+                    <!-- Features will be loaded dynamically -->
+                  </div>
+                </ul>
+                <button class="btn btn-primary w-100" onclick="selectPlan('clinic')">
+                  Seleccionar Clinic
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <p class="text-light opacity-75 small">
+              <i class="bi bi-shield-check me-1"></i>Cancelás cuando quieras • Sin compromisos a largo plazo
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Plan Modal -->
+  <div class="modal fade" id="managePlanModal" tabindex="-1" aria-labelledby="managePlanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="managePlanModalLabel">
+            <i class="bi bi-gear me-2"></i>Gestionar mi plan
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Plan Information -->
+          <div class="glass-card p-4 mb-4">
+            <h5 class="text-white mb-3">
+              <i class="bi bi-star me-2"></i>Información de tu plan
+            </h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-award text-white"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">Plan actual</strong>
+                    <div class="text-light opacity-75">
+                      <span class="badge <?php echo getPlanBadgeClass($userProfile['subscription_plan'] ?? ''); ?>">
+                        <?php echo getPlanDisplayName($userProfile['subscription_plan'] ?? ''); ?>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-check-circle text-white"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">Estado</strong>
+                    <div class="text-light opacity-75">
+                      <span class="badge <?php echo getStatusBadgeClass($userProfile['subscription_status'] ?? ''); ?>">
+                        <?php echo getStatusDisplayName($userProfile['subscription_status'] ?? ''); ?>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-calendar text-white"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">Próximo pago</strong>
+                    <div class="text-light opacity-75" id="nextPaymentDate">
+                      <?php 
+                      if ($userProfile && $userProfile['subscription_status'] === 'active') {
+                          $nextPayment = new DateTime();
+                          $nextPayment->add(new DateInterval('P1M')); // Add 1 month
+                          echo $nextPayment->format('d/m/Y');
+                      } else {
+                          echo 'No programado';
+                      }
+                      ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                  <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-clock text-dark"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">Días restantes</strong>
+                    <div class="text-light opacity-75" id="daysRemaining">
+                      <?php 
+                      if ($userProfile && $userProfile['subscription_status'] === 'active') {
+                          $today = new DateTime();
+                          $nextMonth = clone $today;
+                          $nextMonth->add(new DateInterval('P1M'));
+                          $daysInMonth = $today->format('t');
+                          $currentDay = $today->format('j');
+                          $daysRemaining = $daysInMonth - $currentDay;
+                          echo $daysRemaining . ' días';
+                      } else {
+                          echo 'N/A';
+                      }
+                      ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan Access Data -->
+          <div class="glass-card p-4 mb-4" id="planAccessSection">
+            <h5 class="text-white mb-3">
+              <i class="bi bi-globe me-2"></i>Acceso a tu panel
+            </h5>
+            <div id="planAccessContent">
+              <div class="text-center text-light opacity-75 py-4">
+                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                Cargando datos de acceso...
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan Actions -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#plansModal" data-bs-dismiss="modal">
+                <i class="bi bi-arrow-up-circle me-2"></i>Cambiar plan
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button class="btn btn-outline-danger w-100" onclick="cancelSubscription()">
+                <i class="bi bi-x-circle me-2"></i>Cancelar suscripción
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Ticket Modal -->
+  <div class="modal fade" id="createTicketModal" tabindex="-1" aria-labelledby="createTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="createTicketModalLabel">
+            <i class="bi bi-plus-circle me-2"></i>Crear ticket de soporte
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="createTicketForm" class="row g-3">
+            <div class="col-12">
+              <label class="form-label text-light">Asunto *</label>
+              <input type="text" name="subject" class="form-control glass-input" placeholder="Describe brevemente tu consulta..." required>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-light">Categoría *</label>
+              <select name="category" class="form-select glass-input" required>
+                <option value="">Seleccionar categoría</option>
+                <option value="technical">Problema técnico</option>
+                <option value="billing">Facturación y pagos</option>
+                <option value="feature">Solicitud de funcionalidad</option>
+                <option value="bug">Reporte de error</option>
+                <option value="general">Consulta general</option>
+              </select>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-light">Prioridad</label>
+              <select name="priority" class="form-select glass-input">
+                <option value="low">Baja</option>
+                <option value="medium" selected>Media</option>
+                <option value="high">Alta</option>
+                <option value="urgent">Urgente</option>
+              </select>
+            </div>
+            
+            <div class="col-12">
+              <label class="form-label text-light">Descripción detallada *</label>
+              <textarea name="description" class="form-control glass-input" rows="5" 
+                        placeholder="Describe tu problema o consulta con el mayor detalle posible. Incluye pasos para reproducir el problema si es técnico..." required></textarea>
+            </div>
+            
+            <div class="col-12">
+              <div class="glass-card p-3">
+                <h6 class="text-info mb-2">
+                  <i class="bi bi-lightbulb me-2"></i>Consejos para un mejor soporte:
+                </h6>
+                <ul class="text-light opacity-85 small mb-0">
+                  <li>Sé específico en tu descripción</li>
+                  <li>Incluye capturas de pantalla si es posible</li>
+                  <li>Menciona qué navegador usas</li>
+                  <li>Describe los pasos que seguiste antes del problema</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="col-12 text-end">
+              <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-info">
+                <i class="bi bi-send me-2"></i>Crear ticket
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View My Ticket Modal -->
+  <div class="modal fade" id="viewMyTicketModal" tabindex="-1" aria-labelledby="viewMyTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="viewMyTicketModalLabel">
+            <i class="bi bi-eye me-2"></i>Mi ticket de soporte
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="myTicketDetailsContent">
+            <!-- Ticket details will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Show temporary success message
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed top-0 end-0 m-3 alert alert-success glass-card';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = '<i class="bi bi-check-circle me-2"></i>Copiado al portapapeles';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.remove();
+        }, 2000);
+      }).catch(err => {
+        console.error('Error copying to clipboard:', err);
+      });
+    }
+    
+    // Load plan access data when manage plan modal opens
+    const managePlanModal = document.getElementById('managePlanModal');
+    if (managePlanModal) {
+      managePlanModal.addEventListener('show.bs.modal', loadPlanAccessData);
+    }
+    
+    async function loadPlanAccessData() {
+      const planAccessContent = document.getElementById('planAccessContent');
+      
+      // Show loading state
+      planAccessContent.innerHTML = `
+        <div class="text-center text-light opacity-75 py-4">
+          <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+          Cargando datos de acceso...
+        </div>
+      `;
+      
+      try {
+        console.log('Loading plan access for user:', '<?php echo $_SESSION['user_id']; ?>');
+        const response = await fetch(`api/plan-access.php?user_id=<?php echo $_SESSION['user_id']; ?>`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Plan access data:', data);
+        
+        if (data.success && data.access) {
+          console.log('Access data found:', data.access);
+          // Show access data
+          planAccessContent.innerHTML = `
+            <div class="row g-3">
+              <div class="col-12">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-globe text-white"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">URL de tu panel</strong>
+                    <div class="text-light opacity-75 small">Accede a tu panel personalizado</div>
+                  </div>
+                </div>
+                <div class="glass-card p-3">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <a href="${data.access.panel_url}" target="_blank" class="text-primary text-decoration-none flex-grow-1">
+                      <i class="bi bi-link-45deg me-2"></i><span class="text-white">${data.access.panel_url}</span>
+                    </a>
+                    <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard('${data.access.panel_url}')">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-person-circle text-white"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">Usuario</strong>
+                    <div class="text-light opacity-75 small">Tu nombre de usuario</div>
+                  </div>
+                </div>
+                <div class="glass-card p-3">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <code class="text-white bg-transparent border border-info rounded px-3 py-2 flex-grow-1 me-2">
+                      ${data.access.panel_username}
+                    </code>
+                    <button class="btn btn-sm btn-outline-info" onclick="copyToClipboard('${data.access.panel_username}')" title="Copiar usuario">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-key text-dark"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">Contraseña</strong>
+                    <div class="text-light opacity-75 small">Tu contraseña de acceso</div>
+                  </div>
+                </div>
+                <div class="glass-card p-3">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <code class="text-white bg-transparent border border-warning rounded px-3 py-2 flex-grow-1 me-2">
+                      ${data.access.panel_password}
+                    </code>
+                    <button class="btn btn-sm btn-outline-warning" onclick="copyToClipboard('${data.access.panel_password}')" title="Copiar contraseña">
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              ${data.access.access_notes ? `
+              <div class="col-12">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                    <i class="bi bi-chat-square-text text-white"></i>
+                  </div>
+                  <div>
+                    <strong class="text-white">Notas adicionales</strong>
+                    <div class="text-light opacity-75 small">Información del administrador</div>
+                  </div>
+                </div>
+                <div class="glass-card p-3">
+                  <div class="text-light opacity-85">${data.access.access_notes}</div>
+                </div>
+              </div>
+              ` : ''}
+              
+              <div class="col-12 text-center">
+                <a href="${data.access.panel_url}" target="_blank" class="btn btn-success btn-lg">
+                  <i class="bi bi-box-arrow-up-right me-2"></i>Acceder a mi panel
+                </a>
+              </div>
+            </div>
+          `;
+        } else {
+          console.log('No access data found');
+          // No access data configured
+          planAccessContent.innerHTML = `
+            <div class="text-center text-light opacity-75 py-4">
+              <i class="bi bi-exclamation-triangle text-warning fs-1 mb-3"></i>
+              <h5 class="text-warning mb-2">Datos de acceso no configurados</h5>
+              <p class="mb-0">
+                El administrador aún no ha configurado los datos de acceso a tu panel personalizado.
+                <br>Contacta al soporte para obtener tus credenciales.
+              </p>
+            </div>
+          `;
+        }
+        
+      } catch (error) {
+        console.error('Error loading plan access data:', error);
+        planAccessContent.innerHTML = `
+          <div class="text-center text-danger py-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar datos de acceso: ${error.message}
+          </div>
+        `;
+      }
+    }
+    
+    // Cancel subscription function
+    window.cancelSubscription = function() {
+      if (confirm('¿Estás seguro de que quieres cancelar tu suscripción?\n\nPerderás acceso a todas las funciones al final del período actual.')) {
+        showAlert('info', 'Funcionalidad de cancelación en desarrollo. Contacta al soporte para cancelar tu suscripción.');
+      }
+    }
+    
+    // Dashboard functionality inline
+    document.addEventListener('DOMContentLoaded', () => {
+      // Init AOS
+      if (window.AOS) {
+        AOS.init({
+          duration: 1000,
+          once: true,
+          offset: 100,
+          easing: 'ease-out-quart'
+        });
+      }
+
+      // Load dynamic pricing for plans modal
+      loadDynamicPricing();
+
+      async function loadDynamicPricing() {
+        try {
+          console.log('Dashboard: Loading dynamic pricing for modal...');
+          const response = await fetch('api/plans.php');
+          console.log('Dashboard: API response status:', response.status);
+          const data = await response.json();
+          console.log('Dashboard: API response data:', data);
+          
+          if (data.success && data.plans) {
+            const clinicPlan = data.plans.find(p => p.plan_type === 'clinic');
+            const startPlan = data.plans.find(p => p.plan_type === 'start');
+            
+            if (clinicPlan) {
+              console.log('Dashboard: Clinic plan data:', clinicPlan);
+              const monthlyPrice = Math.round(clinicPlan.price_monthly).toLocaleString('es-AR');
+              console.log('Dashboard: Updating modal clinic price to:', monthlyPrice);
+              
+              const modalClinicPriceEl = document.getElementById('modalClinicPrice');
+              if (modalClinicPriceEl) {
+                modalClinicPriceEl.textContent = monthlyPrice;
+              }
+              
+              // Update features if available
+              if (clinicPlan.features && clinicPlan.features.length > 0) {
+                const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
+                if (modalClinicFeaturesEl) {
+                  modalClinicFeaturesEl.innerHTML = clinicPlan.features.map(feature => 
+                    `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
+                  ).join('');
+                  console.log('Dashboard: Updated clinic features:', clinicPlan.features);
+                }
+              } else {
+                console.log('Dashboard: No features found for clinic plan or features array is empty');
+                // Set default features if none found
+                const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
+                if (modalClinicFeaturesEl) {
+                  modalClinicFeaturesEl.innerHTML = `
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
+                  `;
+                }
+              }
+            }
+            
+            // Update Start plan in modal if needed
+            if (startPlan) {
+              console.log('Dashboard: Start plan data:', startPlan);
+              const startMonthlyPrice = Math.round(startPlan.price_monthly).toLocaleString('es-AR');
+              console.log('Dashboard: Start plan price:', startMonthlyPrice);
+              
+              // Update Start plan price if element exists
+              const modalStartPriceEl = document.getElementById('modalStartPrice');
+              if (modalStartPriceEl) {
+                modalStartPriceEl.textContent = startMonthlyPrice;
+              }
+              
+              // Update Start plan features if available
+              if (startPlan.features && startPlan.features.length > 0) {
+                const modalStartFeaturesEl = document.getElementById('modalStartFeatures');
+                if (modalStartFeaturesEl) {
+                  modalStartFeaturesEl.innerHTML = startPlan.features.map(feature => 
+                    `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
+                  ).join('');
+                  console.log('Dashboard: Updated start features:', startPlan.features);
+                }
+              }
+            }
+            
+            console.log('Dashboard: Dynamic pricing loaded successfully');
+          } else {
+            console.log('Dashboard: No plans data received or API error');
+          }
+        } catch (error) {
+          console.error('Dashboard: Error loading dynamic pricing:', error);
+          // Keep default prices if API fails
+        }
+      }
+
+      // Start trial button functionality
+      const startTrialBtn = document.getElementById('startTrialBtn');
+      if (startTrialBtn) {
+        startTrialBtn.addEventListener('click', async () => {
+          // Disable button and show loading
+          startTrialBtn.disabled = true;
+          startTrialBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando solicitud...';
+          
+          try {
+            const response = await fetch('api/trial-requests.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+              showAlert('danger', data.error);
+            } else {
+              showAlert('success', data.message);
+              // Hide the button after successful request
+              startTrialBtn.style.display = 'none';
+            }
+            
+          } catch (error) {
+            console.error('Error sending trial request:', error);
+            showAlert('danger', 'Error al enviar solicitud. Por favor, intentá nuevamente.');
+          } finally {
+            // Re-enable button
+            startTrialBtn.disabled = false;
+            startTrialBtn.innerHTML = '<i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita';
+          }
+        });
+      }
+
+      // Plan selection functionality
+      window.selectPlan = function(planType) {
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('plansModal'));
+        if (modal) {
+          modal.hide();
+        }
+
+        // Redirect to payment page
+        window.location.href = `pago.php?plan=${planType}`;
+      }
+
+      // Load user's tickets
+      loadMyTickets();
+
+      async function loadMyTickets() {
+        const tbody = document.getElementById('myTicketsTable');
+        
+        // Show loading state
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center text-light opacity-75 py-4">
+              <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+              Cargando tickets...
+            </td>
+          </tr>
+        `;
+
+        try {
+          const response = await fetch('api/tickets.php');
+          const data = await response.json();
+          
+          if (data.error) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="6" class="text-center text-danger py-4">
+                  <i class="bi bi-exclamation-triangle me-2"></i>Error: ${data.error}
+                </td>
+              </tr>
+            `;
+            return;
+          }
+          
+          const tickets = data.tickets || [];
+          
+          if (tickets.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="6" class="text-center text-light opacity-75 py-4">
+                  <i class="bi bi-inbox me-2"></i>No tienes tickets de soporte
+                  <br><small class="mt-2 d-block">Crea tu primer ticket usando el botón de arriba</small>
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tbody.innerHTML = tickets.map(ticket => `
+            <tr>
+              <td>
+                <div class="text-white fw-bold">${ticket.ticket_number}</div>
+                <small class="text-light opacity-75">
+                  <i class="bi bi-chat-dots me-1"></i>${ticket.response_count || 0} respuestas
+                </small>
+              </td>
+              <td>
+                <div class="text-white">${ticket.subject}</div>
+                <small class="text-light opacity-75">${truncateText(ticket.description, 50)}</small>
+              </td>
+              <td>
+                <span class="badge ${getCategoryBadgeClass(ticket.category)}">
+                  <i class="bi bi-${getCategoryIcon(ticket.category)} me-1"></i>
+                  ${getCategoryName(ticket.category)}
+                </span>
+              </td>
+              <td>
+                <span class="badge ${getStatusBadgeClass(ticket.status)}">
+                  <i class="bi bi-${getStatusIcon(ticket.status)} me-1"></i>
+                  ${getStatusName(ticket.status)}
+                </span>
+              </td>
+              <td class="text-light opacity-75">${formatDateTime(ticket.updated_at)}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="viewMyTicket('${ticket.id}')">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </td>
+            </tr>
+          `).join('');
+
+        } catch (error) {
+          console.error('Error loading tickets:', error);
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-danger py-4">
+                <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar tickets
+              </td>
+            </tr>
+          `;
+        }
+      }
+
+      // Create ticket form handler
+      const createTicketForm = document.getElementById('createTicketForm');
+      if (createTicketForm) {
+        createTicketForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const submitBtn = e.target.querySelector('button[type="submit"]');
+          const originalText = submitBtn.innerHTML;
+          
+          // Disable submit button
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creando ticket...';
+          
+          try {
+            const formData = new FormData(e.target);
+            const ticketData = Object.fromEntries(formData.entries());
+            
+            const response = await fetch('api/tickets.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(ticketData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+              showAlert('danger', data.error);
+              return;
+            }
+            
+            showAlert('success', `Ticket ${data.ticket_number} creado exitosamente. Te responderemos pronto.`);
+            
+            // Close modal and reload tickets
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createTicketModal'));
+            modal.hide();
+            e.target.reset();
+            loadMyTickets();
+            
+          } catch (error) {
+            console.error('Error creating ticket:', error);
+            showAlert('danger', 'Error al crear ticket');
+          } finally {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+          }
+        });
+      }
+
+      // View my ticket function
+      window.viewMyTicket = async function(ticketId) {
+        try {
+          const response = await fetch(`api/tickets.php?id=${ticketId}`);
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert('danger', data.error);
+            return;
+          }
+          
+          const ticket = data.ticket;
+          const responses = data.responses || [];
+          
+          const content = `
+            <div class="row g-4">
+              <div class="col-12">
+                <div class="glass-card p-4">
+                  <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <h4 class="text-white mb-1">${ticket.subject}</h4>
+                      <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="badge ${getStatusBadgeClass(ticket.status)}">
+                          <i class="bi bi-${getStatusIcon(ticket.status)} me-1"></i>
+                          ${getStatusName(ticket.status)}
+                        </span>
+                        <span class="badge ${getCategoryBadgeClass(ticket.category)}">
+                          <i class="bi bi-${getCategoryIcon(ticket.category)} me-1"></i>
+                          ${getCategoryName(ticket.category)}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <div class="text-white fw-bold">${ticket.ticket_number}</div>
+                      <small class="text-light opacity-75">${formatDateTime(ticket.created_at)}</small>
+                    </div>
+                  </div>
+                  
+                  <div class="glass-card p-3 mb-4">
+                    <h6 class="text-white mb-2">Tu consulta:</h6>
+                    <p class="text-light opacity-85 mb-0">${ticket.description}</p>
+                  </div>
+                  
+                  <!-- Responses -->
+                  ${responses.length > 0 ? `
+                  <div class="mb-4">
+                    <h6 class="text-white mb-3">
+                      <i class="bi bi-chat-dots me-2"></i>Respuestas del soporte
+                    </h6>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                      ${responses.filter(r => !r.is_internal).map(response => `
+                        <div class="glass-card p-3 mb-3">
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center">
+                              <div class="bg-${response.role === 'admin' ? 'danger' : 'primary'} rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px;">
+                                <i class="bi bi-${response.role === 'admin' ? 'shield-check' : 'person'} text-white"></i>
+                              </div>
+                              <div>
+                                <div class="text-white fw-medium">${response.user_name}</div>
+                                <small class="text-light opacity-75">
+                                  ${response.role === 'admin' ? 'Equipo de soporte' : 'Tú'}
+                                </small>
+                              </div>
+                            </div>
+                            <small class="text-light opacity-75">${formatDateTime(response.created_at)}</small>
+                          </div>
+                          <p class="text-light opacity-85 mb-0">${response.message}</p>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                  ` : ''}
+                  
+                  ${ticket.status !== 'closed' && ticket.status !== 'resolved' ? `
+                  <!-- Add User Response -->
+                  <div class="glass-card p-3">
+                    <h6 class="text-white mb-3">Agregar información adicional</h6>
+                    <form id="addUserResponseForm">
+                      <input type="hidden" name="ticketId" value="${ticket.id}">
+                      <div class="mb-3">
+                        <textarea name="message" class="form-control glass-input" rows="3" placeholder="Agrega más información o responde a nuestro equipo..." required></textarea>
+                      </div>
+                      <div class="text-end">
+                        <button type="submit" class="btn btn-info">
+                          <i class="bi bi-send me-2"></i>Enviar respuesta
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+
+          document.getElementById('myTicketDetailsContent').innerHTML = content;
+          
+          // Set up user response form handler
+          const addUserResponseForm = document.getElementById('addUserResponseForm');
+          if (addUserResponseForm) {
+            addUserResponseForm.addEventListener('submit', handleAddUserResponse);
+          }
+          
+          const modal = new bootstrap.Modal(document.getElementById('viewMyTicketModal'));
+          modal.show();
+          
+        } catch (error) {
+          console.error('Error loading ticket details:', error);
+          showAlert('danger', 'Error al cargar detalles del ticket');
+        }
+      }
+
+      async function handleAddUserResponse(e) {
+        e.preventDefault();
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+        
+        try {
+          const formData = new FormData(e.target);
+          const responseData = {
+            message: formData.get('message'),
+            is_internal: false
+          };
+          const ticketId = formData.get('ticketId');
+          
+          const response = await fetch(`api/tickets.php?id=${ticketId}&action=add_response`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(responseData)
+          });
+          
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert('danger', data.error);
+            return;
+          }
+          
+          showAlert('success', data.message);
+          
+          // Reload ticket details
+          viewMyTicket(ticketId);
+          
+        } catch (error) {
+          console.error('Error adding response:', error);
+          showAlert('danger', 'Error al agregar respuesta');
+        } finally {
+          // Re-enable submit button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }
+      }
+
+      // Helper functions for tickets
+      function getCategoryBadgeClass(category) {
+        switch(category) {
+          case 'technical': return 'bg-info';
+          case 'billing': return 'bg-warning text-dark';
+          case 'feature': return 'bg-primary';
+          case 'bug': return 'bg-danger';
+          case 'general': return 'bg-secondary';
+          default: return 'bg-secondary';
+        }
+      }
+
+      function getCategoryName(category) {
+        switch(category) {
+          case 'technical': return 'Técnico';
+          case 'billing': return 'Facturación';
+          case 'feature': return 'Funcionalidad';
+          case 'bug': return 'Error';
+          case 'general': return 'General';
+          default: return 'General';
+        }
+      }
+
+      function getCategoryIcon(category) {
+        switch(category) {
+          case 'technical': return 'gear';
+          case 'billing': return 'credit-card';
+          case 'feature': return 'lightbulb';
+          case 'bug': return 'bug';
+          case 'general': return 'chat-dots';
+          default: return 'chat-dots';
+        }
+      }
+
+      function getStatusBadgeClass(status) {
+        switch(status) {
+          case 'open': return 'bg-primary';
+          case 'in_progress': return 'bg-warning text-dark';
+          case 'waiting_user': return 'bg-info';
+          case 'resolved': return 'bg-success';
+          case 'closed': return 'bg-secondary';
+          default: return 'bg-secondary';
+        }
+      }
+
+      function getStatusName(status) {
+        switch(status) {
+          case 'open': return 'Abierto';
+          case 'in_progress': return 'En progreso';
+          case 'waiting_user': return 'Esperando tu respuesta';
+          case 'resolved': return 'Resuelto';
+          case 'closed': return 'Cerrado';
+          default: return 'Abierto';
+        }
+      }
+
+      function getStatusIcon(status) {
+        switch(status) {
+          case 'open': return 'circle';
+          case 'in_progress': return 'play-circle';
+          case 'waiting_user': return 'clock-history';
+          case 'resolved': return 'check-circle';
+          case 'closed': return 'x-circle';
+          default: return 'circle';
+        }
+      }
+
+      function formatDateTime(dateString) {
+        if (!dateString) return 'Sin fecha';
+        return new Date(dateString).toLocaleString('es-AR');
+      }
+
+      function truncateText(text, maxLength) {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+      }
+
+      // Make loadMyTickets available globally
+      window.loadMyTickets = loadMyTickets;
+
+      function showAlert(type, message) {
+        const alertHtml = `
+          <div class="alert alert-${type} alert-dismissible fade show glass-card mt-4" role="alert">
+            <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'info' ? 'info-circle' : 'x-circle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+        
+        const container = document.querySelector('.container');
+        if (container) {
+          container.insertAdjacentHTML('beforeend', alertHtml);
+          
+          // Scroll to alert
+          setTimeout(() => {
+            const alert = document.querySelector('.alert:last-of-type');
+            if (alert) {
+              alert.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 100);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+
+<?php
+// Helper function for plan display names
+function getPlanDisplayName($plan) {
+  switch($plan) {
+    case 'start': return 'Start';
+    case 'clinic': return 'Clinic';
+    case 'enterprise': return 'Enterprise';
+    default: return 'Sin plan';
+  }
+}
+
+function getPlanBadgeClass($plan) {
+  switch($plan) {
+    case 'start': return 'bg-info';
+    case 'clinic': return 'bg-primary';
+    case 'enterprise': return 'bg-warning text-dark';
+    default: return 'bg-secondary';
+  }
+}
+
+function getStatusBadgeClass($status) {
+  switch($status) {
+    case 'active': return 'bg-success';
+    case 'trial': return 'bg-warning text-dark';
+    case 'expired': return 'bg-danger';
+    case 'cancelled': return 'bg-secondary';
+    default: return 'bg-secondary';
+  }
+}
+
+function getStatusDisplayName($status) {
+  switch($status) {
+    case 'active': return 'Activo';
+    case 'trial': return 'Prueba gratuita';
+    case 'expired': return 'Vencido';
+    case 'cancelled': return 'Cancelado';
+    default: return 'Sin estado';
+  }
+}
+?>

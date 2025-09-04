@@ -41,8 +41,8 @@ try {
             [
                 'plan_type' => 'start',
                 'name' => 'Start',
-                'price_monthly' => 1499900, // Store as cents (14999.00 ARS)
-                'price_yearly' => 999900,   // Store as cents (9999.00 ARS)
+                'price_monthly' => 1499900, // 14999.00 ARS stored as cents
+                'price_yearly' => 999900,   // 9999.00 ARS stored as cents
                 'features' => json_encode([
                     '1 profesional',
                     'Agenda & turnos',
@@ -53,8 +53,8 @@ try {
             [
                 'plan_type' => 'clinic',
                 'name' => 'Clinic',
-                'price_monthly' => 2499900, // Store as cents (24999.00 ARS)
-                'price_yearly' => 1999900,  // Store as cents (19999.00 ARS)
+                'price_monthly' => 2499900, // 24999.00 ARS stored as cents
+                'price_yearly' => 1999900,  // 19999.00 ARS stored as cents
                 'features' => json_encode([
                     'Hasta 3 profesionales',
                     'Portal del paciente',
@@ -65,8 +65,8 @@ try {
             [
                 'plan_type' => 'enterprise',
                 'name' => 'Enterprise',
-                'price_monthly' => 4999900, // Store as cents (49999.00 ARS)
-                'price_yearly' => 3999900,  // Store as cents (39999.00 ARS)
+                'price_monthly' => 4999900, // 49999.00 ARS stored as cents
+                'price_yearly' => 3999900,  // 39999.00 ARS stored as cents
                 'features' => json_encode([
                     '+4 profesionales',
                     'Integraciones',

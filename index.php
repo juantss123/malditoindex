@@ -212,13 +212,56 @@ if (isLoggedIn()) {
       </div>
 
       <div class="row g-4 align-items-stretch">
-        <!-- Plans will be loaded dynamically -->
-        <div id="plansContainer">
-          <!-- Loading state -->
-          <div class="col-12 text-center">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Cargando planes...</span>
+        <!-- Start Plan -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-right" data-aos-duration="1100" data-aos-delay="500">
+          <div class="price-card glass-card h-100">
+            <div class="price-badge">Popular</div>
+            <h3 class="mb-2">Start</h3>
+            <div class="display-6 fw-bold text-white mb-3">
+              $<span class="price-amount" data-monthly="14.999" data-yearly="9.999" id="startPrice">14.999</span><small class="fs-6 text-light"> ARS/mes</small>
             </div>
+            <ul class="list-unstyled mb-4" id="startFeatures">
+              <li><i class="bi bi-check2-circle me-2"></i>1 profesional</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Agenda & turnos</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Historia clínica</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Recordatorios</li>
+            </ul>
+            <a href="#cta" class="btn btn-outline-light w-100">Empezar</a>
+          </div>
+        </div>
+
+        <!-- Clinic Plan -->
+        <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-duration="1100" data-aos-delay="700">
+          <div class="price-card glass-card h-100 border-primary">
+            <div class="price-badge bg-primary">Recomendado</div>
+            <h3 class="mb-2">Clinic</h3>
+            <div class="display-6 fw-bold text-white mb-3">
+              $<span class="price-amount" data-monthly="24.999" data-yearly="19.999" id="clinicPrice">24.999</span><small class="fs-6 text-light"> ARS/mes</small>
+            </div>
+            <ul class="list-unstyled mb-4" id="clinicFeatures">
+              <li><i class="bi bi-check2-circle me-2"></i>Hasta 3 profesionales</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Portal del paciente</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Facturación</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Reportes</li>
+            </ul>
+            <a href="#cta" class="btn btn-primary w-100">Probar gratis</a>
+          </div>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-left" data-aos-duration="1100" data-aos-delay="900">
+          <div class="price-card glass-card h-100">
+            <h3 class="mb-2">Enterprise</h3>
+            <div class="display-6 fw-bold text-white mb-3">
+              A medida
+            </div>
+            <ul class="list-unstyled mb-4" id="enterpriseFeatures">
+              <li><i class="bi bi-check2-circle me-2"></i>+4 profesionales</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Integraciones</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Soporte prioritario</li>
+              <li><i class="bi bi-check2-circle me-2"></i>Entrenamiento</li>
+            </ul>
+            <a href="#contacto" class="btn btn-outline-light w-100">Solicitar cotización</a>
           </div>
         </div>
       </div>
@@ -588,100 +631,86 @@ if (isLoggedIn()) {
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="assets/js/main.js"></script>
   <script>
-    // Load dynamic pricing
+    // Load dynamic pricing and update existing plans
     document.addEventListener('DOMContentLoaded', () => {
-      loadDynamicPlans();
+      loadDynamicPricing();
+      setupBillingToggle();
     });
     
-    async function loadDynamicPlans() {
-      const container = document.getElementById('plansContainer');
-      
-      // Show loading state
-      container.innerHTML = `
-        <div class="col-12 text-center">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Cargando planes...</span>
-          </div>
-        </div>
-      `;
-      
+    async function loadDynamicPricing() {
       try {
         const response = await fetch('api/plans.php');
         const data = await response.json();
         
-        if (data.error) {
-          console.error('Error loading plans:', data.error);
-          loadFallbackPlans();
-          return;
+        if (data.success && data.plans && data.plans.length > 0) {
+          updatePlanPrices(data.plans);
+        } else {
+          console.log('Using default prices - API returned:', data);
         }
-        
-        const plans = data.plans || [];
-        if (plans.length === 0) {
-          loadFallbackPlans();
-          return;
-        }
-        
-        renderPlans(plans);
-        
       } catch (error) {
-        console.error('Error loading dynamic plans:', error);
-        loadFallbackPlans();
+        console.error('Error loading dynamic pricing:', error);
+        console.log('Using default prices due to error');
       }
     }
     
-    function renderPlans(plans) {
-      const container = document.getElementById('plansContainer');
-      
-      // Ensure we have exactly 3 plans in the right order
-      const orderedPlans = ['start', 'clinic', 'enterprise'].map(type => 
-        plans.find(p => p.plan_type === type)
-      ).filter(Boolean);
-      
-      if (orderedPlans.length === 0) {
-        loadFallbackPlans();
-        return;
+    function updatePlanPrices(plans) {
+      // Update Start plan
+      const startPlan = plans.find(p => p.plan_type === 'start');
+      if (startPlan) {
+        const monthlyPrice = (startPlan.price_monthly / 100).toLocaleString('es-AR');
+        const yearlyPrice = (startPlan.price_yearly / 100).toLocaleString('es-AR');
+        
+        const startPriceEl = document.getElementById('startPrice');
+        if (startPriceEl) {
+          startPriceEl.textContent = monthlyPrice;
+          startPriceEl.dataset.monthly = monthlyPrice;
+          startPriceEl.dataset.yearly = yearlyPrice;
+        }
+        
+        // Update features if available
+        if (startPlan.features && startPlan.features.length > 0) {
+          const featuresEl = document.getElementById('startFeatures');
+          if (featuresEl) {
+            featuresEl.innerHTML = startPlan.features.map(feature => 
+              `<li><i class="bi bi-check2-circle me-2"></i>${feature}</li>`
+            ).join('');
+          }
+        }
       }
       
-      const plansHtml = orderedPlans.map((plan, index) => {
-        // Convert prices to proper format (assuming they're stored as cents)
-        const monthlyPrice = Math.round(plan.price_monthly / 100).toLocaleString('es-AR');
-        const yearlyPrice = Math.round(plan.price_yearly / 100).toLocaleString('es-AR');
+      // Update Clinic plan
+      const clinicPlan = plans.find(p => p.plan_type === 'clinic');
+      if (clinicPlan) {
+        const monthlyPrice = (clinicPlan.price_monthly / 100).toLocaleString('es-AR');
+        const yearlyPrice = (clinicPlan.price_yearly / 100).toLocaleString('es-AR');
         
-        const isPopular = plan.plan_type === 'start';
-        const isRecommended = plan.plan_type === 'clinic';
-        const isEnterprise = plan.plan_type === 'enterprise';
+        const clinicPriceEl = document.getElementById('clinicPrice');
+        if (clinicPriceEl) {
+          clinicPriceEl.textContent = monthlyPrice;
+          clinicPriceEl.dataset.monthly = monthlyPrice;
+          clinicPriceEl.dataset.yearly = yearlyPrice;
+        }
         
-        const delay = 500 + (index * 200);
-        const animation = index === 0 ? 'slide-right' : index === 1 ? 'zoom-in' : 'slide-left';
-        
-        return `
-          <div class="col-md-6 col-lg-4" data-aos="${animation}" data-aos-duration="1100" data-aos-delay="${delay}">
-            <div class="price-card glass-card h-100 ${isRecommended ? 'border-primary' : ''}">
-              ${isPopular ? '<div class="price-badge">Popular</div>' : ''}
-              ${isRecommended ? '<div class="price-badge bg-primary">Recomendado</div>' : ''}
-              <h3 class="mb-2">${plan.name}</h3>
-              <div class="display-6 fw-bold text-white mb-3">
-                ${isEnterprise ? 'A medida' : `$<span class="price-amount" data-monthly="${monthlyPrice}" data-yearly="${yearlyPrice}">${monthlyPrice}</span><small class="fs-6 text-light"> ARS/mes</small>`}
-              </div>
-              <ul class="list-unstyled mb-4">
-                ${plan.features.map(feature => `<li><i class="bi bi-check2-circle me-2"></i>${feature}</li>`).join('')}
-              </ul>
-              <a href="${isEnterprise ? '#contacto' : '#cta'}" class="btn ${isRecommended ? 'btn-primary' : 'btn-outline-light'} w-100">
-                ${isEnterprise ? 'Solicitar cotización' : isRecommended ? 'Probar gratis' : 'Empezar'}
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
+        // Update features if available
+        if (clinicPlan.features && clinicPlan.features.length > 0) {
+          const featuresEl = document.getElementById('clinicFeatures');
+          if (featuresEl) {
+            featuresEl.innerHTML = clinicPlan.features.map(feature => 
+              `<li><i class="bi bi-check2-circle me-2"></i>${feature}</li>`
+            ).join('');
+          }
+        }
+      }
       
-      container.innerHTML = plansHtml;
-      
-      // Setup billing toggle after rendering
-      setupBillingToggle();
-      
-      // Re-initialize AOS for new elements
-      if (window.AOS) {
-        AOS.refresh();
+      // Update Enterprise plan features (price stays "A medida")
+      const enterprisePlan = plans.find(p => p.plan_type === 'enterprise');
+      if (enterprisePlan && enterprisePlan.features && enterprisePlan.features.length > 0) {
+        const featuresEl = document.getElementById('enterpriseFeatures');
+        if (featuresEl) {
+          featuresEl.innerHTML = enterprisePlan.features.map(feature => 
+            `<li><i class="bi bi-check2-circle me-2"></i>${feature}</li>`
+          ).join('');
+        }
       }
     }
     
@@ -695,39 +724,12 @@ if (isLoggedIn()) {
           amounts.forEach(el => {
             const monthlyPrice = el.dataset.monthly;
             const yearlyPrice = el.dataset.yearly;
-            el.textContent = yearly ? yearlyPrice : monthlyPrice;
+            if (monthlyPrice && yearlyPrice) {
+              el.textContent = yearly ? yearlyPrice : monthlyPrice;
+            }
           });
         });
       }
-    }
-    
-    function loadFallbackPlans() {
-      // Fallback to static plans if API fails
-      const fallbackPlans = [
-        {
-          plan_type: 'start',
-          name: 'Start',
-          price_monthly: 1499900, // Store as cents for consistency
-          price_yearly: 999900,
-          features: ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
-        },
-        {
-          plan_type: 'clinic',
-          name: 'Clinic',
-          price_monthly: 2499900,
-          price_yearly: 1999900,
-          features: ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes']
-        },
-        {
-          plan_type: 'enterprise',
-          name: 'Enterprise',
-          price_monthly: 4999900,
-          price_yearly: 3999900,
-          features: ['+4 profesionales', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
-        }
-      ];
-      
-      renderPlans(fallbackPlans);
     }
   </script>
 </body>

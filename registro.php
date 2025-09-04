@@ -51,6 +51,40 @@ if (isLoggedIn()) {
     </div>
   </nav>
 
+  <!-- Floating Icons Background -->
+  <div class="floating-elements" aria-hidden="true">
+    <div class="floating-icon" style="--delay: 0s; --duration: 8s;">
+      <i class="bi bi-shield-check"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 2s; --duration: 10s;">
+      <i class="bi bi-calendar-check"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 4s; --duration: 12s;">
+      <i class="bi bi-people"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 6s; --duration: 9s;">
+      <i class="bi bi-heart-pulse"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 1s; --duration: 11s;">
+      <i class="bi bi-graph-up"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 3s; --duration: 13s;">
+      <i class="bi bi-journal-medical"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 5s; --duration: 7s;">
+      <i class="bi bi-clock-history"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 7s; --duration: 14s;">
+      <i class="bi bi-envelope-heart"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 1.5s; --duration: 10s;">
+      <i class="bi bi-award"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 4.5s; --duration: 8s;">
+      <i class="bi bi-gear"></i>
+    </div>
+  </div>
+
   <main class="hero section-pt pb-5 position-relative overflow-hidden">
     <div class="container">
       <div class="row justify-content-center">

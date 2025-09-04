@@ -71,23 +71,47 @@ function handleGetInvoices() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
         
-        // Remove foreign key constraint for patient_id if it exists
+        // Remove the problematic foreign key constraint for patient_id
         try {
-            $db->exec("ALTER TABLE invoices DROP FOREIGN KEY fk_invoices_patient");
+            // First check if the constraint exists
+            $stmt = $db->query("
+                SELECT CONSTRAINT_NAME 
+                FROM information_schema.KEY_COLUMN_USAGE 
+                WHERE TABLE_SCHEMA = DATABASE() 
+                AND TABLE_NAME = 'invoices' 
+                AND CONSTRAINT_NAME = 'fk_invoices_patient'
+            ");
+            
+            if ($stmt->rowCount() > 0) {
+                $db->exec("ALTER TABLE invoices DROP FOREIGN KEY fk_invoices_patient");
+                echo json_encode(['debug' => 'Foreign key constraint removed successfully']);
+            }
         } catch (Exception $e) {
-            // Constraint might not exist, ignore error
+            // Log the error but continue
+            error_log("Error removing foreign key: " . $e->getMessage());
         }
         
-        // Add only the clinic foreign key constraint
+        // Ensure we have the clinic foreign key constraint
         try {
-            $db->exec("
-                ALTER TABLE invoices 
-                ADD CONSTRAINT fk_invoices_clinic 
-                FOREIGN KEY (clinic_id) REFERENCES user_profiles(user_id) 
-                ON DELETE CASCADE
+            // Check if clinic constraint exists
+            $stmt = $db->query("
+                SELECT CONSTRAINT_NAME 
+                FROM information_schema.KEY_COLUMN_USAGE 
+                WHERE TABLE_SCHEMA = DATABASE() 
+                AND TABLE_NAME = 'invoices' 
+                AND CONSTRAINT_NAME = 'fk_invoices_clinic'
             ");
+            
+            if ($stmt->rowCount() == 0) {
+                $db->exec("
+                    ALTER TABLE invoices 
+                    ADD CONSTRAINT fk_invoices_clinic 
+                    FOREIGN KEY (clinic_id) REFERENCES user_profiles(user_id) 
+                    ON DELETE CASCADE
+                ");
+            }
         } catch (Exception $e) {
-            // Constraint might already exist, ignore error
+            error_log("Error adding clinic foreign key: " . $e->getMessage());
         }
         
         // Add plan_type column if it doesn't exist

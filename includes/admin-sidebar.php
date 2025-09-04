@@ -37,6 +37,9 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-analiticas') ? 'active' : ''; ?>" href="admin-analiticas.php">
         <i class="bi bi-graph-up me-2"></i>Analíticas
       </a>
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-blog') ? 'active' : ''; ?>" href="admin-blog.php">
+        <i class="bi bi-journal-text me-2"></i>Blog
+      </a>
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-marketing') ? 'active' : ''; ?>" href="admin-marketing.php">
         <i class="bi bi-megaphone me-2"></i>Marketing
       </a>

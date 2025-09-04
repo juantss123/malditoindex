@@ -151,23 +151,12 @@ function handleUpdateUser() {
         $fields = [];
         $values = [];
         
-        // Map form field names to database column names
-        $fieldMapping = [
-            'firstName' => 'first_name',
-            'lastName' => 'last_name', 
-            'phone' => 'phone',
-            'clinicName' => 'clinic_name',
-            'licenseNumber' => 'license_number',
-            'specialty' => 'specialty',
-            'teamSize' => 'team_size',
-            'subscriptionStatus' => 'subscription_status',
-            'subscriptionPlan' => 'subscription_plan'
-        ];
+        $allowedFields = ['first_name', 'last_name', 'phone', 'clinic_name', 'license_number', 'specialty', 'team_size', 'subscription_status', 'subscription_plan'];
         
-        foreach ($fieldMapping as $formField => $dbField) {
-            if (isset($input[$formField])) {
-                $fields[] = "$dbField = ?";
-                $values[] = $input[$formField];
+        foreach ($allowedFields as $field) {
+            if (isset($input[$field])) {
+                $fields[] = "$field = ?";
+                $values[] = $input[$field];
             }
         }
         

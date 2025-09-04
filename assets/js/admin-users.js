@@ -396,18 +396,9 @@ async function handleEditUser(e) {
   
   try {
     const formData = new FormData(e.target);
-    const userData = {
-      firstName: formData.get('firstName'),
-      lastName: formData.get('lastName'),
-      phone: formData.get('phone'),
-      licenseNumber: formData.get('licenseNumber'),
-      clinicName: formData.get('clinicName'),
-      specialty: formData.get('specialty'),
-      teamSize: formData.get('teamSize'),
-      subscriptionStatus: formData.get('subscriptionStatus'),
-      subscriptionPlan: formData.get('subscriptionPlan')
-    };
-    const userId = formData.get('userId');
+    const userData = Object.fromEntries(formData.entries());
+    const userId = userData.userId;
+    delete userData.userId;
     
     const response = await fetch(`api/users.php?id=${userId}`, {
       method: 'PUT',
@@ -605,10 +596,6 @@ window.editUser = function(userId) {
   document.getElementById('editTeamSize').value = user.team_size || '1';
   document.getElementById('editSubscriptionStatus').value = user.subscription_status || 'trial';
   document.getElementById('editSubscriptionPlan').value = user.subscription_plan || '';
-  
-  // Update form field names to match what the API expects
-  document.getElementById('editSubscriptionStatus').name = 'subscriptionStatus';
-  document.getElementById('editSubscriptionPlan').name = 'subscriptionPlan';
 
   // Show modal
   const modal = new bootstrap.Modal(document.getElementById('editUserModal'));

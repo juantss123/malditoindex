@@ -1,4 +1,6 @@
 // Admin dashboard functionality for PHP version
+let isLoadingTrialRequests = false; // Prevent multiple simultaneous calls
+
 document.addEventListener('DOMContentLoaded', () => {
   // Init AOS
   if (window.AOS) {
@@ -13,10 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load users table
   loadUsers();
 
-  // Load trial requests after a short delay
-  setTimeout(() => {
-    loadTrialRequests();
-  }, 1000);
+  // Load trial requests once
+  loadTrialRequests();
 
   // Add user form handler
   const addUserForm = document.getElementById('addUserForm');
@@ -161,11 +161,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadTrialRequests() {
-    console.log('Loading trial requests...');
+    // Prevent multiple simultaneous calls
+    if (isLoadingTrialRequests) {
+      console.log('Trial requests already loading, skipping...');
+      return;
+    }
+    
+    isLoadingTrialRequests = true;
     
     const tbody = document.getElementById('trialRequestsTable');
     if (!tbody) {
       console.error('Trial requests table not found');
+      isLoadingTrialRequests = false;
       return;
     }
     
@@ -184,13 +191,15 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Response status:', response.status);
       
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response error text:', errorText);
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
       console.log('Trial requests data:', data);
       
-      if (!data.success || data.error) {
+      if (data.error) {
         console.error('API error:', data.error);
         tbody.innerHTML = `
           <tr>
@@ -269,6 +278,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
       `;
     }
+    
+    isLoadingTrialRequests = false;
   }
 
   async function handleTrialRequest(e) {

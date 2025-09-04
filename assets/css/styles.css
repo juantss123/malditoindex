@@ -225,29 +225,51 @@ a:hover{ color: var(--primary-600); }
 .accordion-button::after{ filter: invert(1) contrast(1.5); }
 
 /* Floating Action Button */
-.whatsapp-float{
+.fab-cta{
   position: fixed; right: 18px; bottom: 18px;
   width: 56px; height: 56px; border-radius: 16px;
   display:grid; place-items:center;
   background: linear-gradient(145deg, var(--primary), #68c4ff);
-  color: #fff; font-size: 1.4rem;
+  color: #07131e; font-size: 1.25rem;
   border: 1px solid rgba(255,255,255,.25);
   box-shadow: 0 14px 40px rgba(47,150,238,.45);
   z-index: 1040;
   transition: all 0.3s ease;
-  animation: pulse-whatsapp 4s ease-in-out infinite;
+  animation: pulse-fab 3s ease-in-out infinite;
+}
+.fab-cta:hover{ transform: translateY(-2px); color:#000; }
+
+/* WhatsApp Floating Button — actualizado */
+.whatsapp-float{
+  position: fixed; right: 24px; bottom: 15px; /* pegado abajo */
+  width: 70px; height: 70px; border-radius: 20px;
+  display:grid; place-items:center;
+  background: linear-gradient(145deg, var(--primary), #68c4ff);
+  color: #fff; font-size: 1.8rem;
+  border: 1px solid rgba(255,255,255,.25);
+  box-shadow: 0 16px 50px rgba(47,150,238,.5);
+  z-index: 1050;
+  transition: all 0.3s ease;
   text-decoration: none;
+  animation: heartbeat-single 5s ease-in-out infinite; /* latido único cada 5s */
+  will-change: transform;
 }
 .whatsapp-float:hover{ 
-  transform: translateY(-4px) scale(1.1); 
+  transform: scale(1.1); 
   color:#fff; 
   box-shadow: 0 20px 60px rgba(47,150,238,.7);
 }
 
+/* Animaciones auxiliares */
 @keyframes pulse-whatsapp{
   0%,100%{ box-shadow: 0 16px 50px rgba(47,150,238,.5); }
   50%{ box-shadow: 0 16px 50px rgba(47,150,238,.8), 0 0 0 15px rgba(47,150,238,.25); }
 }
+@keyframes heartbeat-single {
+  0%, 95%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); } /* el latido */
+}
+
 /* Background blobs */
 .bg-blobs{
   position: fixed; inset: 0; z-index: -1; overflow: hidden;
@@ -273,6 +295,10 @@ a:hover{ color: var(--primary-600); }
   66%{ transform: translateY(10px) translateX(-10px) scale(0.95); }
 }
 
+@keyframes pulse-fab{
+  0%,100%{ box-shadow: 0 14px 40px rgba(47,150,238,.45); }
+  50%{ box-shadow: 0 14px 40px rgba(47,150,238,.65), 0 0 0 8px rgba(47,150,238,.15); }
+}
 
 /* Buttons & links */
 .btn-outline-light{
@@ -474,10 +500,16 @@ a:hover{ color: var(--primary-600); }
   .section-py{ padding: 3.5rem 0; }
 }
 
-/* Reduced motion */
+/* Reduced motion (regla original que apaga animaciones) */
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important; }
 }
+
+/* Excepción: mantener el latido del botón de WhatsApp incluso con "reducir movimiento" */
+@media (prefers-reduced-motion: reduce){
+  .whatsapp-float { animation: heartbeat-single 5s ease-in-out infinite !important; }
+}
+
 /* Hace que el texto de las características de los planes sea celeste */
 #plansModal ul li {
   color: #2F96EE !important;

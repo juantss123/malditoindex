@@ -138,7 +138,7 @@ $db = $database->getConnection();
       <div class="row align-items-center g-5">
         <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
           <h1 class="display-5 fw-bold lh-1 text-white mb-3">
-            El CMS para <span class="gradient-text">dentistas</span> que acelera tu consulta
+            El CMS para <span class="gradient-text">dentistas</span> que <span id="typingText" class="typing-text"></span>
           </h1>
           <p class="lead text-light opacity-85 mb-4">
             Agenda inteligente, historia clínica digital, recordatorios automáticos por WhatsApp/Email y facturación. Todo en una sola plataforma suscripción mensual.
@@ -153,8 +153,89 @@ $db = $database->getConnection();
         </div>
         <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
           <div class="ui-preview glass-card p-3 p-sm-4">
-            <!-- UI mockup -->
-            <img src="assets/img/ui-mockup.svg" class="w-100 rounded-4" alt="Vista previa del panel de DentexaPro">
+            <!-- CMS Preview Carousel -->
+            <div id="cmsPreviewCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#cmsPreviewCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Dashboard"></button>
+                <button type="button" data-bs-target="#cmsPreviewCarousel" data-bs-slide-to="1" aria-label="Agenda"></button>
+                <button type="button" data-bs-target="#cmsPreviewCarousel" data-bs-slide-to="2" aria-label="Pacientes"></button>
+                <button type="button" data-bs-target="#cmsPreviewCarousel" data-bs-slide-to="3" aria-label="Historia Clínica"></button>
+                <button type="button" data-bs-target="#cmsPreviewCarousel" data-bs-slide-to="4" aria-label="Reportes"></button>
+              </div>
+              <div class="carousel-inner rounded-4">
+                <!-- Dashboard Screenshot -->
+                <div class="carousel-item active">
+                  <img src="https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" 
+                       class="d-block w-100 rounded-4" 
+                       alt="Dashboard principal de DentexaPro">
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5 class="fw-bold">Dashboard Principal</h5>
+                    <p>Vista general de tu consultorio en tiempo real</p>
+                  </div>
+                </div>
+                
+                <!-- Agenda Screenshot -->
+                <div class="carousel-item">
+                  <img src="https://images.pexels.com/photos/4386431/pexels-photo-4386431.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" 
+                       class="d-block w-100 rounded-4" 
+                       alt="Sistema de agenda de DentexaPro">
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5 class="fw-bold">Agenda Inteligente</h5>
+                    <p>Gestiona turnos y recordatorios automáticos</p>
+                  </div>
+                </div>
+                
+                <!-- Pacientes Screenshot -->
+                <div class="carousel-item">
+                  <img src="https://images.pexels.com/photos/4386370/pexels-photo-4386370.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" 
+                       class="d-block w-100 rounded-4" 
+                       alt="Gestión de pacientes en DentexaPro">
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5 class="fw-bold">Gestión de Pacientes</h5>
+                    <p>Fichas completas y historia clínica digital</p>
+                  </div>
+                </div>
+                
+                <!-- Historia Clínica Screenshot -->
+                <div class="carousel-item">
+                  <img src="https://images.pexels.com/photos/4386464/pexels-photo-4386464.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" 
+                       class="d-block w-100 rounded-4" 
+                       alt="Historia clínica digital de DentexaPro">
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5 class="fw-bold">Historia Clínica Digital</h5>
+                    <p>Odontograma y registros médicos completos</p>
+                  </div>
+                </div>
+                
+                <!-- Reportes Screenshot -->
+                <div class="carousel-item">
+                  <img src="https://images.pexels.com/photos/4386366/pexels-photo-4386366.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop" 
+                       class="d-block w-100 rounded-4" 
+                       alt="Reportes y analíticas de DentexaPro">
+                  <div class="carousel-caption d-none d-md-block">
+                    <h5 class="fw-bold">Reportes Avanzados</h5>
+                    <p>Analíticas y métricas de tu consultorio</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Carousel Controls -->
+              <button class="carousel-control-prev" type="button" data-bs-target="#cmsPreviewCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#cmsPreviewCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+              </button>
+            </div>
+            
+            <!-- Preview Labels -->
+            <div class="text-center mt-3">
+              <small class="text-light opacity-75">
+                <i class="bi bi-eye me-1"></i>Vista previa del CMS DentexaPro
+              </small>
+          </div>
           </div>
         </div>
       </div>
@@ -680,6 +761,70 @@ $db = $database->getConnection();
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="assets/js/main.js"></script>
+  
+  <!-- Typing Animation Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Typing animation
+      const typingElement = document.getElementById('typingText');
+      const phrases = [
+        'acelera tu consulta',
+        'organiza tu agenda',
+        'digitaliza tu práctica',
+        'potencia tu clínica',
+        'simplifica tu trabajo'
+      ];
+      
+      let currentPhraseIndex = 0;
+      let currentCharIndex = 0;
+      let isDeleting = false;
+      let typingSpeed = 100;
+      
+      function typeEffect() {
+        const currentPhrase = phrases[currentPhraseIndex];
+        
+        if (isDeleting) {
+          typingElement.textContent = currentPhrase.substring(0, currentCharIndex - 1);
+          currentCharIndex--;
+          typingSpeed = 50;
+        } else {
+          typingElement.textContent = currentPhrase.substring(0, currentCharIndex + 1);
+          currentCharIndex++;
+          typingSpeed = 100;
+        }
+        
+        // Add blinking cursor
+        typingElement.style.borderRight = '2px solid #68c4ff';
+        
+        if (!isDeleting && currentCharIndex === currentPhrase.length) {
+          // Pause at end of phrase
+          typingSpeed = 2000;
+          isDeleting = true;
+        } else if (isDeleting && currentCharIndex === 0) {
+          isDeleting = false;
+          currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+          typingSpeed = 500;
+        }
+        
+        setTimeout(typeEffect, typingSpeed);
+      }
+      
+      // Start typing animation after page loads
+      setTimeout(() => {
+        typeEffect();
+      }, 1000);
+      
+      // Blinking cursor animation
+      setInterval(() => {
+        if (typingElement.style.borderRight === '2px solid #68c4ff') {
+          typingElement.style.borderRight = '2px solid transparent';
+        } else {
+          typingElement.style.borderRight = '2px solid #68c4ff';
+        }
+      }, 500);
+    });
+  </script>
+  
   <script>
     // Load dynamic pricing and update existing plans
     document.addEventListener('DOMContentLoaded', () => {

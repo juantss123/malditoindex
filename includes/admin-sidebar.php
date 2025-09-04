@@ -19,7 +19,8 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
         <i class="bi bi-people me-2"></i>Usuarios
       </a>
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-comprobantes') ? 'active' : ''; ?>" href="admin-comprobantes.php" id="comprobantesLink">
-        <i class="bi bi-receipt me-2"></i>Comprobantes <span class="badge bg-danger ms-2" id="comprobantesNotification" style="display: none;">0</span>
+        <i class="bi bi-receipt me-2"></i>Comprobantes
+        <span class="badge bg-danger ms-2" id="comprobantesNotification" style="display: none;">0</span>
       </a>
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-suscripciones') ? 'active' : ''; ?>" href="admin-suscripciones.php">
         <i class="bi bi-credit-card me-2"></i>Suscripciones

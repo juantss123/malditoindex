@@ -265,8 +265,8 @@ async function handleEditPlan(e) {
     const formData = new FormData(e.target);
     const planData = {
       name: formData.get('name'),
-      price_monthly: parseFloat(formData.get('price_monthly')),
-      price_yearly: parseFloat(formData.get('price_yearly')),
+      price_monthly: parseFloat(formData.get('price_monthly')) || 0,
+      price_yearly: parseFloat(formData.get('price_yearly')) || 0,
       features: formData.getAll('features').filter(f => f.trim() !== ''),
       change_reason: formData.get('change_reason')
     };

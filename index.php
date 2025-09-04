@@ -617,8 +617,8 @@ if (isLoggedIn()) {
       const container = document.getElementById('plansContainer');
       
       const plansHtml = plans.map((plan, index) => {
-        const monthlyPrice = (plan.price_monthly / 100).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        const yearlyPrice = (plan.price_yearly / 100).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        const monthlyPrice = Math.round(plan.price_monthly).toLocaleString('es-AR');
+        const yearlyPrice = Math.round(plan.price_yearly).toLocaleString('es-AR');
         
         const isPopular = plan.plan_type === 'start';
         const isRecommended = plan.plan_type === 'clinic';
@@ -660,22 +660,22 @@ if (isLoggedIn()) {
         {
           plan_type: 'start',
           name: 'Start',
-          price_monthly: 1499900,
-          price_yearly: 999900,
+          price_monthly: 14999,
+          price_yearly: 9999,
           features: ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
         },
         {
           plan_type: 'clinic',
           name: 'Clinic',
-          price_monthly: 2499900,
-          price_yearly: 1999900,
+          price_monthly: 24999,
+          price_yearly: 19999,
           features: ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes']
         },
         {
           plan_type: 'enterprise',
           name: 'Enterprise',
-          price_monthly: 4999900,
-          price_yearly: 3999900,
+          price_monthly: 49999,
+          price_yearly: 39999,
           features: ['+4 profesionales', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
         }
       ];

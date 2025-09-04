@@ -526,7 +526,7 @@ try {
           if (data.success && data.plans) {
             const clinicPlan = data.plans.find(p => p.plan_type === 'clinic');
             if (clinicPlan) {
-              const monthlyPrice = (clinicPlan.price_monthly / 100).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+              const monthlyPrice = Math.round(clinicPlan.price_monthly).toLocaleString('es-AR');
               document.getElementById('clinicPrice').textContent = monthlyPrice;
               
               // Update features if available

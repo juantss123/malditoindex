@@ -48,7 +48,7 @@ try {
     if ($planData) {
         $planDetails = [
             'name' => $planData['name'],
-            'price' => $planData['price_monthly'] / 100, // Convert from cents
+            'price' => $planData['price_monthly'], // Already in correct format
             'features' => json_decode($planData['features'], true)
         ];
     }

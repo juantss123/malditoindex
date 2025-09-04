@@ -572,3 +572,27 @@ a:hover{ color: var(--primary-600); }
 .priority-low {
   border-left: 4px solid #6c757d;
 }
+
+/* Fix dropdown overflow in tables */
+.table-responsive {
+  overflow: visible !important;
+}
+
+.table-responsive .dropdown-menu {
+  position: fixed !important;
+  z-index: 1060;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Ensure dropdowns appear above other content */
+.dropdown-menu {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Alternative: Use dropup for last rows */
+.table tbody tr:nth-last-child(-n+3) .dropdown-menu {
+  top: auto !important;
+  bottom: 100% !important;
+  margin-bottom: 2px;
+}

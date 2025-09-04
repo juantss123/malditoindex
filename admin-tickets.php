@@ -224,7 +224,7 @@ try {
                     <th>Estado</th>
                     <th>Asignado</th>
                     <th>Fecha</th>
-                    <th>Acciones</th>
+                    <th class="text-end">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="ticketsTable">

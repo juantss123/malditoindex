@@ -179,7 +179,7 @@ function renderTickets() {
           <button class="btn btn-sm btn-outline-light" data-bs-toggle="dropdown">
             <i class="bi bi-three-dots-vertical"></i>
           </button>
-          <ul class="dropdown-menu dropdown-menu-dark">
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
             <li>
               <a class="dropdown-item" href="#" onclick="viewTicket('${ticket.id}')">
                 <i class="bi bi-eye me-2"></i>Ver detalles

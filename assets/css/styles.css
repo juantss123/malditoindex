@@ -200,11 +200,22 @@ a:hover{ color: var(--primary-600); }
   padding: .6rem 1rem;
   font-size: .9rem;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60px;
 }
 .trust-badge:hover{
   background: rgba(47,150,238,.15);
   border-color: rgba(47,150,238,.3);
   transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(47,150,238,.2);
+}
+.trust-badge i {
+  color: #68c4ff;
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 /* Accordion tweaks */

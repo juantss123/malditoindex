@@ -246,10 +246,26 @@ $db = $database->getConnection();
   <section class="py-4 border-top border-ink-subtle" data-aos="slide-right" data-aos-duration="1200">
     <div class="container">
       <div class="row text-center gy-3 align-items-center justify-content-center">
-        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200"><div class="trust-badge">ISO-like Seguridad</div></div>
-        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300" data-aos-duration="800"><div class="trust-badge">Soporte en AR</div></div>
-        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="400" data-aos-duration="800"><div class="trust-badge">Migración guiada</div></div>
-        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="500" data-aos-duration="800"><div class="trust-badge">Sin instalación</div></div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+          <div class="trust-badge">
+            <i class="bi bi-shield-check me-2"></i>ISO-like Seguridad
+          </div>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300" data-aos-duration="800">
+          <div class="trust-badge">
+            <i class="bi bi-headset me-2"></i>Soporte en AR
+          </div>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="400" data-aos-duration="800">
+          <div class="trust-badge">
+            <i class="bi bi-arrow-repeat me-2"></i>Migración guiada
+          </div>
+        </div>
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="500" data-aos-duration="800">
+          <div class="trust-badge">
+            <i class="bi bi-cloud-check me-2"></i>Sin instalación
+          </div>
+        </div>
       </div>
     </div>
   </section>

@@ -400,6 +400,36 @@ async function handleEditUser(e) {
     const userId = userData.userId;
     delete userData.userId;
     
+    // Map form field names to database field names
+    if (userData.subscriptionStatus) {
+      userData.subscription_status = userData.subscriptionStatus;
+      delete userData.subscriptionStatus;
+    }
+    if (userData.subscriptionPlan) {
+      userData.subscription_plan = userData.subscriptionPlan;
+      delete userData.subscriptionPlan;
+    }
+    if (userData.firstName) {
+      userData.first_name = userData.firstName;
+      delete userData.firstName;
+    }
+    if (userData.lastName) {
+      userData.last_name = userData.lastName;
+      delete userData.lastName;
+    }
+    if (userData.clinicName) {
+      userData.clinic_name = userData.clinicName;
+      delete userData.clinicName;
+    }
+    if (userData.licenseNumber) {
+      userData.license_number = userData.licenseNumber;
+      delete userData.licenseNumber;
+    }
+    if (userData.teamSize) {
+      userData.team_size = userData.teamSize;
+      delete userData.teamSize;
+    }
+    
     const response = await fetch(`api/users.php?id=${userId}`, {
       method: 'PUT',
       headers: {

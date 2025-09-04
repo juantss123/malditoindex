@@ -155,6 +155,18 @@ function handleUpdateUser() {
         
         foreach ($allowedFields as $field) {
             if (isset($input[$field])) {
+                // Handle field name mapping for frontend compatibility
+                $dbField = $field;
+                if ($field === 'subscription_plan' && isset($input['subscriptionPlan'])) {
+                    $fields[] = "subscription_plan = ?";
+                    $values[] = $input['subscriptionPlan'];
+                    continue;
+                }
+                if ($field === 'subscription_status' && isset($input['subscriptionStatus'])) {
+                    $fields[] = "subscription_status = ?";
+                    $values[] = $input['subscriptionStatus'];
+                    continue;
+                }
                 $fields[] = "$field = ?";
                 $values[] = $input[$field];
             }

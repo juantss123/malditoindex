@@ -26,7 +26,7 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
         </span>
       </a>
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-tickets') ? 'active' : ''; ?>" href="admin-tickets.php">
-        <i class="bi bi-headset me-2"></i>Tickets de Soporte
+        <i class="bi bi-headset me-2"></i>Soporte
       </a>
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-facturas') ? 'active' : ''; ?>" href="admin-facturas.php">
         <i class="bi bi-file-earmark-text me-2"></i>Facturas

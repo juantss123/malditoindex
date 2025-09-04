@@ -463,10 +463,10 @@ a:hover{ color: var(--primary-600); }
 
 .brands-carousel {
   display: flex;
-  animation: scroll-brands 30s linear infinite;
   gap: 4rem;
   align-items: center;
-  width: calc(200%);
+  width: max-content;
+  animation: scroll-brands 30s linear infinite;
 }
 
 .brand-item {
@@ -507,10 +507,10 @@ a:hover{ color: var(--primary-600); }
 
 @keyframes scroll-brands {
   0% {
-    transform: translateX(0);
+    transform: translateX(100%);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-100%);
   }
 }
 

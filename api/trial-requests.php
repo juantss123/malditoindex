@@ -25,6 +25,20 @@ try {
     
     require_once '../config/database.php';
     
+    // Verificar y agregar columnas faltantes si es necesario
+    $columnsToCheck = [
+        'trial_website' => 'VARCHAR(255) DEFAULT NULL',
+        'trial_username' => 'VARCHAR(100) DEFAULT NULL', 
+        'trial_password' => 'VARCHAR(100) DEFAULT NULL'
+    ];
+    
+    foreach ($columnsToCheck as $columnName => $columnDef) {
+        $stmt = $db->query("SHOW COLUMNS FROM trial_requests LIKE '$columnName'");
+        if ($stmt->rowCount() == 0) {
+            $db->exec("ALTER TABLE trial_requests ADD COLUMN $columnName $columnDef");
+        }
+    }
+    
     // Paso 3: Verificar conexión
     $database = new Database();
     $db = $database->getConnection();

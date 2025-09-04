@@ -95,7 +95,6 @@ if (isLoggedIn()) {
                     Recordarme
                   </label>
                 </div>
-                <a href="#" class="text-primary small">¿Olvidaste tu contraseña?</a>
                 <a href="forgot-password.php" class="text-primary small">¿Olvidaste tu contraseña?</a>
               </div>
 

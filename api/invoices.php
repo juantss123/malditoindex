@@ -71,6 +71,25 @@ function handleGetInvoices() {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
         
+        // Remove foreign key constraint for patient_id if it exists
+        try {
+            $db->exec("ALTER TABLE invoices DROP FOREIGN KEY fk_invoices_patient");
+        } catch (Exception $e) {
+            // Constraint might not exist, ignore error
+        }
+        
+        // Add only the clinic foreign key constraint
+        try {
+            $db->exec("
+                ALTER TABLE invoices 
+                ADD CONSTRAINT fk_invoices_clinic 
+                FOREIGN KEY (clinic_id) REFERENCES user_profiles(user_id) 
+                ON DELETE CASCADE
+            ");
+        } catch (Exception $e) {
+            // Constraint might already exist, ignore error
+        }
+        
         // Add plan_type column if it doesn't exist
         try {
             $stmt = $db->query("SHOW COLUMNS FROM invoices LIKE 'plan_type'");
@@ -137,12 +156,12 @@ function handleCreateInvoice() {
         $dueDate = clone $invoiceDate;
         $dueDate->add(new DateInterval('P30D'));
         
-        // Create invoice
+        // Create invoice - set patient_id to NULL for subscription invoices
         $stmt = $db->prepare("
             INSERT INTO invoices (
-                invoice_number, clinic_id, plan_type, subtotal, tax_amount, total_amount,
+                invoice_number, clinic_id, patient_id, plan_type, subtotal, tax_amount, total_amount,
                 invoice_date, due_date, status, notes
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?)
+            ) VALUES (?, ?, NULL, ?, ?, ?, ?, ?, ?, 'draft', ?)
         ");
         
         $stmt->execute([

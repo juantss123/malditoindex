@@ -1,4 +1,8 @@
 <?php
+// Habilitar reporte de errores para debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -9,41 +13,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-require_once '../config/database.php';
-
-$database = new Database();
-$db = $database->getConnection();
-
-$method = $_SERVER['REQUEST_METHOD'];
-
 try {
+    require_once '../config/database.php';
+    
+    $database = new Database();
+    $db = $database->getConnection();
+    
+    if (!$db) {
+        throw new Exception('No se pudo conectar a la base de datos');
+    }
+    
+    $method = $_SERVER['REQUEST_METHOD'];
+    
     switch ($method) {
         case 'GET':
-            handleGetRequests();
+            handleGetRequests($db);
             break;
         case 'POST':
-            handleCreateRequest();
+            handleCreateRequest($db);
             break;
         case 'PUT':
-            handleUpdateRequest();
+            handleUpdateRequest($db);
             break;
         default:
             http_response_code(405);
             echo json_encode(['error' => 'Método no permitido']);
     }
+    
 } catch (Exception $e) {
     error_log("Trial requests API error: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => 'Error interno del servidor: ' . $e->getMessage()]);
+    echo json_encode([
+        'error' => 'Error interno del servidor',
+        'message' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ]);
 }
 
-function handleGetRequests() {
-    global $db;
-    
+function handleGetRequests($db) {
     // Require admin access for viewing requests
     if (!isAdmin()) {
         http_response_code(403);
-        echo json_encode(['error' => 'Acceso denegado']);
+        echo json_encode(['error' => 'Acceso denegado - no es administrador']);
         return;
     }
     
@@ -79,25 +91,26 @@ function handleGetRequests() {
             // Agregar solicitudes de ejemplo
             $sampleRequests = [
                 [
-                    'id' => 'req-juan-' . uniqid(),
+                    'id' => 'req-juan-001',
                     'user_id' => 'juan-user-1234-5678-9012-12345678901',
                     'status' => 'pending'
                 ],
                 [
-                    'id' => 'req-fernando-' . uniqid(),
+                    'id' => 'req-fernando-001',
                     'user_id' => 'fernando-user-1234-5678-9012-1234567',
                     'status' => 'approved',
                     'trial_website' => 'https://demo.dentexapro.com/fernando',
                     'trial_username' => 'fernando_demo',
                     'trial_password' => 'demo123',
-                    'admin_notes' => 'Prueba aprobada para Dr. Fernando García'
+                    'admin_notes' => 'Prueba aprobada para Dr. Fernando García',
+                    'processed_by' => 'admin-user-1234-5678-9012-1234567890'
                 ]
             ];
             
             foreach ($sampleRequests as $request) {
                 $stmt = $db->prepare("
-                    INSERT INTO trial_requests (id, user_id, status, request_date, trial_website, trial_username, trial_password, admin_notes) 
-                    VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)
+                    INSERT INTO trial_requests (id, user_id, status, request_date, trial_website, trial_username, trial_password, admin_notes, processed_by, processed_at) 
+                    VALUES (?, ?, ?, NOW(), ?, ?, ?, ?, ?, NOW())
                 ");
                 $stmt->execute([
                     $request['id'], 
@@ -106,12 +119,13 @@ function handleGetRequests() {
                     $request['trial_website'] ?? null,
                     $request['trial_username'] ?? null,
                     $request['trial_password'] ?? null,
-                    $request['admin_notes'] ?? null
+                    $request['admin_notes'] ?? null,
+                    $request['processed_by'] ?? null
                 ]);
             }
         }
         
-        // Cargar las solicitudes con información del usuario
+        // Cargar las solicitudes con información del usuario usando JOIN directo
         $stmt = $db->prepare("
             SELECT 
                 tr.id,
@@ -140,14 +154,12 @@ function handleGetRequests() {
         echo json_encode(['success' => true, 'requests' => $requests]);
         
     } catch (Exception $e) {
-        error_log("Error loading trial requests: " . $e->getMessage());
-        throw $e;
+        error_log("Error in handleGetRequests: " . $e->getMessage());
+        throw new Exception("Error al cargar solicitudes: " . $e->getMessage());
     }
 }
 
-function handleCreateRequest() {
-    global $db;
-    
+function handleCreateRequest($db) {
     // Require user to be logged in
     if (!isLoggedIn()) {
         http_response_code(401);
@@ -163,6 +175,7 @@ function handleCreateRequest() {
         $tableExists = $stmt->rowCount() > 0;
         
         if (!$tableExists) {
+            // Crear tabla si no existe
             $createTableSQL = "
                 CREATE TABLE trial_requests (
                     id VARCHAR(36) NOT NULL,
@@ -207,14 +220,12 @@ function handleCreateRequest() {
         ]);
         
     } catch (Exception $e) {
-        error_log("Error creating trial request: " . $e->getMessage());
-        throw $e;
+        error_log("Error in handleCreateRequest: " . $e->getMessage());
+        throw new Exception("Error al crear solicitud: " . $e->getMessage());
     }
 }
 
-function handleUpdateRequest() {
-    global $db;
-    
+function handleUpdateRequest($db) {
     // Require admin access
     if (!isAdmin()) {
         http_response_code(403);
@@ -228,6 +239,12 @@ function handleUpdateRequest() {
     if (empty($requestId)) {
         http_response_code(400);
         echo json_encode(['error' => 'ID de solicitud requerido']);
+        return;
+    }
+    
+    if (!$input) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Datos de solicitud requeridos']);
         return;
     }
     
@@ -272,8 +289,8 @@ function handleUpdateRequest() {
         echo json_encode(['success' => true, 'message' => 'Solicitud procesada exitosamente']);
         
     } catch (Exception $e) {
-        error_log("Error updating trial request: " . $e->getMessage());
-        throw $e;
+        error_log("Error in handleUpdateRequest: " . $e->getMessage());
+        throw new Exception("Error al actualizar solicitud: " . $e->getMessage());
     }
 }
 ?>

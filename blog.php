@@ -336,7 +336,7 @@ try {
             <p class="text-light opacity-85 mb-4">
               Recibe los últimos artículos, tips y novedades de DentexaPro directamente en tu email.
             </p>
-            <form class="row g-3 justify-content-center">
+            <form id="newsletter-form" class="row g-3 justify-content-center">
               <div class="col-md-8">
                 <input type="email" class="form-control form-control-lg glass-input" placeholder="tu@email.com" required>
               </div>
@@ -349,100 +349,46 @@ try {
             <small class="text-light opacity-75 mt-2 d-block">
               <i class="bi bi-shield-check me-1"></i>Sin spam. Cancelá cuando quieras.
             </small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="py-5 border-top border-ink-subtle" data-aos="slide-up" data-aos-duration="1200" data-aos-offset="50">
-    <div class="container">
-      <div class="row gy-4">
-        <div class="col-md-6" data-aos="slide-right" data-aos-delay="300" data-aos-duration="800">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <img src="assets/img/logo.svg" width="24" height="24" alt="DentexaPro logo">
-            <strong class="text-white">DentexaPro</strong>
-          </div>
-          <p class="small text-light opacity-75 mb-0">© <span id="year"></span> DentexaPro. Todos los derechos reservados.</p>
-        </div>
-        <div class="col-md-6 text-md-end" data-aos="slide-left" data-aos-delay="500" data-aos-duration="800">
-          <a href="index.php" class="link-light me-3">Inicio</a>
-          <a href="blog.php" class="link-light me-3">Blog</a>
-          <a href="#" class="link-light me-3">Términos</a>
-          <a href="#" class="link-light">Privacidad</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- WhatsApp Floating Button -->
-  <a href="https://wa.me/5491112345678?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20DentexaPro" 
-     target="_blank" 
-     rel="noopener" 
-     class="whatsapp-float" 
-     aria-label="Contactar por WhatsApp">
-    <i class="bi bi-whatsapp"></i>
-  </a>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="assets/js/main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Category filter functionality
-      const categoryButtons = document.querySelectorAll('[data-category]');
-      const blogPosts = document.querySelectorAll('.blog-post');
-
-      categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const category = button.dataset.category;
-          
-          // Update active button
-          categoryButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          
-          // Filter posts
-          blogPosts.forEach(post => {
-            if (category === 'all' || post.dataset.category === category) {
-              post.style.display = 'block';
-              post.style.animation = 'fadeInUp 0.6s ease';
-            } else {
-              post.style.display = 'none';
+    function setupBillingToggle() {
+      const toggle = document.getElementById('billingToggle');
+      const amounts = document.querySelectorAll('.price-amount');
+      
+      if (toggle && amounts.length > 0) {
+        toggle.addEventListener('change', (e) => {
+          const yearly = e.target.checked;
+          amounts.forEach(el => {
+            const monthlyPrice = el.dataset.monthly;
+            const yearlyPrice = el.dataset.yearly;
+            if (monthlyPrice && yearlyPrice) {
+              el.textContent = yearly ? yearlyPrice : monthlyPrice;
             }
           });
         });
-      });
-
-      // Load more functionality (placeholder)
-      const loadMoreBtn = document.getElementById('loadMoreBtn');
-      if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', () => {
-          loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...';
-          
-          setTimeout(() => {
-            loadMoreBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>No hay más artículos';
-            loadMoreBtn.disabled = true;
-          }, 1500);
-        });
       }
+    }
 
-      // Newsletter subscription
-      const newsletterForm = document.querySelector('form');
-      if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const submitBtn = e.target.querySelector('button[type="submit"]');
-          const originalText = submitBtn.innerHTML;
-          const emailInput = e.target.querySelector('input[type="email"]');
-          const email = emailInput.value;
-          
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Suscribiendo...';
-          
+    // Newsletter subscription functionality
+    const newsletterForm = document.querySelector('#newsletter-form');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        const emailInput = e.target.querySelector('input[type="email"]');
+        const email = emailInput.value;
+        
+        if (!email || !email.trim()) {
+          showNewsletterAlert('warning', 'Por favor, ingresa un email válido');
+          return;
+        }
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Suscribiendo...';
+        
+        try {
           // Send subscription request
-          fetch('api/newsletter.php?action=subscribe', {
+          const response = await fetch('api/newsletter.php?action=subscribe', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -451,26 +397,26 @@ try {
               email: email,
               source: 'blog'
             })
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.error) {
-              showNewsletterAlert('danger', data.error);
-              resetNewsletterButton(submitBtn, originalText);
-            } else {
-              showNewsletterAlert('success', data.message);
-              successNewsletterButton(submitBtn);
-              emailInput.value = '';
-            }
-          })
-          .catch(error => {
-            console.error('Error subscribing to newsletter:', error);
-            showNewsletterAlert('danger', 'Error de conexión. Por favor, intentá nuevamente.');
-            resetNewsletterButton(submitBtn, originalText);
           });
-        });
-      }
-    });
+          
+          const data = await response.json();
+          
+          if (data.error) {
+            showNewsletterAlert('danger', data.error);
+            resetNewsletterButton(submitBtn, originalText);
+          } else {
+            showNewsletterAlert('success', data.message);
+            successNewsletterButton(submitBtn);
+            emailInput.value = '';
+          }
+          
+        } catch (error) {
+          console.error('Error subscribing to newsletter:', error);
+          showNewsletterAlert('danger', 'Error de conexión. Por favor, intentá nuevamente.');
+          resetNewsletterButton(submitBtn, originalText);
+        }
+      });
+    }
 
     // Newsletter alert functions
     function showNewsletterAlert(type, message) {
@@ -483,15 +429,22 @@ try {
       alert.className = `alert alert-${type} glass-card mt-3 newsletter-alert`;
       alert.innerHTML = `
         <div class="d-flex align-items-center">
-          <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'} me-2"></i>
+          <i class="bi bi-${type === 'success' ? 'check-circle-fill' : type === 'warning' ? 'exclamation-triangle-fill' : 'x-circle-fill'} me-2"></i>
           <span>${message}</span>
           <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
         </div>
       `;
       
       // Add alert after the form
-      const newsletterSection = document.querySelector('form').closest('.glass-gradient');
-      newsletterSection.appendChild(alert);
+      const newsletterSection = document.querySelector('#newsletter-form').closest('.glass-gradient');
+      if (newsletterSection) {
+        newsletterSection.appendChild(alert);
+        
+        // Scroll to alert
+        setTimeout(() => {
+          alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
       
       // Auto-remove after 8 seconds
       setTimeout(() => {
@@ -499,11 +452,6 @@ try {
           alert.remove();
         }
       }, 8000);
-      
-      // Scroll to alert
-      setTimeout(() => {
-        alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
     }
     
     function resetNewsletterButton(button, originalText) {
@@ -527,6 +475,65 @@ try {
         button.disabled = false;
       }, 3000);
     }
+  </script>
+  
+  <style>
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</body>
+</html>
+
+<?php
+// Helper functions for blog
+function getCategoryName($category) {
+    switch($category) {
+        case 'tecnologia': return 'Tecnología';
+        case 'guias': return 'Guías';
+        case 'innovacion': return 'Innovación';
+        case 'casos': return 'Casos de Éxito';
+        case 'noticias': return 'Noticias';
+        case 'tips': return 'Tips';
+        default: return 'General';
+    }
+}
+
+function getCategoryIcon($category) {
+    switch($category) {
+        case 'tecnologia': return 'cpu';
+        case 'guias': return 'book';
+        case 'innovacion': return 'lightbulb';
+        case 'casos': return 'trophy';
+        case 'noticias': return 'newspaper';
+        case 'tips': return 'star';
+        default: return 'journal-text';
+    }
+}
+
+function formatBlogDate($date) {
+    $datetime = new DateTime($date);
+    $now = new DateTime();
+    $diff = $now->diff($datetime);
+    
+    if ($diff->days == 0) {
+        return 'Hoy';
+    } elseif ($diff->days == 1) {
+        return 'Ayer';
+    } elseif ($diff->days < 7) {
+        return $diff->days . ' días atrás';
+    } else {
+        return $datetime->format('d/m/Y');
+    }
+}
+?>
     });
   </script>
   

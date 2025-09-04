@@ -197,6 +197,9 @@ console.log('Dashboard: No features found for start plan or features array is em
                     </button>
 
                 <?php else: ?>
+                    <button class="btn btn-primary-soft btn-lg">
+                        <i class="bi bi-gear me-2"></i>Gestionar plan
+                    </button>
                     <button class="btn btn-primary-soft btn-lg" data-bs-toggle="modal" data-bs-target="#managePlanModal">
                         <i class="bi bi-gear me-2"></i>Gestionar plan
                     </button>
@@ -616,133 +619,6 @@ console.log('Dashboard: No features found for start plan or features array is em
     </div>
   </div>
 
-  <!-- Manage Plan Modal -->
-  <div class="modal fade" id="managePlanModal" tabindex="-1" aria-labelledby="managePlanModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content bg-dark border-0">
-        <div class="modal-header border-bottom border-secondary">
-          <h5 class="modal-title text-white" id="managePlanModalLabel">
-            <i class="bi bi-gear me-2"></i>Gestionar mi plan
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-          <!-- Plan Information -->
-          <div class="glass-card p-4 mb-4">
-            <h5 class="text-white mb-3">
-              <i class="bi bi-star me-2"></i>Información de tu plan
-            </h5>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                  <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                    <i class="bi bi-award text-white"></i>
-                  </div>
-                  <div>
-                    <strong class="text-white">Plan actual</strong>
-                    <div class="text-light opacity-75">
-                      <span class="badge <?php echo getPlanBadgeClass($userProfile['subscription_plan'] ?? ''); ?>">
-                        <?php echo getPlanDisplayName($userProfile['subscription_plan'] ?? ''); ?>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                  <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                    <i class="bi bi-check-circle text-white"></i>
-                  </div>
-                  <div>
-                    <strong class="text-white">Estado</strong>
-                    <div class="text-light opacity-75">
-                      <span class="badge <?php echo getStatusBadgeClass($userProfile['subscription_status'] ?? ''); ?>">
-                        <?php echo getStatusDisplayName($userProfile['subscription_status'] ?? ''); ?>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                  <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                    <i class="bi bi-calendar text-white"></i>
-                  </div>
-                  <div>
-                    <strong class="text-white">Próximo pago</strong>
-                    <div class="text-light opacity-75" id="nextPaymentDate">
-                      <?php 
-                      if ($userProfile && $userProfile['subscription_status'] === 'active') {
-                          $nextPayment = new DateTime();
-                          $nextPayment->add(new DateInterval('P1M')); // Add 1 month
-                          echo $nextPayment->format('d/m/Y');
-                      } else {
-                          echo 'No programado';
-                      }
-                      ?>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                  <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                    <i class="bi bi-clock text-dark"></i>
-                  </div>
-                  <div>
-                    <strong class="text-white">Días restantes</strong>
-                    <div class="text-light opacity-75" id="daysRemaining">
-                      <?php 
-                      if ($userProfile && $userProfile['subscription_status'] === 'active') {
-                          $today = new DateTime();
-                          $nextMonth = clone $today;
-                          $nextMonth->add(new DateInterval('P1M'));
-                          $daysInMonth = $today->format('t');
-                          $currentDay = $today->format('j');
-                          $daysRemaining = $daysInMonth - $currentDay;
-                          echo $daysRemaining . ' días';
-                      } else {
-                          echo 'N/A';
-                      }
-                      ?>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Plan Access Data -->
-          <div class="glass-card p-4 mb-4" id="planAccessSection">
-            <h5 class="text-white mb-3">
-              <i class="bi bi-globe me-2"></i>Acceso a tu panel
-            </h5>
-            <div id="planAccessContent">
-              <div class="text-center text-light opacity-75 py-4">
-                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                Cargando datos de acceso...
-              </div>
-            </div>
-          </div>
-
-          <!-- Plan Actions -->
-          <div class="row g-3">
-            <div class="col-md-6">
-              <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#plansModal" data-bs-dismiss="modal">
-                <i class="bi bi-arrow-up-circle me-2"></i>Cambiar plan
-              </button>
-            </div>
-            <div class="col-md-6">
-              <button class="btn btn-outline-danger w-100" onclick="cancelSubscription()">
-                <i class="bi bi-x-circle me-2"></i>Cancelar suscripción
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
@@ -773,7 +649,6 @@ console.log('Dashboard: No features found for start plan or features array is em
     
     async function loadPlanAccessData() {
       const planAccessContent = document.getElementById('planAccessContent');
-      const userId = '<?php echo $_SESSION['user_id']; ?>';
       
       // Show loading state
       planAccessContent.innerHTML = `
@@ -784,8 +659,8 @@ console.log('Dashboard: No features found for start plan or features array is em
       `;
       
       try {
-        console.log('Loading plan access for user:', userId);
-        const response = await fetch(`api/plan-access.php?user_id=${userId}`);
+        console.log('Loading plan access for user:', '<?php echo $_SESSION['user_id']; ?>');
+        const response = await fetch(`api/plan-access.php?user_id=<?php echo $_SESSION['user_id']; ?>`);
         console.log('Response status:', response.status);
         
         if (!response.ok) {
@@ -795,7 +670,7 @@ console.log('Dashboard: No features found for start plan or features array is em
         const data = await response.json();
         console.log('Plan access data:', data);
         
-        if (data.success && data.access && data.access.panel_url) {
+        if (data.success && data.access) {
           console.log('Access data found:', data.access);
           // Show access data
           planAccessContent.innerHTML = `

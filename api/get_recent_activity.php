@@ -1,38 +1,54 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
 
 require_once '../config/database.php';
 
+// Require admin access
+if (!isAdmin()) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Acceso denegado']);
+    exit();
+}
+
 try {
-    // Obtener actividad reciente (últimos 10 registros)
-    $stmt = $pdo->query("
+    $database = new Database();
+    $db = $database->getConnection();
+    
+    // Get recent user registrations and updates
+    $stmt = $db->prepare("
         SELECT 
-            u.name as user_name,
-            u.email,
-            s.plan_type,
-            s.status,
-            s.created_at,
-            'Suscripción' as action
-        FROM subscriptions s
-        LEFT JOIN users u ON s.user_id = u.id
-        ORDER BY s.created_at DESC
+            CONCAT(first_name, ' ', last_name) as user_name,
+            email,
+            subscription_plan as plan_type,
+            subscription_status as status,
+            created_at,
+            'Registro' as action
+        FROM user_profiles 
+        WHERE role = 'user'
+        ORDER BY created_at DESC
         LIMIT 10
     ");
-    
-    $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute();
+    $activities = $stmt->fetchAll();
     
     echo json_encode([
         'success' => true,
         'activities' => $activities
     ]);
 
-} catch (PDOException $e) {
+} catch (Exception $e) {
+    http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Error al obtener actividad: ' . $e->getMessage()
+        'error' => 'Error al obtener actividad: ' . $e->getMessage()
     ]);
 }
 ?>

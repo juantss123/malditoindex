@@ -93,7 +93,7 @@ try {
               <a class="nav-link text-light active" href="#dashboard">
                 <i class="bi bi-house me-2"></i>Dashboard
               </a>
-              <a class="nav-link text-light" href="#users">
+              <a class="nav-link text-light" href="admin-usuarios.php">
                 <i class="bi bi-people me-2"></i>Usuarios
               </a>
               <a class="nav-link text-light" href="#subscriptions">

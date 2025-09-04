@@ -102,7 +102,7 @@ try {
               <a class="nav-link text-light" href="#analytics">
                 <i class="bi bi-graph-up me-2"></i>Analíticas
               </a>
-              <a class="nav-link text-light" href="#settings">
+              <a class="nav-link text-light" href="admin-configuracion.php">
                 <i class="bi bi-gear me-2"></i>Configuración
               </a>
             </nav>

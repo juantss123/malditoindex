@@ -530,6 +530,186 @@ try {
           modal.hide();
         }
 
+        // Redirect to payment page
+        window.location.href = `pago.php?plan=${planType}`;
+      }
+
+      function showAlert(type, message) {
+        const alertHtml = `
+          <div class="alert alert-${type} alert-dismissible fade show glass-card mt-4" role="alert">
+            <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'info' ? 'info-circle' : 'x-circle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+        
+        const container = document.querySelector('.container');
+        if (container) {
+          container.insertAdjacentHTML('beforeend', alertHtml);
+          
+          // Scroll to alert
+          setTimeout(() => {
+            const alert = document.querySelector('.alert:last-of-type');
+            if (alert) {
+              alert.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 100);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
+    </div>
+  </main>
+
+  <!-- Plans Modal -->
+  <div class="modal fade" id="plansModal" tabindex="-1" aria-labelledby="plansModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="plansModalLabel">
+            <i class="bi bi-star me-2"></i>Elegí tu plan
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row g-4">
+            <!-- Start Plan -->
+            <div class="col-md-6">
+              <div class="glass-card p-4 h-100">
+                <div class="text-center mb-3">
+                  <h4 class="text-white">Start</h4>
+                  <div class="display-6 fw-bold text-white">$14.99<small class="fs-6 text-light">/mes</small></div>
+                </div>
+                <ul class="list-unstyled mb-4">
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Agenda & turnos</li>
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Historia clínica</li>
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Recordatorios</li>
+                </ul>
+                <button class="btn btn-outline-light w-100" onclick="selectPlan('start')">
+                  Seleccionar Start
+                </button>
+              </div>
+            </div>
+
+            <!-- Clinic Plan -->
+            <div class="col-md-6">
+              <div class="glass-card p-4 h-100 border-primary">
+                <div class="text-center mb-3">
+                  <span class="badge bg-primary mb-2">Recomendado</span>
+                  <h4 class="text-white">Clinic</h4>
+                  <div class="display-6 fw-bold text-white">$24.99<small class="fs-6 text-light">/mes</small></div>
+                </div>
+                <ul class="list-unstyled mb-4">
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
+                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
+                </ul>
+                <button class="btn btn-primary w-100" onclick="selectPlan('clinic')">
+                  Seleccionar Clinic
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <p class="text-light opacity-75 small">
+              <i class="bi bi-shield-check me-1"></i>Cancelás cuando quieras • Sin compromisos a largo plazo
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Show temporary success message
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed top-0 end-0 m-3 alert alert-success glass-card';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = '<i class="bi bi-check-circle me-2"></i>Copiado al portapapeles';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.remove();
+        }, 2000);
+      }).catch(err => {
+        console.error('Error copying to clipboard:', err);
+      });
+    }
+    
+    // Dashboard functionality inline
+    document.addEventListener('DOMContentLoaded', () => {
+      // Init AOS
+      if (window.AOS) {
+        AOS.init({
+          duration: 1000,
+          once: true,
+          offset: 100,
+          easing: 'ease-out-quart'
+        });
+      }
+
+      // Start trial button functionality
+      const startTrialBtn = document.getElementById('startTrialBtn');
+      if (startTrialBtn) {
+        startTrialBtn.addEventListener('click', async () => {
+          // Disable button and show loading
+          startTrialBtn.disabled = true;
+          startTrialBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando solicitud...';
+          
+          try {
+            const response = await fetch('api/trial-requests.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+              showAlert('danger', data.error);
+            } else {
+              showAlert('success', data.message);
+              // Hide the button after successful request
+              startTrialBtn.style.display = 'none';
+            }
+            
+          } catch (error) {
+            console.error('Error sending trial request:', error);
+            showAlert('danger', 'Error al enviar solicitud. Por favor, intentá nuevamente.');
+          } finally {
+            // Re-enable button
+            startTrialBtn.disabled = false;
+            startTrialBtn.innerHTML = '<i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita';
+          }
+        });
+      }
+
+      // Plan selection functionality
+      window.selectPlan = function(planType) {
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('plansModal'));
+        if (modal) {
+          modal.hide();
+        }
+
         // Show confirmation
         showAlert('info', `Has seleccionado el plan <strong>${getPlanName(planType)}</strong>. En una implementación real, aquí se procesaría el pago con Stripe.`);
       }

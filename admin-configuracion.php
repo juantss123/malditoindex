@@ -10,8 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $database = new Database();
     $db = $database->getConnection();
     
-    // Handle password change
-    if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
+    $action = $_POST['action'] ?? 'payment_settings';
+    
+    if ($action === 'change_password') {
+        // Handle password change
         try {
             $currentPassword = $_POST['current_password'] ?? '';
             $newPassword = $_POST['new_password'] ?? '';
@@ -26,8 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Verify current password
                 $stmt = $db->prepare("SELECT password_hash FROM user_profiles WHERE user_id = ?");
-                    $action = $_POST['action'] ?? 'payment_settings';
-                    
                 $stmt->execute([$_SESSION['user_id']]);
                 $user = $stmt->fetch();
                 
@@ -44,6 +44,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (Exception $e) {
             $errorMessage = 'Error al cambiar contraseña: ' . $e->getMessage();
+        }
+    } elseif ($action === 'maintenance_settings') {
+        // Handle maintenance settings
+        try {
+            // Create maintenance_settings table if it doesn't exist
+            $db->exec("
+                CREATE TABLE IF NOT EXISTS maintenance_settings (
+                    id INT PRIMARY KEY DEFAULT 1,
+                    maintenance_enabled BOOLEAN DEFAULT FALSE,
+                    maintenance_title VARCHAR(255) DEFAULT 'Estamos mejorando DentexaPro',
+                    maintenance_message TEXT DEFAULT 'Estamos trabajando en mejoras para ofrecerte una mejor experiencia. Volveremos pronto.',
+                    maintenance_end_time TIMESTAMP NULL DEFAULT NULL,
+                    maintenance_contact_email VARCHAR(255) DEFAULT 'soporte@dentexapro.com',
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+            
+            // Update or insert settings
+            $stmt = $db->prepare("
+                INSERT INTO maintenance_settings (
+                    id, maintenance_enabled, maintenance_title, maintenance_message, 
+                    maintenance_end_time, maintenance_contact_email
+                ) VALUES (1, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    maintenance_enabled = VALUES(maintenance_enabled),
+                    maintenance_title = VALUES(maintenance_title),
+                    maintenance_message = VALUES(maintenance_message),
+                    maintenance_end_time = VALUES(maintenance_end_time),
+                    maintenance_contact_email = VALUES(maintenance_contact_email),
+                    updated_at = CURRENT_TIMESTAMP
+            ");
+            
+            $endTime = null;
+            if (!empty($_POST['maintenance_end_time'])) {
+                $endTime = date('Y-m-d H:i:s', strtotime($_POST['maintenance_end_time']));
+            }
+            
+            $stmt->execute([
+                isset($_POST['maintenance_enabled']) ? 1 : 0,
+                $_POST['maintenance_title'] ?? 'Estamos mejorando DentexaPro',
+                $_POST['maintenance_message'] ?? 'Estamos trabajando en mejoras para ofrecerte una mejor experiencia. Volveremos pronto.',
+                $endTime,
+                $_POST['maintenance_contact_email'] ?? 'soporte@dentexapro.com'
+            ]);
+            
+            $successMessage = 'Configuración de mantenimiento guardada exitosamente';
+            
+        } catch (Exception $e) {
+            $errorMessage = 'Error al guardar configuración de mantenimiento: ' . $e->getMessage();
         }
     } else {
         // Handle payment settings
@@ -108,6 +157,15 @@ try {
     $settings = $stmt->fetch();
 } catch (Exception $e) {
     $settings = null;
+}
+
+// Get maintenance settings
+try {
+    $stmt = $db->prepare("SELECT * FROM maintenance_settings WHERE id = 1");
+    $stmt->execute();
+    $maintenanceSettings = $stmt->fetch();
+} catch (Exception $e) {
+    $maintenanceSettings = null;
 }
 ?>
 <!doctype html>
@@ -203,16 +261,6 @@ try {
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="security-tab" data-bs-toggle="pill" data-bs-target="#security" type="button" role="tab" aria-controls="security" aria-selected="false">
                   <i class="bi bi-shield-lock me-2"></i>Seguridad
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="notifications-tab" data-bs-toggle="pill" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">
-                  <i class="bi bi-bell me-2"></i>Notificaciones
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="system-tab" data-bs-toggle="pill" data-bs-target="#system" type="button" role="tab" aria-controls="system" aria-selected="false">
-                  <i class="bi bi-server me-2"></i>Sistema
                 </button>
               </li>
               <li class="nav-item" role="presentation">
@@ -451,323 +499,104 @@ try {
                       </div>
                     </div>
                   </div>
-
-                  <!-- Login Notifications -->
-                  <div class="col-12">
-                    <div class="glass-card p-4">
-                      <h4 class="text-white mb-3">
-                        <i class="bi bi-bell-fill me-2"></i>Notificaciones de acceso
-                      </h4>
-                      <p class="text-light opacity-75 mb-4">
-                        Recibe alertas cuando alguien acceda a tu cuenta de administrador.
-                      </p>
-                      
-                      <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" id="loginNotifications" checked disabled>
-                        <label class="form-check-label text-light" for="loginNotifications">
-                          Notificar inicios de sesión por email
-                        </label>
-                      </div>
-                      
-                      <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="suspiciousActivity" checked disabled>
-                        <label class="form-check-label text-light" for="suspiciousActivity">
-                          Alertas de actividad sospechosa
-                        </label>
-                      </div>
-                      
-                      <div class="mt-3 p-3 glass-card">
-                        <small class="text-info">
-                          <i class="bi bi-info-circle me-1"></i>
-                          Configuración avanzada disponible en próximas versiones
-                        </small>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
 
-              <!-- Notifications Tab -->
-              <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
-                <div class="row g-4">
-                  <!-- Email Configuration -->
+              <!-- Maintenance Tab -->
+              <div class="tab-pane fade" id="maintenance" role="tabpanel" aria-labelledby="maintenance-tab">
+                <form method="POST" class="row g-4">
+                  <input type="hidden" name="action" value="maintenance_settings">
+                  
+                  <!-- Maintenance Mode -->
                   <div class="col-12">
                     <div class="glass-card p-4">
-                      <h4 class="text-white mb-3">
-                        <i class="bi bi-envelope me-2"></i>Configuración de Email
-                      </h4>
-                      <p class="text-light opacity-75 mb-4">
-                        Configura el servidor SMTP para envío de emails automáticos.
-                      </p>
-                      
-                      <div class="row g-3">
-                        <div class="col-md-6">
-                          <label class="form-label text-light">Servidor SMTP</label>
-                          <input type="text" class="form-control glass-input" placeholder="smtp.gmail.com" disabled>
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label text-light">Puerto</label>
-                          <input type="number" class="form-control glass-input" placeholder="587" disabled>
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label text-light">Usuario SMTP</label>
-                          <input type="email" class="form-control glass-input" placeholder="tu@email.com" disabled>
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label text-light">Contraseña SMTP</label>
-                          <input type="password" class="form-control glass-input" placeholder="••••••••" disabled>
+                      <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h4 class="text-white mb-0">
+                          <i class="bi bi-tools me-2"></i>Modo de Mantenimiento
+                        </h4>
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="maintenance_enabled" name="maintenance_enabled" 
+                                 <?php echo ($maintenanceSettings && $maintenanceSettings['maintenance_enabled']) ? 'checked' : ''; ?>>
+                          <label class="form-check-label text-light" for="maintenance_enabled">
+                            Activar modo de mantenimiento
+                          </label>
                         </div>
                       </div>
-                      
-                      <div class="mt-3 p-3 glass-card">
-                        <small class="text-info">
-                          <i class="bi bi-info-circle me-1"></i>
-                          Configuración SMTP disponible en próximas versiones
-                        </small>
-                      </div>
-                    </div>
-                  </div>
 
-                  <!-- WhatsApp Configuration -->
-                  <div class="col-12">
-                    <div class="glass-card p-4">
-                      <h4 class="text-white mb-3">
-                        <i class="bi bi-whatsapp me-2"></i>Integración WhatsApp
-                      </h4>
-                      <p class="text-light opacity-75 mb-4">
-                        Conecta WhatsApp Business API para recordatorios automáticos.
-                      </p>
-                      
-                      <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" id="whatsappEnabled" disabled>
-                        <label class="form-check-label text-light" for="whatsappEnabled">
-                          Habilitar WhatsApp Business
-                        </label>
-                      </div>
-                      
-                      <div class="row g-3">
-                        <div class="col-md-6">
-                          <label class="form-label text-light">Token de acceso</label>
-                          <input type="text" class="form-control glass-input" placeholder="EAAG..." disabled>
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label text-light">Número de teléfono</label>
-                          <input type="tel" class="form-control glass-input" placeholder="+54 9 11..." disabled>
-                        </div>
-                      </div>
-                      
-                      <div class="mt-3 p-3 glass-card">
-                        <small class="text-info">
-                          <i class="bi bi-info-circle me-1"></i>
-                          Integración WhatsApp Business disponible en próximas versiones
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Email Templates -->
-                  <div class="col-12">
-                    <div class="glass-card p-4">
-                      <h4 class="text-white mb-3">
-                        <i class="bi bi-file-text me-2"></i>Plantillas de Email
-                      </h4>
-                      <p class="text-light opacity-75 mb-4">
-                        Personaliza los mensajes automáticos que se envían a los usuarios.
-                      </p>
-                      
-                      <div class="row g-3">
-                        <div class="col-md-4">
-                          <div class="glass-card p-3 text-center">
-                            <i class="bi bi-envelope-check text-success fs-3 mb-2"></i>
-                            <div class="text-white fw-bold">Bienvenida</div>
-                            <small class="text-light opacity-75">Email de registro</small>
-                            <div class="mt-2">
-                              <button class="btn btn-sm btn-outline-light" disabled>Editar</button>
-                            </div>
+                      <div id="maintenanceFields" style="<?php echo ($maintenanceSettings && $maintenanceSettings['maintenance_enabled']) ? '' : 'display: none;'; ?>">
+                        <div class="row g-3">
+                          <div class="col-12">
+                            <label class="form-label text-light">Título de la página *</label>
+                            <input type="text" name="maintenance_title" class="form-control glass-input" 
+                                   placeholder="Estamos mejorando DentexaPro" 
+                                   value="<?php echo htmlspecialchars($maintenanceSettings['maintenance_title'] ?? 'Estamos mejorando DentexaPro'); ?>">
                           </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="glass-card p-3 text-center">
-                            <i class="bi bi-clock text-warning fs-3 mb-2"></i>
-                            <div class="text-white fw-bold">Recordatorios</div>
-                            <small class="text-light opacity-75">Turnos próximos</small>
-                            <div class="mt-2">
-                              <button class="btn btn-sm btn-outline-light" disabled>Editar</button>
-                            </div>
+                          <div class="col-12">
+                            <label class="form-label text-light">Mensaje para usuarios *</label>
+                            <textarea name="maintenance_message" class="form-control glass-input" rows="3" 
+                                      placeholder="Estamos trabajando en mejoras para ofrecerte una mejor experiencia. Volveremos pronto."><?php echo htmlspecialchars($maintenanceSettings['maintenance_message'] ?? 'Estamos trabajando en mejoras para ofrecerte una mejor experiencia. Volveremos pronto.'); ?></textarea>
                           </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="glass-card p-3 text-center">
-                            <i class="bi bi-credit-card text-info fs-3 mb-2"></i>
-                            <div class="text-white fw-bold">Facturación</div>
-                            <small class="text-light opacity-75">Pagos y facturas</small>
-                            <div class="mt-2">
-                              <button class="btn btn-sm btn-outline-light" disabled>Editar</button>
-                            </div>
+                          <div class="col-md-6">
+                            <label class="form-label text-light">Tiempo estimado de finalización</label>
+                            <input type="datetime-local" name="maintenance_end_time" class="form-control glass-input" 
+                                   value="<?php echo $maintenanceSettings && $maintenanceSettings['maintenance_end_time'] ? date('Y-m-d\TH:i', strtotime($maintenanceSettings['maintenance_end_time'])) : ''; ?>">
+                            <small class="text-light opacity-75">Opcional: Muestra un contador regresivo</small>
                           </div>
-                        </div>
-                      </div>
-                      
-                      <div class="mt-3 p-3 glass-card">
-                        <small class="text-info">
-                          <i class="bi bi-info-circle me-1"></i>
-                          Editor de plantillas disponible en próximas versiones
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- System Tab -->
-              <div class="tab-pane fade" id="system" role="tabpanel" aria-labelledby="system-tab">
-                <div class="row g-4">
-                  <!-- System Information -->
-                  <div class="col-12">
-                    <div class="glass-card p-4">
-                      <h4 class="text-white mb-3">
-                        <i class="bi bi-info-circle me-2"></i>Información del Sistema
-                      </h4>
-                      <div class="row g-3">
-                        <div class="col-md-6">
-                          <div class="glass-card p-3">
-                            <div class="d-flex align-items-center mb-2">
-                              <i class="bi bi-code-square text-primary me-2"></i>
-                              <strong class="text-white">Versión</strong>
-                            </div>
-                            <div class="text-light">DentexaPro v2.1.0</div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="glass-card p-3">
-                            <div class="d-flex align-items-center mb-2">
-                              <i class="bi bi-database text-info me-2"></i>
-                              <strong class="text-white">Base de Datos</strong>
-                            </div>
-                            <div class="text-light">MySQL <?php echo mysqli_get_server_info(mysqli_connect('localhost', 'root', '', 'dentexaproaaa')) ?? '8.0'; ?></div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="glass-card p-3">
-                            <div class="d-flex align-items-center mb-2">
-                              <i class="bi bi-server text-warning me-2"></i>
-                              <strong class="text-white">PHP</strong>
-                            </div>
-                            <div class="text-light">PHP <?php echo phpversion(); ?></div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="glass-card p-3">
-                            <div class="d-flex align-items-center mb-2">
-                              <i class="bi bi-calendar text-success me-2"></i>
-                              <strong class="text-white">Última actualización</strong>
-                            </div>
-                            <div class="text-light"><?php echo date('d/m/Y H:i'); ?></div>
+                          <div class="col-md-6">
+                            <label class="form-label text-light">Email de contacto *</label>
+                            <input type="email" name="maintenance_contact_email" class="form-control glass-input" 
+                                   placeholder="soporte@dentexapro.com" 
+                                   value="<?php echo htmlspecialchars($maintenanceSettings['maintenance_contact_email'] ?? 'soporte@dentexapro.com'); ?>">
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Backup Configuration -->
+                  <!-- System Status -->
                   <div class="col-12">
                     <div class="glass-card p-4">
                       <h4 class="text-white mb-3">
-                        <i class="bi bi-cloud-arrow-up me-2"></i>Respaldos Automáticos
+                        <i class="bi bi-activity me-2"></i>Estado actual del sistema
                       </h4>
-                      <p class="text-light opacity-75 mb-4">
-                        Configura la frecuencia y destino de los respaldos automáticos.
-                      </p>
-                      
                       <div class="row g-3">
                         <div class="col-md-6">
-                          <label class="form-label text-light">Frecuencia de respaldo</label>
-                          <select class="form-select glass-input" disabled>
-                            <option>Diario (recomendado)</option>
-                            <option>Semanal</option>
-                            <option>Mensual</option>
-                          </select>
+                          <div class="d-flex align-items-center p-3 glass-card">
+                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                              <i class="bi bi-server text-white"></i>
+                            </div>
+                            <div>
+                              <div class="text-white fw-bold">Estado del sistema</div>
+                              <span class="badge bg-success" id="systemStatus">
+                                <?php echo ($maintenanceSettings && $maintenanceSettings['maintenance_enabled']) ? 'En mantenimiento' : 'Operativo'; ?>
+                              </span>
+                            </div>
+                          </div>
                         </div>
                         <div class="col-md-6">
-                          <label class="form-label text-light">Retención</label>
-                          <select class="form-select glass-input" disabled>
-                            <option>30 días</option>
-                            <option>60 días</option>
-                            <option>90 días</option>
-                          </select>
+                          <div class="d-flex align-items-center p-3 glass-card">
+                            <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                              <i class="bi bi-people text-white"></i>
+                            </div>
+                            <div>
+                              <div class="text-white fw-bold">Acceso de usuarios</div>
+                              <span class="badge bg-success" id="userAccessStatus">
+                                <?php echo ($maintenanceSettings && $maintenanceSettings['maintenance_enabled']) ? 'Restringido' : 'Permitido'; ?>
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div class="mt-4">
-                        <button class="btn btn-outline-primary me-2" disabled>
-                          <i class="bi bi-download me-2"></i>Descargar respaldo
-                        </button>
-                        <button class="btn btn-outline-info" disabled>
-                          <i class="bi bi-cloud-check me-2"></i>Verificar respaldos
-                        </button>
-                      </div>
-                      
-                      <div class="mt-3 p-3 glass-card">
-                        <small class="text-info">
-                          <i class="bi bi-info-circle me-1"></i>
-                          Sistema de respaldos automáticos disponible en próximas versiones
-                        </small>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Maintenance Tools -->
-                  <div class="col-12">
-                    <div class="glass-card p-4">
-                      <h4 class="text-white mb-3">
-                        <i class="bi bi-tools me-2"></i>Herramientas de Mantenimiento
-                      </h4>
-                      <p class="text-light opacity-75 mb-4">
-                        Herramientas para optimizar y mantener el sistema.
-                      </p>
-                      
-                      <div class="row g-3">
-                        <div class="col-md-4">
-                          <div class="glass-card p-3 text-center">
-                            <i class="bi bi-speedometer2 text-primary fs-3 mb-2"></i>
-                            <div class="text-white fw-bold">Optimizar DB</div>
-                            <small class="text-light opacity-75">Limpiar y optimizar</small>
-                            <div class="mt-2">
-                              <button class="btn btn-sm btn-outline-primary" disabled>Ejecutar</button>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="glass-card p-3 text-center">
-                            <i class="bi bi-trash text-warning fs-3 mb-2"></i>
-                            <div class="text-white fw-bold">Limpiar Cache</div>
-                            <small class="text-light opacity-75">Borrar archivos temp</small>
-                            <div class="mt-2">
-                              <button class="btn btn-sm btn-outline-warning" disabled>Limpiar</button>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="glass-card p-3 text-center">
-                            <i class="bi bi-graph-up text-success fs-3 mb-2"></i>
-                            <div class="text-white fw-bold">Estadísticas</div>
-                            <small class="text-light opacity-75">Generar reportes</small>
-                            <div class="mt-2">
-                              <button class="btn btn-sm btn-outline-success" disabled>Ver</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div class="mt-3 p-3 glass-card">
-                        <small class="text-info">
-                          <i class="bi bi-info-circle me-1"></i>
-                          Herramientas de mantenimiento disponibles en próximas versiones
-                        </small>
-                      </div>
-                    </div>
+                  <!-- Save Button -->
+                  <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-warning btn-lg">
+                      <i class="bi bi-tools me-2"></i>Guardar configuración de mantenimiento
+                    </button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
           </div>
@@ -827,22 +656,6 @@ try {
         updateMaintenanceStatus(e.target.checked);
       });
     }
-
-    // Load current maintenance settings
-    <?php if ($maintenanceSettings): ?>
-    if (document.querySelector('input[name="maintenance_title"]')) {
-      document.querySelector('input[name="maintenance_title"]').value = '<?php echo addslashes($maintenanceSettings['maintenance_title']); ?>';
-    }
-    if (document.querySelector('textarea[name="maintenance_message"]')) {
-      document.querySelector('textarea[name="maintenance_message"]').value = '<?php echo addslashes($maintenanceSettings['maintenance_message']); ?>';
-    }
-    if (document.querySelector('input[name="maintenance_end_time"]') && '<?php echo $maintenanceSettings['maintenance_end_time']; ?>') {
-      document.querySelector('input[name="maintenance_end_time"]').value = '<?php echo date('Y-m-d\TH:i', strtotime($maintenanceSettings['maintenance_end_time'])); ?>';
-    }
-    if (document.querySelector('input[name="maintenance_contact_email"]')) {
-      document.querySelector('input[name="maintenance_contact_email"]').value = '<?php echo addslashes($maintenanceSettings['maintenance_contact_email']); ?>';
-    }
-    <?php endif; ?>
 
     function updateMaintenanceStatus(enabled) {
       const systemStatus = document.getElementById('systemStatus');

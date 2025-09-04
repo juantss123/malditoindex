@@ -200,9 +200,6 @@ console.log('Dashboard: No features found for start plan or features array is em
                     <button class="btn btn-primary-soft btn-lg">
                         <i class="bi bi-gear me-2"></i>Gestionar plan
                     </button>
-                    <button class="btn btn-primary-soft btn-lg" data-bs-toggle="modal" data-bs-target="#managePlanModal">
-                        <i class="bi bi-gear me-2"></i>Gestionar plan
-                    </button>
                 <?php endif; ?>
               </div>
             </div>

@@ -185,23 +185,38 @@ console.log('Dashboard: No features found for start plan or features array is em
                         // Ignore error if table doesn't exist
                     }
                     ?>
-                    
-                    <?php if (!$hasApprovedTrial): ?>
-                    <button class="btn btn-primary btn-lg me-2" id="startTrialBtn">
-                        <i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita
-                    </button>
-                    <?php endif; ?>
+                  <div class="mb-3">
+  <div class="d-flex gap-2">
+    <?php if (!$hasApprovedTrial): ?>
+      <button class="btn btn-primary btn-lg flex-fill" id="startTrialBtn">
+        <i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita
+      </button>
+    <?php endif; ?>
 
-                    <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#plansModal">
-                        <i class="bi bi-star me-2"></i>Actualizar plan
-                    </button>
+    <button class="btn btn-primary btn-lg flex-fill" data-bs-toggle="modal" data-bs-target="#plansModal">
+      <i class="bi bi-star me-2"></i>Actualizar plan
+    </button>
+  </div>
 
-                <?php else: ?>
-                
-                    <button class="btn btn-primary-soft btn-lg" data-bs-toggle="modal" data-bs-target="#managePlanModal">
-                        <i class="bi bi-gear me-2"></i>Gestionar plan
-                    </button>
-                <?php endif; ?>
+  <!-- Botón debajo de los dos -->
+  <a href="guia-usuario.php" class="btn btn-primary btn-lg w-100 mt-3">
+    <i class="bi bi-journal-text me-2"></i>Guia de usuario
+  </a>
+</div>
+
+<?php else: ?>
+  <div class="d-flex gap-2 mt-3">
+    <!-- Botón ahora a la izquierda -->
+    <button class="btn btn-primary-soft btn-lg" data-bs-toggle="modal" data-bs-target="#managePlanModal">
+      <i class="bi bi-gear me-2"></i>Gestionar plan
+    </button>
+
+    <!-- Botón ahora a la derecha -->
+    <a href="guia-usuario.php" class="btn btn-primary btn-lg">
+      <i class="bi bi-journal-text me-2"></i>Guía de usuario
+    </a>
+  </div>
+<?php endif; ?>
               </div>
             </div>
           </div>
@@ -340,9 +355,6 @@ console.log('Dashboard: No features found for start plan or features array is em
                   <a href="guia-usuario.php" class="btn btn-outline-light">
                     <i class="bi bi-book me-2"></i>Guía de usuario
                   </a>
-                  <a href="guia-usuario.php" class="btn btn-outline-light btn-lg ms-3">
-                    <i class="bi bi-book me-2"></i>Guía de usuario
-                  </a>
                 </div>
               </div>
               <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
@@ -434,6 +446,7 @@ console.log('Dashboard: No features found for start plan or features array is em
                 <button class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#plansModal">
                   <i class="bi bi-arrow-up-circle me-2"></i>Ver planes
                 </button>
+                
               </div>
             </div>
           </div>
@@ -859,9 +872,6 @@ console.log('Dashboard: No features found for start plan or features array is em
                   <div class="d-flex align-items-center justify-content-between">
                     <a href="${data.access.panel_url}" target="_blank" class="text-primary text-decoration-none flex-grow-1">
                       <i class="bi bi-link-45deg me-2"></i><span class="text-white">${data.access.panel_url}</span>
-                    </a>
-                    <a href="guia-usuario.php" class="btn btn-outline-light">
-                      <i class="bi bi-book me-2"></i>Guía de usuario
                     </a>
                     <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard('${data.access.panel_url}')">
                       <i class="bi bi-clipboard"></i>

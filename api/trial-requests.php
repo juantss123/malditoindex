@@ -16,19 +16,25 @@ $db = $database->getConnection();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-switch ($method) {
-    case 'GET':
-        handleGetRequests();
-        break;
-    case 'POST':
-        handleCreateRequest();
-        break;
-    case 'PUT':
-        handleUpdateRequest();
-        break;
-    default:
-        http_response_code(405);
-        echo json_encode(['error' => 'Método no permitido']);
+try {
+    switch ($method) {
+        case 'GET':
+            handleGetRequests();
+            break;
+        case 'POST':
+            handleCreateRequest();
+            break;
+        case 'PUT':
+            handleUpdateRequest();
+            break;
+        default:
+            http_response_code(405);
+            echo json_encode(['error' => 'Método no permitido']);
+    }
+} catch (Exception $e) {
+    error_log("Trial requests API error: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => 'Error interno del servidor: ' . $e->getMessage()]);
 }
 
 function handleGetRequests() {
@@ -42,15 +48,15 @@ function handleGetRequests() {
     }
     
     try {
-        // Verificar si la tabla existe y crearla si no existe
+        // Verificar si la tabla trial_requests existe
         $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
         $tableExists = $stmt->rowCount() > 0;
         
         if (!$tableExists) {
-            // Crear la tabla
+            // Crear la tabla trial_requests
             $createTableSQL = "
                 CREATE TABLE trial_requests (
-                    id VARCHAR(36) NOT NULL DEFAULT (UUID()),
+                    id VARCHAR(36) NOT NULL,
                     user_id VARCHAR(36) NOT NULL,
                     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
@@ -70,27 +76,28 @@ function handleGetRequests() {
             ";
             $db->exec($createTableSQL);
             
-            // Agregar algunas solicitudes de ejemplo
+            // Agregar solicitudes de ejemplo
             $sampleRequests = [
                 [
-                    'id' => 'req-' . uniqid(),
+                    'id' => 'req-juan-' . uniqid(),
                     'user_id' => 'juan-user-1234-5678-9012-12345678901',
                     'status' => 'pending'
                 ],
                 [
-                    'id' => 'req-' . uniqid(),
+                    'id' => 'req-fernando-' . uniqid(),
                     'user_id' => 'fernando-user-1234-5678-9012-1234567',
                     'status' => 'approved',
                     'trial_website' => 'https://demo.dentexapro.com/fernando',
                     'trial_username' => 'fernando_demo',
-                    'trial_password' => 'demo123'
+                    'trial_password' => 'demo123',
+                    'admin_notes' => 'Prueba aprobada para Dr. Fernando García'
                 ]
             ];
             
             foreach ($sampleRequests as $request) {
                 $stmt = $db->prepare("
-                    INSERT INTO trial_requests (id, user_id, status, request_date, trial_website, trial_username, trial_password) 
-                    VALUES (?, ?, ?, NOW(), ?, ?, ?)
+                    INSERT INTO trial_requests (id, user_id, status, request_date, trial_website, trial_username, trial_password, admin_notes) 
+                    VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)
                 ");
                 $stmt->execute([
                     $request['id'], 
@@ -98,12 +105,13 @@ function handleGetRequests() {
                     $request['status'],
                     $request['trial_website'] ?? null,
                     $request['trial_username'] ?? null,
-                    $request['trial_password'] ?? null
+                    $request['trial_password'] ?? null,
+                    $request['admin_notes'] ?? null
                 ]);
             }
         }
         
-        // Cargar las solicitudes con JOIN directo (sin vista)
+        // Cargar las solicitudes con información del usuario
         $stmt = $db->prepare("
             SELECT 
                 tr.id,
@@ -129,15 +137,11 @@ function handleGetRequests() {
         $stmt->execute();
         $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        echo json_encode(['requests' => $requests]);
+        echo json_encode(['success' => true, 'requests' => $requests]);
         
     } catch (Exception $e) {
-        error_log("Error in trial requests: " . $e->getMessage());
-        http_response_code(500);
-        echo json_encode([
-            'error' => 'Error al cargar solicitudes: ' . $e->getMessage(),
-            'requests' => []
-        ]);
+        error_log("Error loading trial requests: " . $e->getMessage());
+        throw $e;
     }
 }
 
@@ -154,15 +158,14 @@ function handleCreateRequest() {
     try {
         $userId = $_SESSION['user_id'];
         
-        // Verificar si la tabla existe
+        // Verificar si la tabla existe, si no, crearla
         $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
         $tableExists = $stmt->rowCount() > 0;
         
         if (!$tableExists) {
-            // Crear la tabla si no existe
             $createTableSQL = "
                 CREATE TABLE trial_requests (
-                    id VARCHAR(36) NOT NULL DEFAULT (UUID()),
+                    id VARCHAR(36) NOT NULL,
                     user_id VARCHAR(36) NOT NULL,
                     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
@@ -174,10 +177,7 @@ function handleCreateRequest() {
                     trial_password VARCHAR(100) DEFAULT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    PRIMARY KEY (id),
-                    INDEX idx_trial_requests_user_id (user_id),
-                    INDEX idx_trial_requests_status (status),
-                    INDEX idx_trial_requests_date (request_date)
+                    PRIMARY KEY (id)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             ";
             $db->exec($createTableSQL);
@@ -193,12 +193,11 @@ function handleCreateRequest() {
         }
         
         // Create new trial request
+        $requestId = 'req-' . uniqid();
         $stmt = $db->prepare("
             INSERT INTO trial_requests (id, user_id, request_date, status) 
             VALUES (?, ?, NOW(), 'pending')
         ");
-        
-        $requestId = generateUUID();
         $stmt->execute([$requestId, $userId]);
         
         echo json_encode([
@@ -209,8 +208,7 @@ function handleCreateRequest() {
         
     } catch (Exception $e) {
         error_log("Error creating trial request: " . $e->getMessage());
-        http_response_code(500);
-        echo json_encode(['error' => 'Error al crear solicitud: ' . $e->getMessage()]);
+        throw $e;
     }
 }
 
@@ -236,10 +234,16 @@ function handleUpdateRequest() {
     try {
         $adminId = $_SESSION['user_id'];
         
+        // Actualizar la solicitud con todos los datos
         $stmt = $db->prepare("
             UPDATE trial_requests 
-            SET status = ?, admin_notes = ?, processed_by = ?, processed_at = NOW(),
-                trial_website = ?, trial_username = ?, trial_password = ?
+            SET status = ?, 
+                admin_notes = ?, 
+                processed_by = ?, 
+                processed_at = NOW(),
+                trial_website = ?, 
+                trial_username = ?, 
+                trial_password = ?
             WHERE id = ?
         ");
         
@@ -253,7 +257,7 @@ function handleUpdateRequest() {
             $requestId
         ]);
         
-        // If approved, update user's trial status
+        // Si se aprueba, actualizar el estado del usuario
         if ($input['status'] === 'approved') {
             $stmt = $db->prepare("
                 UPDATE user_profiles 
@@ -269,8 +273,7 @@ function handleUpdateRequest() {
         
     } catch (Exception $e) {
         error_log("Error updating trial request: " . $e->getMessage());
-        http_response_code(500);
-        echo json_encode(['error' => 'Error al actualizar solicitud: ' . $e->getMessage()]);
+        throw $e;
     }
 }
 ?>

@@ -169,6 +169,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
+    // Show loading state
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="text-center text-light opacity-75 py-4">
+          <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+          Cargando solicitudes...
+        </td>
+      </tr>
+    `;
+    
     try {
       const response = await fetch('api/trial-requests.php');
       console.log('Response status:', response.status);
@@ -180,21 +190,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
       console.log('Trial requests data:', data);
       
-      if (data.error) {
+      if (!data.success || data.error) {
         console.error('API error:', data.error);
-        // Show empty state instead of error
         tbody.innerHTML = `
           <tr>
-            <td colspan="5" class="text-center text-light opacity-75 py-4">
-              <i class="bi bi-inbox me-2"></i>No hay solicitudes de prueba gratuita
-              <br><small class="mt-2 d-block">Las solicitudes aparecerán aquí cuando los usuarios las envíen desde el dashboard</small>
+            <td colspan="5" class="text-center text-danger py-4">
+              <i class="bi bi-exclamation-triangle me-2"></i>Error: ${data.error || 'Error desconocido'}
             </td>
           </tr>
         `;
         return;
       }
       
-      const requests = (data && data.requests) ? data.requests : [];
+      const requests = data.requests || [];
       console.log('Processing requests:', requests.length);
       
       if (requests.length === 0) {

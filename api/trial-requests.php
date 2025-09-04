@@ -1,59 +1,48 @@
 <?php
-// API para solicitudes de prueba gratuita - Versión paso a paso
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// API simplificada para solicitudes de prueba gratuita
+error_reporting(0); // Desactivar errores para evitar HTML en respuesta
+ini_set('display_errors', 0);
 
-// Headers CORS
+// Headers JSON
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Manejar OPTIONS request
+// Función para enviar respuesta JSON y terminar
+function sendResponse($data, $httpCode = 200) {
+    http_response_code($httpCode);
+    echo json_encode($data);
+    exit();
+}
+
+// Manejar OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
+    sendResponse(['success' => true]);
 }
 
 try {
-    // Paso 1: Iniciar sesión
+    // Iniciar sesión
     session_start();
     
-    // Paso 2: Incluir database
-    if (!file_exists('../config/database.php')) {
-        throw new Exception('Archivo database.php no encontrado');
-    }
-    
+    // Incluir database
     require_once '../config/database.php';
     
-    // Verificar y agregar columnas faltantes si es necesario
-    $columnsToCheck = [
-        'trial_website' => 'VARCHAR(255) DEFAULT NULL',
-        'trial_username' => 'VARCHAR(100) DEFAULT NULL', 
-        'trial_password' => 'VARCHAR(100) DEFAULT NULL'
-    ];
-    
-    foreach ($columnsToCheck as $columnName => $columnDef) {
-        $stmt = $db->query("SHOW COLUMNS FROM trial_requests LIKE '$columnName'");
-        if ($stmt->rowCount() == 0) {
-            $db->exec("ALTER TABLE trial_requests ADD COLUMN $columnName $columnDef");
-        }
-    }
-    
-    // Paso 3: Verificar conexión
+    // Conectar a DB
     $database = new Database();
     $db = $database->getConnection();
     
     if (!$db) {
-        throw new Exception('No se pudo conectar a la base de datos');
+        sendResponse(['error' => 'Error de conexión a base de datos'], 500);
     }
     
-    // Paso 4: Verificar que la tabla existe, si no, crearla
+    // Verificar si la tabla existe y crearla si no
     $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
     if ($stmt->rowCount() == 0) {
-        // Crear tabla
-        $createTableSQL = "
+        // Crear tabla con todas las columnas necesarias
+        $createSQL = "
         CREATE TABLE trial_requests (
-            id VARCHAR(36) NOT NULL PRIMARY KEY,
+            id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
             user_id VARCHAR(36) NOT NULL,
             request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
@@ -67,17 +56,17 @@ try {
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
         
-        $db->exec($createTableSQL);
+        $db->exec($createSQL);
         
         // Insertar datos de ejemplo
-        $sampleData = [
+        $sampleRequests = [
             [
-                'id' => 'sample-request-1',
+                'id' => 'sample-req-1',
                 'user_id' => 'juan-user-1234-5678-9012-12345678901',
                 'status' => 'pending'
             ],
             [
-                'id' => 'sample-request-2', 
+                'id' => 'sample-req-2',
                 'user_id' => 'fernando-user-1234-5678-9012-1234567',
                 'status' => 'approved',
                 'trial_website' => 'https://demo.dentexapro.com/fernando',
@@ -87,62 +76,42 @@ try {
             ]
         ];
         
-        foreach ($sampleData as $sample) {
+        foreach ($sampleRequests as $req) {
             $stmt = $db->prepare("
                 INSERT INTO trial_requests (id, user_id, status, trial_website, trial_username, trial_password, admin_notes) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([
-                $sample['id'],
-                $sample['user_id'],
-                $sample['status'],
-                $sample['trial_website'] ?? null,
-                $sample['trial_username'] ?? null,
-                $sample['trial_password'] ?? null,
-                $sample['admin_notes'] ?? null
+                $req['id'],
+                $req['user_id'], 
+                $req['status'],
+                $req['trial_website'] ?? null,
+                $req['trial_username'] ?? null,
+                $req['trial_password'] ?? null,
+                $req['admin_notes'] ?? null
             ]);
         }
     } else {
-        // Verificar que la tabla existe y tiene las columnas necesarias
-        $stmt = $db->query("SHOW COLUMNS FROM trial_requests LIKE 'trial_website'");
-        if ($stmt->rowCount() == 0) {
-            // Agregar columnas faltantes
-            $db->exec("ALTER TABLE trial_requests ADD COLUMN trial_website VARCHAR(255) DEFAULT NULL");
-            $db->exec("ALTER TABLE trial_requests ADD COLUMN trial_username VARCHAR(100) DEFAULT NULL");
-            $db->exec("ALTER TABLE trial_requests ADD COLUMN trial_password VARCHAR(100) DEFAULT NULL");
+        // Verificar y agregar columnas faltantes
+        $columnsToAdd = [
+            'trial_website' => 'VARCHAR(255) DEFAULT NULL',
+            'trial_username' => 'VARCHAR(100) DEFAULT NULL',
+            'trial_password' => 'VARCHAR(100) DEFAULT NULL'
+        ];
+        
+        foreach ($columnsToAdd as $columnName => $columnDef) {
+            $stmt = $db->query("SHOW COLUMNS FROM trial_requests LIKE '$columnName'");
+            if ($stmt->rowCount() == 0) {
+                $db->exec("ALTER TABLE trial_requests ADD COLUMN $columnName $columnDef");
+            }
         }
     }
     
-    // Paso 5: Manejar la petición según el método
+    // Manejar petición según método
     $method = $_SERVER['REQUEST_METHOD'];
     
-    switch ($method) {
-        case 'GET':
-            handleGetRequests($db);
-            break;
-        case 'POST':
-            handleCreateRequest($db);
-            break;
-        case 'PUT':
-            handleUpdateRequest($db);
-            break;
-        default:
-            throw new Exception('Método no permitido');
-    }
-    
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine()
-    ]);
-    exit();
-}
-
-function handleGetRequests($db) {
-    try {
+    if ($method === 'GET') {
+        // Obtener solicitudes
         $stmt = $db->query("
             SELECT 
                 tr.*,
@@ -156,67 +125,45 @@ function handleGetRequests($db) {
         ");
         
         $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        sendResponse(['success' => true, 'requests' => $requests]);
         
-        echo json_encode([
-            'success' => true,
-            'requests' => $requests
-        ]);
-        
-    } catch (Exception $e) {
-        throw new Exception('Error al cargar solicitudes: ' . $e->getMessage());
-    }
-}
-
-function handleCreateRequest($db) {
-    try {
-        // Verificar autenticación
+    } elseif ($method === 'POST') {
+        // Crear nueva solicitud
         if (!isset($_SESSION['user_id'])) {
-            throw new Exception('Usuario no autenticado');
+            sendResponse(['error' => 'Usuario no autenticado'], 401);
         }
         
         $userId = $_SESSION['user_id'];
         
-        // Verificar si ya existe una solicitud pendiente
+        // Verificar si ya existe solicitud pendiente
         $stmt = $db->prepare("SELECT id FROM trial_requests WHERE user_id = ? AND status = 'pending'");
         $stmt->execute([$userId]);
         
         if ($stmt->fetch()) {
-            throw new Exception('Ya tienes una solicitud pendiente');
+            sendResponse(['error' => 'Ya tienes una solicitud pendiente'], 400);
         }
         
-        // Crear nueva solicitud
+        // Crear solicitud
         $requestId = 'req_' . uniqid();
-        $stmt = $db->prepare("
-            INSERT INTO trial_requests (id, user_id, status) 
-            VALUES (?, ?, 'pending')
-        ");
+        $stmt = $db->prepare("INSERT INTO trial_requests (id, user_id, status) VALUES (?, ?, 'pending')");
         $stmt->execute([$requestId, $userId]);
         
-        echo json_encode([
-            'success' => true,
-            'message' => 'Solicitud enviada correctamente. Te notificaremos cuando esté lista.'
-        ]);
+        sendResponse(['success' => true, 'message' => 'Solicitud enviada correctamente']);
         
-    } catch (Exception $e) {
-        throw new Exception('Error al crear solicitud: ' . $e->getMessage());
-    }
-}
-
-function handleUpdateRequest($db) {
-    try {
+    } elseif ($method === 'PUT') {
+        // Actualizar solicitud
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+            sendResponse(['error' => 'Acceso denegado'], 403);
+        }
+        
         $requestId = $_GET['id'] ?? '';
         if (empty($requestId)) {
-            throw new Exception('ID de solicitud requerido');
+            sendResponse(['error' => 'ID de solicitud requerido'], 400);
         }
         
         $input = json_decode(file_get_contents('php://input'), true);
         if (!$input) {
-            throw new Exception('Datos inválidos');
-        }
-        
-        // Verificar que es admin
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-            throw new Exception('Acceso denegado');
+            sendResponse(['error' => 'Datos inválidos'], 400);
         }
         
         $status = $input['status'] ?? '';
@@ -229,7 +176,7 @@ function handleUpdateRequest($db) {
             $trialPassword = $input['trial_password'] ?? '';
             
             if (empty($trialWebsite) || empty($trialUsername) || empty($trialPassword)) {
-                throw new Exception('Datos de acceso requeridos para aprobar la solicitud');
+                sendResponse(['error' => 'Datos de acceso requeridos para aprobar'], 400);
             }
             
             $stmt = $db->prepare("
@@ -248,13 +195,13 @@ function handleUpdateRequest($db) {
             $stmt->execute([$status, $adminNotes, $processedBy, $requestId]);
         }
         
-        echo json_encode([
-            'success' => true,
-            'message' => 'Solicitud procesada correctamente'
-        ]);
+        sendResponse(['success' => true, 'message' => 'Solicitud procesada correctamente']);
         
-    } catch (Exception $e) {
-        throw new Exception('Error al procesar solicitud: ' . $e->getMessage());
+    } else {
+        sendResponse(['error' => 'Método no permitido'], 405);
     }
+    
+} catch (Exception $e) {
+    sendResponse(['error' => $e->getMessage()], 500);
 }
 ?>

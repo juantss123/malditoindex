@@ -1,5 +1,4 @@
 // Admin dashboard functionality for PHP version
-let isLoadingTrialRequests = false; // Prevent multiple simultaneous calls
 
 document.addEventListener('DOMContentLoaded', () => {
   // Init AOS
@@ -15,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load users table
   loadUsers();
 
-  // Load trial requests once
+  // Load trial requests
   loadTrialRequests();
 
   // Add user form handler
@@ -161,18 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadTrialRequests() {
-    // Prevent multiple simultaneous calls
-    if (isLoadingTrialRequests) {
-      console.log('Trial requests already loading, skipping...');
-      return;
-    }
-    
-    isLoadingTrialRequests = true;
-    
     const tbody = document.getElementById('trialRequestsTable');
     if (!tbody) {
       console.error('Trial requests table not found');
-      isLoadingTrialRequests = false;
       return;
     }
     
@@ -188,19 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const response = await fetch('api/trial-requests.php');
-      console.log('Response status:', response.status);
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Response error text:', errorText);
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
-      console.log('Trial requests data:', data);
       
       if (data.error) {
-        console.error('API error:', data.error);
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="text-center text-danger py-4">
@@ -212,10 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       const requests = data.requests || [];
-      console.log('Processing requests:', requests.length);
       
       if (requests.length === 0) {
-        console.log('No trial requests found');
         tbody.innerHTML = `
           <tr>
             <td colspan="5" class="text-center text-light opacity-75 py-4">
@@ -227,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      console.log('Rendering trial requests table...');
       tbody.innerHTML = requests.map(request => `
         <tr>
           <td>
@@ -263,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
       `).join('');
       
-      console.log('Trial requests table rendered successfully');
 
     } catch (error) {
       console.error('Error loading trial requests:', error);
@@ -278,8 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
       `;
     }
-    
-    isLoadingTrialRequests = false;
   }
 
   async function handleTrialRequest(e) {

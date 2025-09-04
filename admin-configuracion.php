@@ -45,53 +45,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         // Handle payment settings
-    try {
-        // Create payment_settings table if it doesn't exist
-        $db->exec("
-            CREATE TABLE IF NOT EXISTS payment_settings (
-                id INT PRIMARY KEY DEFAULT 1,
-                mercadopago_enabled BOOLEAN DEFAULT FALSE,
-                mercadopago_access_token TEXT DEFAULT NULL,
-                mercadopago_public_key TEXT DEFAULT NULL,
-                bank_transfer_enabled BOOLEAN DEFAULT FALSE,
-                bank_name VARCHAR(255) DEFAULT NULL,
-                account_holder VARCHAR(255) DEFAULT NULL,
-                cbu_cvu VARCHAR(22) DEFAULT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        ");
-        
-        // Update or insert settings
-        $stmt = $db->prepare("
-            INSERT INTO payment_settings (
-                id, mercadopago_enabled, mercadopago_access_token, mercadopago_public_key,
-                bank_transfer_enabled, bank_name, account_holder, cbu_cvu
-            ) VALUES (1, ?, ?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-                mercadopago_enabled = VALUES(mercadopago_enabled),
-                mercadopago_access_token = VALUES(mercadopago_access_token),
-                mercadopago_public_key = VALUES(mercadopago_public_key),
-                bank_transfer_enabled = VALUES(bank_transfer_enabled),
-                bank_name = VALUES(bank_name),
-                account_holder = VALUES(account_holder),
-                cbu_cvu = VALUES(cbu_cvu),
-                updated_at = CURRENT_TIMESTAMP
-        ");
-        
-        $stmt->execute([
-            isset($_POST['mercadopago_enabled']) ? 1 : 0,
-            $_POST['mercadopago_access_token'] ?? null,
-            $_POST['mercadopago_public_key'] ?? null,
-            isset($_POST['bank_transfer_enabled']) ? 1 : 0,
-            $_POST['bank_name'] ?? null,
-            $_POST['account_holder'] ?? null,
-            $_POST['cbu_cvu'] ?? null
-        ]);
-        
-        $successMessage = 'Configuración de pagos guardada exitosamente';
-        
-    } catch (Exception $e) {
-        $errorMessage = 'Error al guardar configuración: ' . $e->getMessage();
+        try {
+            // Create payment_settings table if it doesn't exist
+            $db->exec("
+                CREATE TABLE IF NOT EXISTS payment_settings (
+                    id INT PRIMARY KEY DEFAULT 1,
+                    mercadopago_enabled BOOLEAN DEFAULT FALSE,
+                    mercadopago_access_token TEXT DEFAULT NULL,
+                    mercadopago_public_key TEXT DEFAULT NULL,
+                    bank_transfer_enabled BOOLEAN DEFAULT FALSE,
+                    bank_name VARCHAR(255) DEFAULT NULL,
+                    account_holder VARCHAR(255) DEFAULT NULL,
+                    cbu_cvu VARCHAR(22) DEFAULT NULL,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+            
+            // Update or insert settings
+            $stmt = $db->prepare("
+                INSERT INTO payment_settings (
+                    id, mercadopago_enabled, mercadopago_access_token, mercadopago_public_key,
+                    bank_transfer_enabled, bank_name, account_holder, cbu_cvu
+                ) VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    mercadopago_enabled = VALUES(mercadopago_enabled),
+                    mercadopago_access_token = VALUES(mercadopago_access_token),
+                    mercadopago_public_key = VALUES(mercadopago_public_key),
+                    bank_transfer_enabled = VALUES(bank_transfer_enabled),
+                    bank_name = VALUES(bank_name),
+                    account_holder = VALUES(account_holder),
+                    cbu_cvu = VALUES(cbu_cvu),
+                    updated_at = CURRENT_TIMESTAMP
+            ");
+            
+            $stmt->execute([
+                isset($_POST['mercadopago_enabled']) ? 1 : 0,
+                $_POST['mercadopago_access_token'] ?? null,
+                $_POST['mercadopago_public_key'] ?? null,
+                isset($_POST['bank_transfer_enabled']) ? 1 : 0,
+                $_POST['bank_name'] ?? null,
+                $_POST['account_holder'] ?? null,
+                $_POST['cbu_cvu'] ?? null
+            ]);
+            
+            $successMessage = 'Configuración de pagos guardada exitosamente';
+            
+        } catch (Exception $e) {
+            $errorMessage = 'Error al guardar configuración: ' . $e->getMessage();
+        }
     }
 }
 
@@ -351,6 +352,7 @@ try {
               </div>
             </form>
           </div>
+
           <!-- Current Status -->
           <div class="glass-card p-4 mt-4" data-aos="fade-up" data-aos-duration="800" data-aos-delay="700">
             <h4 class="text-white mb-3">

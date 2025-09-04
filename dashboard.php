@@ -544,10 +544,10 @@ try {
               if (clinicPlan.features && clinicPlan.features.length > 0) {
                 const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
                 if (modalClinicFeaturesEl) {
-                  const featuresHtml = clinicPlan.features.map(feature => 
+                  modalClinicFeaturesEl.innerHTML = clinicPlan.features.map(feature => 
                     `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
                   ).join('');
-                  modalClinicFeaturesEl.innerHTML = featuresHtml;
+                  console.log('Dashboard: Updated clinic features:', clinicPlan.features);
                 }
               }
             }
@@ -562,6 +562,17 @@ try {
               const modalStartPriceEl = document.getElementById('modalStartPrice');
               if (modalStartPriceEl) {
                 modalStartPriceEl.textContent = startMonthlyPrice;
+              }
+              
+              // Update Start plan features if available
+              if (startPlan.features && startPlan.features.length > 0) {
+                const modalStartFeaturesEl = document.getElementById('modalStartFeatures');
+                if (modalStartFeaturesEl) {
+                  modalStartFeaturesEl.innerHTML = startPlan.features.map(feature => 
+                    `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
+                  ).join('');
+                  console.log('Dashboard: Updated start features:', startPlan.features);
+                }
               }
             }
             

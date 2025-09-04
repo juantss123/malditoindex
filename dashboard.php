@@ -64,7 +64,7 @@ try {
   <!-- App styles -->
   <link href="assets/css/styles.css" rel="stylesheet">
 </head>
-<body class="bg-dark-ink text-body">
+<body class="bg-dark-ink text-body min-vh-100">
   <!-- Decorative animated blobs -->
   <div class="bg-blobs" aria-hidden="true">
     <span></span><span></span><span></span>
@@ -203,7 +203,7 @@ try {
                         <div class="glass-card p-3 ms-5">
                           <div class="d-flex align-items-center justify-content-between">
                             <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="text-primary text-decoration-none">
-                              <i class="bi bi-link-45deg me-2"></i><?php echo htmlspecialchars($trialRequest['trial_website']); ?>
+                              <i class="bi bi-link-45deg me-2"></i><span class="text-white"><?php echo htmlspecialchars($trialRequest['trial_website']); ?></span>
                             </a>
                             <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_website']); ?>')">
                               <i class="bi bi-clipboard"></i>
@@ -226,7 +226,7 @@ try {
                           </div>
                           <div class="glass-card p-3 ms-5">
                             <div class="d-flex align-items-center justify-content-between">
-                              <code class="text-primary bg-transparent border border-primary rounded px-3 py-2 flex-grow-1 me-2">
+                              <code class="text-white bg-transparent border border-primary rounded px-3 py-2 flex-grow-1 me-2">
                                 <?php echo htmlspecialchars($trialRequest['trial_username']); ?>
                               </code>
                               <button class="btn btn-sm btn-outline-info" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_username']); ?>')" title="Copiar usuario">
@@ -248,7 +248,7 @@ try {
                           </div>
                           <div class="glass-card p-3 ms-5">
                             <div class="d-flex align-items-center justify-content-between">
-                              <code class="text-warning bg-transparent border border-warning rounded px-3 py-2 flex-grow-1 me-2">
+                              <code class="text-white bg-transparent border border-warning rounded px-3 py-2 flex-grow-1 me-2">
                                 <?php echo htmlspecialchars($trialRequest['trial_password']); ?>
                               </code>
                               <button class="btn btn-sm btn-outline-warning" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_password']); ?>')" title="Copiar contraseña">

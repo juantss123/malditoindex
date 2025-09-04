@@ -14,9 +14,11 @@
 html, body { height: 100%; }
 body{
   font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol";
+  min-height: 100vh;
   background: radial-gradient(1200px 800px at 10% -10%, rgba(47,150,238,.25), transparent 40%),
               radial-gradient(900px 700px at 100% 10%, rgba(47,150,238,.15), transparent 50%),
               linear-gradient(180deg, #0a1622 0%, #09131d 100%);
+  background-attachment: fixed;
   color: var(--muted);
   overflow-x: hidden;
 }

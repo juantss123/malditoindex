@@ -280,6 +280,194 @@ if (isLoggedIn()) {
     </div>
   </section>
 
+  <!-- Reviews/Testimonials -->
+  <section class="section-py" data-aos="slide-up" data-aos-duration="1400" data-aos-offset="200">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
+        <h2 class="fw-bold text-white">Lo que dicen nuestros colegas</h2>
+        <p class="text-light opacity-80 mb-0">Odontólogos de toda Latinoamérica confían en DentexaPro.</p>
+      </div>
+      
+      <div class="row g-4">
+        <!-- Review 1 -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="400">
+          <div class="review-card glass-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face" 
+                   class="review-avatar me-3" alt="Dra. María González">
+              <div>
+                <h5 class="text-white mb-1">Dra. María González</h5>
+                <p class="text-light opacity-75 mb-0 small">Ortodoncista • Buenos Aires</p>
+              </div>
+            </div>
+            <div class="review-stars mb-3">
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+            </div>
+            <blockquote class="text-light opacity-85 mb-0">
+              "DentexaPro revolucionó mi consultorio. Los recordatorios automáticos redujeron las ausencias en un 80% y la historia clínica digital me ahorra horas cada día."
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="500">
+          <div class="review-card glass-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://images.pexels.com/photos/6749778/pexels-photo-6749778.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face" 
+                   class="review-avatar me-3" alt="Dr. Carlos Mendoza">
+              <div>
+                <h5 class="text-white mb-1">Dr. Carlos Mendoza</h5>
+                <p class="text-light opacity-75 mb-0 small">Implantólogo • México DF</p>
+              </div>
+            </div>
+            <div class="review-stars mb-3">
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+            </div>
+            <blockquote class="text-light opacity-85 mb-0">
+              "La facturación integrada y el portal del paciente me permitieron digitalizar completamente mi práctica. Mis pacientes aman poder agendar turnos online."
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="600">
+          <div class="review-card glass-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face" 
+                   class="review-avatar me-3" alt="Dra. Ana Rodríguez">
+              <div>
+                <h5 class="text-white mb-1">Dra. Ana Rodríguez</h5>
+                <p class="text-light opacity-75 mb-0 small">Endodoncista • Bogotá</p>
+              </div>
+            </div>
+            <div class="review-stars mb-3">
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+            </div>
+            <blockquote class="text-light opacity-85 mb-0">
+              "El soporte es excepcional y la migración desde mi sistema anterior fue súper fácil. No puedo imaginar trabajar sin DentexaPro ahora."
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Review 4 -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="700">
+          <div class="review-card glass-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://images.pexels.com/photos/6749777/pexels-photo-6749777.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face" 
+                   class="review-avatar me-3" alt="Dr. Luis Fernández">
+              <div>
+                <h5 class="text-white mb-1">Dr. Luis Fernández</h5>
+                <p class="text-light opacity-75 mb-0 small">Odontólogo General • Lima</p>
+              </div>
+            </div>
+            <div class="review-stars mb-3">
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+            </div>
+            <blockquote class="text-light opacity-85 mb-0">
+              "La agenda inteligente y los recordatorios por WhatsApp transformaron mi flujo de trabajo. Mis pacientes nunca faltan a sus citas."
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Review 5 -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="800">
+          <div class="review-card glass-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face" 
+                   class="review-avatar me-3" alt="Dra. Carmen Silva">
+              <div>
+                <h5 class="text-white mb-1">Dra. Carmen Silva</h5>
+                <p class="text-light opacity-75 mb-0 small">Periodoncista • Santiago</p>
+              </div>
+            </div>
+            <div class="review-stars mb-3">
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+            </div>
+            <blockquote class="text-light opacity-85 mb-0">
+              "Los reportes y analíticas me ayudan a tomar mejores decisiones para mi clínica. La inversión se pagó sola en el primer mes."
+            </blockquote>
+          </div>
+        </div>
+
+        <!-- Review 6 -->
+        <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="900">
+          <div class="review-card glass-card h-100 p-4">
+            <div class="d-flex align-items-center mb-3">
+              <img src="https://images.pexels.com/photos/5452274/pexels-photo-5452274.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop&crop=face" 
+                   class="review-avatar me-3" alt="Dr. Roberto Vargas">
+              <div>
+                <h5 class="text-white mb-1">Dr. Roberto Vargas</h5>
+                <p class="text-light opacity-75 mb-0 small">Cirujano Oral • Medellín</p>
+              </div>
+            </div>
+            <div class="review-stars mb-3">
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+            </div>
+            <blockquote class="text-light opacity-85 mb-0">
+              "Como cirujano, necesito precisión en mis registros. El odontograma digital y las notas clínicas de DentexaPro son impecables."
+            </blockquote>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust indicators -->
+      <div class="text-center mt-5" data-aos="fade-up" data-aos-duration="800" data-aos-delay="1000">
+        <div class="glass-card p-4">
+          <div class="row g-4 align-items-center justify-content-center">
+            <div class="col-6 col-md-3">
+              <div class="text-center">
+                <h4 class="text-white mb-1">500+</h4>
+                <p class="text-light opacity-75 mb-0 small">Odontólogos activos</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="text-center">
+                <h4 class="text-white mb-1">15K+</h4>
+                <p class="text-light opacity-75 mb-0 small">Pacientes gestionados</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="text-center">
+                <h4 class="text-white mb-1">98%</h4>
+                <p class="text-light opacity-75 mb-0 small">Satisfacción</p>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="text-center">
+                <h4 class="text-white mb-1">4.9★</h4>
+                <p class="text-light opacity-75 mb-0 small">Calificación promedio</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FAQ -->
   <section id="faq" class="section-py-sm" data-aos="slide-right" data-aos-duration="1500" data-aos-offset="150">
     <div class="container">

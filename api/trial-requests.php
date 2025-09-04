@@ -1,8 +1,10 @@
 <?php
-// API simplificada para solicitudes de prueba gratuita
+// API para solicitudes de prueba gratuita - Versión robusta
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
-// Headers básicos
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS');
@@ -12,15 +14,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Incluir configuración de base de datos
+// Función para enviar respuesta JSON y terminar
+function sendResponse($data, $statusCode = 200) {
+    http_response_code($statusCode);
+    echo json_encode($data);
+    exit();
+}
+
+// Verificar que el archivo de configuración existe
+if (!file_exists('../config/database.php')) {
+    sendResponse(['error' => 'Archivo de configuración no encontrado'], 500);
+}
+
 require_once '../config/database.php';
 
 try {
+    // Verificar conexión a la base de datos
     $database = new Database();
     $db = $database->getConnection();
     
     if (!$db) {
-        throw new Exception('Error de conexión a la base de datos');
+        sendResponse(['error' => 'No se pudo conectar a la base de datos'], 500);
     }
     
     $method = $_SERVER['REQUEST_METHOD'];
@@ -36,35 +50,32 @@ try {
             handleUpdateRequest($db);
             break;
         default:
-            http_response_code(405);
-            echo json_encode(['error' => 'Método no permitido']);
+            sendResponse(['error' => 'Método no permitido'], 405);
     }
     
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'error' => 'Error interno: ' . $e->getMessage(),
-        'line' => $e->getLine(),
-        'file' => basename($e->getFile())
-    ]);
+    sendResponse([
+        'error' => 'Error interno del servidor',
+        'details' => $e->getMessage(),
+        'file' => basename($e->getFile()),
+        'line' => $e->getLine()
+    ], 500);
 }
 
 function handleGetRequests($db) {
-    // Verificar acceso de administrador
-    if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-        http_response_code(403);
-        echo json_encode(['error' => 'Acceso denegado - requiere rol de administrador']);
-        return;
-    }
-    
     try {
-        // Verificar si la tabla existe
+        // Verificar acceso de administrador
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+            sendResponse(['error' => 'Acceso denegado - requiere rol de administrador'], 403);
+        }
+        
+        // Verificar si la tabla trial_requests existe
         $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
         $tableExists = $stmt->rowCount() > 0;
         
         if (!$tableExists) {
-            // Crear tabla si no existe
-            $createSQL = "
+            // Crear tabla trial_requests
+            $createTableSQL = "
                 CREATE TABLE trial_requests (
                     id VARCHAR(36) PRIMARY KEY,
                     user_id VARCHAR(36) NOT NULL,
@@ -77,27 +88,43 @@ function handleGetRequests($db) {
                     trial_username VARCHAR(100),
                     trial_password VARCHAR(100),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             ";
-            $db->exec($createSQL);
+            
+            $db->exec($createTableSQL);
             
             // Insertar datos de ejemplo
-            $sampleData = [
+            $sampleRequests = [
                 [
-                    'req-001',
-                    'juan-user-1234-5678-9012-12345678901',
-                    'pending'
+                    'id' => 'req-sample-001',
+                    'user_id' => 'juan-user-1234-5678-9012-12345678901',
+                    'status' => 'pending'
                 ],
                 [
-                    'req-002', 
-                    'fernando-user-1234-5678-9012-1234567',
-                    'approved'
+                    'id' => 'req-sample-002',
+                    'user_id' => 'fernando-user-1234-5678-9012-1234567',
+                    'status' => 'approved',
+                    'trial_website' => 'https://demo.dentexapro.com/fernando',
+                    'trial_username' => 'fernando_demo',
+                    'trial_password' => 'demo123',
+                    'admin_notes' => 'Solicitud aprobada - cliente verificado'
                 ]
             ];
             
-            foreach ($sampleData as $data) {
-                $stmt = $db->prepare("INSERT INTO trial_requests (id, user_id, status) VALUES (?, ?, ?)");
-                $stmt->execute($data);
+            foreach ($sampleRequests as $request) {
+                $stmt = $db->prepare("
+                    INSERT INTO trial_requests (id, user_id, status, trial_website, trial_username, trial_password, admin_notes) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ");
+                $stmt->execute([
+                    $request['id'],
+                    $request['user_id'],
+                    $request['status'],
+                    $request['trial_website'] ?? null,
+                    $request['trial_username'] ?? null,
+                    $request['trial_password'] ?? null,
+                    $request['admin_notes'] ?? null
+                ]);
             }
         }
         
@@ -126,25 +153,28 @@ function handleGetRequests($db) {
         $stmt->execute();
         $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        echo json_encode([
-            'success' => true, 
+        sendResponse([
+            'success' => true,
             'requests' => $requests
         ]);
         
     } catch (Exception $e) {
-        throw new Exception('Error al obtener solicitudes: ' . $e->getMessage());
+        sendResponse([
+            'error' => 'Error al obtener solicitudes',
+            'details' => $e->getMessage(),
+            'file' => basename($e->getFile()),
+            'line' => $e->getLine()
+        ], 500);
     }
 }
 
 function handleCreateRequest($db) {
-    // Verificar que el usuario esté logueado
-    if (!isset($_SESSION['user_id'])) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Usuario no autenticado']);
-        return;
-    }
-    
     try {
+        // Verificar que el usuario esté logueado
+        if (!isset($_SESSION['user_id'])) {
+            sendResponse(['error' => 'Usuario no autenticado'], 401);
+        }
+        
         $userId = $_SESSION['user_id'];
         
         // Verificar si ya tiene una solicitud pendiente
@@ -152,48 +182,48 @@ function handleCreateRequest($db) {
         $stmt->execute([$userId]);
         
         if ($stmt->fetch()) {
-            echo json_encode(['error' => 'Ya tienes una solicitud pendiente']);
-            return;
+            sendResponse(['error' => 'Ya tienes una solicitud pendiente']);
         }
         
         // Crear nueva solicitud
-        $requestId = 'req-' . uniqid();
+        $requestId = 'req-' . uniqid() . '-' . time();
         $stmt = $db->prepare("INSERT INTO trial_requests (id, user_id, status) VALUES (?, ?, 'pending')");
         $stmt->execute([$requestId, $userId]);
         
-        echo json_encode([
+        sendResponse([
             'success' => true,
             'message' => '¡Solicitud enviada! Un administrador la revisará pronto.'
         ]);
         
     } catch (Exception $e) {
-        throw new Exception('Error al crear solicitud: ' . $e->getMessage());
+        sendResponse([
+            'error' => 'Error al crear solicitud',
+            'details' => $e->getMessage(),
+            'file' => basename($e->getFile()),
+            'line' => $e->getLine()
+        ], 500);
     }
 }
 
 function handleUpdateRequest($db) {
-    // Verificar acceso de administrador
-    if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-        http_response_code(403);
-        echo json_encode(['error' => 'Acceso denegado']);
-        return;
-    }
-    
-    $requestId = $_GET['id'] ?? '';
-    
-    if (empty($requestId)) {
-        echo json_encode(['error' => 'ID de solicitud requerido']);
-        return;
-    }
-    
-    $input = json_decode(file_get_contents('php://input'), true);
-    
-    if (!$input) {
-        echo json_encode(['error' => 'Datos inválidos']);
-        return;
-    }
-    
     try {
+        // Verificar acceso de administrador
+        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+            sendResponse(['error' => 'Acceso denegado'], 403);
+        }
+        
+        $requestId = $_GET['id'] ?? '';
+        
+        if (empty($requestId)) {
+            sendResponse(['error' => 'ID de solicitud requerido'], 400);
+        }
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$input) {
+            sendResponse(['error' => 'Datos JSON inválidos'], 400);
+        }
+        
         $adminId = $_SESSION['user_id'];
         
         // Actualizar solicitud
@@ -209,7 +239,7 @@ function handleUpdateRequest($db) {
             WHERE id = ?
         ");
         
-        $stmt->execute([
+        $result = $stmt->execute([
             $input['status'],
             $input['admin_notes'] ?? '',
             $adminId,
@@ -219,13 +249,22 @@ function handleUpdateRequest($db) {
             $requestId
         ]);
         
-        echo json_encode([
+        if (!$result) {
+            sendResponse(['error' => 'Error al actualizar la solicitud'], 500);
+        }
+        
+        sendResponse([
             'success' => true,
             'message' => 'Solicitud procesada exitosamente'
         ]);
         
     } catch (Exception $e) {
-        throw new Exception('Error al procesar solicitud: ' . $e->getMessage());
+        sendResponse([
+            'error' => 'Error al procesar solicitud',
+            'details' => $e->getMessage(),
+            'file' => basename($e->getFile()),
+            'line' => $e->getLine()
+        ], 500);
     }
 }
 ?>

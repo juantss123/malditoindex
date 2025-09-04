@@ -291,6 +291,30 @@ a:hover{ color: var(--primary-600); }
 /* Utilities */
 .border-primary{ border-color: var(--primary) !important; }
 
+/* Admin Configuration Tabs */
+.nav-pills .nav-link {
+  border-radius: 12px;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-pills .nav-link:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.nav-pills .nav-link.active {
+  background: rgba(47,150,238,0.2);
+  border-color: rgba(47,150,238,0.4);
+  color: #68c4ff;
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
 /* Reviews/Testimonials */
 .review-card{
   transition: transform 0.3s ease, box-shadow 0.3s ease;

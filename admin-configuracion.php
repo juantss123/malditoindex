@@ -426,6 +426,9 @@ try {
       });
     }
 
+    // Toggle WhatsApp fields
+    const whatsappToggle = document.getElementById('whatsappEnabled');
+    const whatsappFields = document.getElementById('whatsappFields');
     // Password toggle function
     function togglePassword(inputId, iconId) {
       const input = document.getElementById(inputId);
@@ -440,6 +443,12 @@ try {
         icon.classList.remove('bi-eye-slash');
         icon.classList.add('bi-eye');
       }
+    }
+
+    if (whatsappToggle && whatsappFields) {
+      whatsappToggle.addEventListener('change', (e) => {
+        whatsappFields.style.display = e.target.checked ? 'block' : 'none';
+      });
     }
 
     // CBU/CVU validation

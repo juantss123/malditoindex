@@ -8,6 +8,10 @@ if (isLoggedIn()) {
     header("Location: $redirect");
     exit();
 }
+
+// Initialize database connection
+$database = new Database();
+$db = $database->getConnection();
 ?>
 <!doctype html>
 <html lang="es" class="h-100">

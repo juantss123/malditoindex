@@ -213,6 +213,11 @@ try {
                   <i class="bi bi-server me-2"></i>Sistema
                 </button>
               </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="maintenance-tab" data-bs-toggle="pill" data-bs-target="#maintenance" type="button" role="tab" aria-controls="maintenance" aria-selected="false">
+                  <i class="bi bi-tools me-2"></i>Mantenimiento
+                </button>
+              </li>
             </ul>
 
             <!-- Tab Content -->

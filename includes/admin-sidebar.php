@@ -18,8 +18,9 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-usuarios') ? 'active' : ''; ?>" href="admin-usuarios.php">
         <i class="bi bi-people me-2"></i>Usuarios
       </a>
-      <a class="nav-link text-light <?php echo ($currentPage === 'admin-comprobantes') ? 'active' : ''; ?>" href="admin-comprobantes.php">
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-comprobantes') ? 'active' : ''; ?>" href="admin-comprobantes.php" id="comprobantesLink">
         <i class="bi bi-receipt me-2"></i>Comprobantes
+        <span class="badge bg-danger ms-2" id="comprobantesNotification" style="display: none;">0</span>
       </a>
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-suscripciones') ? 'active' : ''; ?>" href="admin-suscripciones.php">
         <i class="bi bi-credit-card me-2"></i>Suscripciones
@@ -32,6 +33,94 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
       </a>
     </nav>
   </div>
+  
+  <!-- Notification Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load notifications when sidebar loads
+      loadNotifications();
+      
+      // Refresh notifications every 30 seconds
+      setInterval(loadNotifications, 30000);
+      
+      // Mark as viewed when clicking on comprobantes
+      const comprobantesLink = document.getElementById('comprobantesLink');
+      if (comprobantesLink) {
+        comprobantesLink.addEventListener('click', () => {
+          markNotificationsAsViewed('transfer_proofs');
+        });
+      }
+    });
+    
+    async function loadNotifications() {
+      try {
+        const response = await fetch('api/notifications.php?action=get-counts');
+        const data = await response.json();
+        
+        if (data.success && data.notifications) {
+          const transferProofsCount = data.notifications.transfer_proofs || 0;
+          const notification = document.getElementById('comprobantesNotification');
+          
+          if (notification) {
+            if (transferProofsCount > 0) {
+              notification.textContent = transferProofsCount;
+              notification.style.display = 'inline-block';
+              
+              // Add pulsing animation for new notifications
+              notification.style.animation = 'pulse 2s infinite';
+            } else {
+              notification.style.display = 'none';
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+      }
+    }
+    
+    async function markNotificationsAsViewed(type) {
+      try {
+        await fetch(`api/notifications.php?action=mark-viewed&type=${type}`, {
+          method: 'POST'
+        });
+        
+        // Hide notification immediately
+        const notification = document.getElementById('comprobantesNotification');
+        if (notification) {
+          notification.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error marking notifications as viewed:', error);
+      }
+    }
+    
+    window.markNotificationsAsViewed = markNotificationsAsViewed;
+  </script>
+  
+  <style>
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .nav-link.active {
+      background: rgba(47, 150, 238, 0.2) !important;
+      border-radius: 8px;
+      color: #68c4ff !important;
+    }
+    
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #fff !important;
+    }
+    
+    .nav-link {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+  </style>
 </div>
 
 <style>

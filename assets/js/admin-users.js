@@ -44,6 +44,55 @@ document.addEventListener('DOMContentLoaded', () => {
   if (editUserForm) {
     editUserForm.addEventListener('submit', handleEditUser);
   }
+
+  // Plan access form handler
+  const planAccessForm = document.getElementById('planAccessForm');
+  if (planAccessForm) {
+    planAccessForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+      
+      try {
+        const formData = new FormData(e.target);
+        const accessData = Object.fromEntries(formData.entries());
+        
+        const response = await fetch('api/plan-access.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(accessData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          showAlert('danger', data.error);
+          return;
+        }
+        
+        showAlert('success', data.message);
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('planAccessModal'));
+        modal.hide();
+        
+      } catch (error) {
+        console.error('Error saving plan access:', error);
+        showAlert('danger', 'Error al guardar datos de acceso');
+      } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    });
+  }
 });
 
 async function loadUsers() {
@@ -595,6 +644,52 @@ window.deleteUser = function(userId, userName) {
       showAlert('danger', 'Error al eliminar usuario');
     });
   }
+}
+
+// Plan access management
+window.managePlanAccess = function(userId) {
+  const user = allUsers.find(u => u.user_id === userId);
+  if (!user) return;
+
+  // Fill modal with user data
+  document.getElementById('accessUserId').value = user.user_id;
+  document.getElementById('accessUserName').textContent = `${user.first_name} ${user.last_name}`;
+  document.getElementById('accessUserEmail').textContent = user.email;
+  document.getElementById('accessUserPlan').textContent = getPlanName(user.subscription_plan);
+  document.getElementById('accessUserStatus').textContent = getStatusName(user.subscription_status);
+
+  // Load existing access data if available
+  loadPlanAccessData(userId);
+
+  // Show modal
+  const modal = new bootstrap.Modal(document.getElementById('planAccessModal'));
+  modal.show();
+}
+
+async function loadPlanAccessData(userId) {
+  try {
+    const response = await fetch(`api/plan-access.php?user_id=${userId}`);
+    const data = await response.json();
+    
+    if (data.success && data.access) {
+      document.getElementById('panelUrl').value = data.access.panel_url || '';
+      document.getElementById('panelUsername').value = data.access.panel_username || '';
+      document.getElementById('panelPassword').value = data.access.panel_password || '';
+      document.getElementById('accessNotes').value = data.access.access_notes || '';
+    }
+  } catch (error) {
+    console.error('Error loading plan access data:', error);
+  }
+}
+
+// Generate random password
+window.generatePassword = function() {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let password = '';
+  for (let i = 0; i < 12; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  document.getElementById('panelPassword').value = password;
 }
 
 // Helper functions

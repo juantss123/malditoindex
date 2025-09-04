@@ -681,3 +681,15 @@ console.log('Dashboard: No features found for start plan or features array is em
   </script>
 </body>
 </html>
+
+<?php
+// Helper function for plan display names
+function getPlanDisplayName($plan) {
+  switch($plan) {
+    case 'start': return 'Start';
+    case 'clinic': return 'Clinic';
+    case 'enterprise': return 'Enterprise';
+    default: return 'Sin plan';
+  }
+}
+?>

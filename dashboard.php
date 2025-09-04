@@ -340,6 +340,9 @@ console.log('Dashboard: No features found for start plan or features array is em
                   <a href="guia-usuario.php" class="btn btn-outline-light">
                     <i class="bi bi-book me-2"></i>Guía de usuario
                   </a>
+                  <a href="guia-usuario.php" class="btn btn-outline-light btn-lg ms-3">
+                    <i class="bi bi-book me-2"></i>Guía de usuario
+                  </a>
                 </div>
               </div>
               <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">

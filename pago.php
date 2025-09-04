@@ -48,7 +48,7 @@ try {
     if ($planData) {
         $planDetails = [
             'name' => $planData['name'],
-            'price' => $planData['price_monthly'], // Already in correct format
+            'price' => $planData['price_monthly'],
             'features' => json_decode($planData['features'], true)
         ];
     }
@@ -61,17 +61,17 @@ if (!$planDetails) {
     $fallbackPlans = [
         'start' => [
             'name' => 'Start',
-            'price' => 14999,
+            'price' => 14999.00,
             'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
         ],
         'clinic' => [
             'name' => 'Clinic',
-            'price' => 24999,
+            'price' => 24999.00,
             'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
         ],
         'enterprise' => [
             'name' => 'Enterprise',
-            'price' => 49999,
+            'price' => 49999.00,
             'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
         ]
     ];

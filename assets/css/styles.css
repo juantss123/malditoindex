@@ -449,3 +449,107 @@ a:hover{ color: var(--primary-600); }
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important; }
 }
+
+/* Brands Carousel */
+.brands-carousel-container {
+  overflow: hidden;
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  padding: 2rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brands-carousel {
+  display: flex;
+  animation: scroll-brands 20s linear infinite;
+  gap: 3rem;
+  align-items: center;
+}
+
+.brand-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  min-width: 160px;
+  height: 80px;
+}
+
+.brand-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(47, 150, 238, 0.3);
+  transform: translateY(-2px);
+}
+
+.brand-logo {
+  max-width: 120px;
+  max-height: 50px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: grayscale(100%) brightness(0.8);
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.brand-item:hover .brand-logo {
+  filter: grayscale(0%) brightness(1);
+  transform: scale(1.05);
+}
+
+@keyframes scroll-brands {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause animation on hover */
+.brands-carousel-container:hover .brands-carousel {
+  animation-play-state: paused;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .brands-carousel {
+    gap: 2rem;
+    animation-duration: 15s;
+  }
+  
+  .brand-item {
+    min-width: 140px;
+    height: 70px;
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .brand-logo {
+    max-width: 100px;
+    max-height: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .brands-carousel {
+    gap: 1.5rem;
+    animation-duration: 12s;
+  }
+  
+  .brand-item {
+    min-width: 120px;
+    height: 60px;
+    padding: 0.5rem 1rem;
+  }
+  
+  .brand-logo {
+    max-width: 80px;
+    max-height: 35px;
+  }
+}

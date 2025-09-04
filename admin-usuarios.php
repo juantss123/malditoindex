@@ -467,6 +467,91 @@ try {
     </div>
   </div>
 
+  <!-- Plan Access Modal -->
+  <div class="modal fade" id="planAccessModal" tabindex="-1" aria-labelledby="planAccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="planAccessModalLabel">
+            <i class="bi bi-globe me-2"></i>Datos de acceso al plan
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="planAccessForm">
+            <input type="hidden" id="accessUserId" name="userId">
+            
+            <div class="mb-4">
+              <h6 class="text-white mb-3">Información del usuario</h6>
+              <div class="glass-card p-3">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <strong class="text-light">Usuario:</strong>
+                    <div class="text-white" id="accessUserName"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <strong class="text-light">Email:</strong>
+                    <div class="text-white" id="accessUserEmail"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <strong class="text-light">Plan actual:</strong>
+                    <div class="text-white" id="accessUserPlan"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <strong class="text-light">Estado:</strong>
+                    <div class="text-white" id="accessUserStatus"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <h6 class="text-white mb-3">
+                <i class="bi bi-globe me-2"></i>Datos de acceso al panel
+              </h6>
+              <div class="mb-3">
+                <label class="form-label text-light">URL del panel *</label>
+                <input type="url" name="panel_url" id="panelUrl" class="form-control glass-input" 
+                       placeholder="https://panel.dentexapro.com/cliente123" required>
+                <small class="text-light opacity-75">URL donde el usuario accederá a su panel personalizado</small>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-light">Usuario de acceso *</label>
+                  <input type="text" name="panel_username" id="panelUsername" class="form-control glass-input" 
+                         placeholder="usuario_cliente" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-light">Contraseña de acceso *</label>
+                  <div class="input-group">
+                    <input type="text" name="panel_password" id="panelPassword" class="form-control glass-input" 
+                           placeholder="contraseña123" required>
+                    <button type="button" class="btn btn-outline-primary" onclick="generatePassword()">
+                      <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label class="form-label text-light">Notas adicionales</label>
+              <textarea name="access_notes" id="accessNotes" class="form-control glass-input" rows="3" 
+                        placeholder="Información adicional sobre el acceso..."></textarea>
+            </div>
+            
+            <div class="text-end">
+              <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-2"></i>Guardar datos de acceso
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>

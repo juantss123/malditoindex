@@ -38,6 +38,16 @@ try {
     $userProfile = null;
     $trialDaysRemaining = 0;
 }
+
+// Helper function to display plan names
+function getPlanDisplayName($plan) {
+    switch($plan) {
+        case 'start': return 'Start';
+        case 'clinic': return 'Clinic';
+        case 'enterprise': return 'Enterprise';
+        default: return 'Sin plan';
+    }
+}
 ?>
 <!doctype html>
 <html lang="es" class="h-100">

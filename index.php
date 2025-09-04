@@ -544,7 +544,7 @@ $db = $database->getConnection();
             <div class="accordion-item glass-card" data-aos="slide-right" data-aos-delay="900" data-aos-duration="800">
               <h2 class="accordion-header" id="q1">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="true" aria-controls="a1">
-                  ¿Cómo funciona la prueba gratis?
+                  <i class="bi bi-gift me-2"></i>¿Cómo funciona la prueba gratis?
                 </button>
               </h2>
               <div id="a1" class="accordion-collapse collapse show" data-bs-parent="#faqAcc">
@@ -556,7 +556,7 @@ $db = $database->getConnection();
             <div class="accordion-item glass-card" data-aos="slide-right" data-aos-delay="1100" data-aos-duration="800">
               <h2 class="accordion-header" id="q2">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2" aria-expanded="false" aria-controls="a2">
-                  ¿Puedo migrar desde otro sistema?
+                  <i class="bi bi-arrow-repeat me-2"></i>¿Puedo migrar desde otro sistema?
                 </button>
               </h2>
               <div id="a2" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
@@ -568,7 +568,7 @@ $db = $database->getConnection();
             <div class="accordion-item glass-card" data-aos="slide-right" data-aos-delay="1300" data-aos-duration="800">
               <h2 class="accordion-header" id="q3">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3" aria-expanded="false" aria-controls="a3">
-                  ¿Cumple con seguridad y privacidad?
+                  <i class="bi bi-shield-check me-2"></i>¿Cumple con seguridad y privacidad?
                 </button>
               </h2>
               <div id="a3" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
@@ -580,7 +580,7 @@ $db = $database->getConnection();
             <div class="accordion-item glass-card" data-aos="slide-right" data-aos-delay="1500" data-aos-duration="800">
               <h2 class="accordion-header" id="q4">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a4" aria-expanded="false" aria-controls="a4">
-                  ¿Necesito descargar una aplicación?
+                  <i class="bi bi-cloud me-2"></i>¿Necesito descargar una aplicación?
                 </button>
               </h2>
               <div id="a4" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
@@ -592,7 +592,7 @@ $db = $database->getConnection();
             <div class="accordion-item glass-card" data-aos="slide-right" data-aos-delay="1700" data-aos-duration="800">
               <h2 class="accordion-header" id="q5">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a5" aria-expanded="false" aria-controls="a5">
-                  ¿Puedo usar mi propio dominio?
+                  <i class="bi bi-globe me-2"></i>¿Puedo usar mi propio dominio?
                 </button>
               </h2>
               <div id="a5" class="accordion-collapse collapse" data-bs-parent="#faqAcc">

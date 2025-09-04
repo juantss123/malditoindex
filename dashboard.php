@@ -121,8 +121,22 @@ try {
                   } else {
                       echo "Bienvenido a tu panel de control.";
                   }
-                  ?>
-                </p>
+?>
+</p>
+<script>
+console.log('Dashboard: No features found for start plan or features array is empty');
+                  // Set default features if none found
+                  const modalStartFeaturesEl = document.getElementById('modalStartFeatures');
+                  if (modalStartFeaturesEl) {
+                    modalStartFeaturesEl.innerHTML = `
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Agenda & turnos</li>
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Historia clínica</li>
+                      <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Recordatorios</li>
+                    `;
+  }
+</script>
+
                 <div class="d-flex align-items-center gap-3 flex-wrap">
                   <div class="d-flex align-items-center text-light">
                     <i class="bi bi-clock me-2"></i>
@@ -453,8 +467,10 @@ try {
                   <h4 class="text-white">Clinic</h4>
                   <div class="display-6 fw-bold text-white">$<span id="modalClinicPrice">24.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
                 </div>
-                <ul class="list-unstyled mb-4" id="modalClinicFeatures">
-                  <!-- Features will be loaded dynamically -->
+                <ul class="list-unstyled mb-4">
+                  <div id="modalClinicFeatures">
+                    <!-- Features will be loaded dynamically -->
+                  </div>
                 </ul>
                 <button class="btn btn-primary w-100" onclick="selectPlan('clinic')">
                   Seleccionar Clinic
@@ -495,7 +511,7 @@ try {
       });
     }
     
-    // Dashboard functionality
+    // Dashboard functionality inline
     document.addEventListener('DOMContentLoaded', () => {
       // Init AOS
       if (window.AOS) {
@@ -515,24 +531,10 @@ try {
           console.log('Dashboard: Loading dynamic pricing for modal...');
           const response = await fetch('api/plans.php');
           console.log('Dashboard: API response status:', response.status);
-          
-          const text = await response.text();
-          console.log('Dashboard: Raw response:', text);
-          
-          let data;
-          try {
-            data = JSON.parse(text);
-          } catch (parseError) {
-            console.error('Dashboard: Error parsing JSON:', parseError);
-            console.error('Dashboard: Response text:', text);
-            return;
-          }
-          
+          const data = await response.json();
           console.log('Dashboard: API response data:', data);
           
           if (data.success && data.plans) {
-            console.log('Dashboard: Plans found:', data.plans.length);
-            
             const clinicPlan = data.plans.find(p => p.plan_type === 'clinic');
             const startPlan = data.plans.find(p => p.plan_type === 'start');
             
@@ -547,7 +549,7 @@ try {
               }
               
               // Update features if available
-              if (clinicPlan.features && Array.isArray(clinicPlan.features) && clinicPlan.features.length > 0) {
+              if (clinicPlan.features && clinicPlan.features.length > 0) {
                 const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
                 if (modalClinicFeaturesEl) {
                   modalClinicFeaturesEl.innerHTML = clinicPlan.features.map(feature => 
@@ -570,7 +572,7 @@ try {
               }
             }
             
-            // Update Start plan in modal
+            // Update Start plan in modal if needed
             if (startPlan) {
               console.log('Dashboard: Start plan data:', startPlan);
               const startMonthlyPrice = Math.round(startPlan.price_monthly / 100).toLocaleString('es-AR');
@@ -583,25 +585,13 @@ try {
               }
               
               // Update Start plan features if available
-              if (startPlan.features && Array.isArray(startPlan.features) && startPlan.features.length > 0) {
+              if (startPlan.features && startPlan.features.length > 0) {
                 const modalStartFeaturesEl = document.getElementById('modalStartFeatures');
                 if (modalStartFeaturesEl) {
                   modalStartFeaturesEl.innerHTML = startPlan.features.map(feature => 
                     `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
                   ).join('');
                   console.log('Dashboard: Updated start features:', startPlan.features);
-                }
-              } else {
-                console.log('Dashboard: No features found for start plan or features array is empty');
-                // Set default features if none found
-                const modalStartFeaturesEl = document.getElementById('modalStartFeatures');
-                if (modalStartFeaturesEl) {
-                  modalStartFeaturesEl.innerHTML = `
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Agenda & turnos</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Historia clínica</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Recordatorios</li>
-                  `;
                 }
               }
             }

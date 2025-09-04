@@ -1060,17 +1060,81 @@ a:hover{ color: var(--primary-600); }
 .section-py-sm {
   position: relative;
   width: 100%;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Prevenir que las filas de Bootstrap se desalineen */
 .row {
   margin-left: 0;
   margin-right: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .row > * {
   padding-left: var(--bs-gutter-x, 0.75rem);
   padding-right: var(--bs-gutter-x, 0.75rem);
+  max-width: 100%;
+}
+
+/* Fix específico para la sección features */
+#features {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+#features .container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+#features .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  width: 100%;
+}
+
+/* Prevenir layout shift en navegación por anchor */
+section[id] {
+  scroll-margin-top: 80px;
+  position: relative;
+}
+
+/* Asegurar que los containers mantengan su ancho */
+.container {
+  width: 100% !important;
+  max-width: 1320px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
+
+/* Fix para elementos con AOS que causan layout shift */
+[data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Solo aplicar animaciones después de que la página esté completamente cargada */
+.aos-loaded [data-aos] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.aos-loaded [data-aos].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Hace que el texto de las características de los planes sea celeste */

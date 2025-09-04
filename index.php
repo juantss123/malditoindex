@@ -657,8 +657,8 @@ $db = $database->getConnection();
           <p class="small text-light opacity-75 mb-0">© <span id="year"></span> DentexaPro. Todos los derechos reservados.</p>
         </div>
         <div class="col-md-6 text-md-end" data-aos="slide-left" data-aos-delay="500" data-aos-duration="800">
-          <a href="#" class="link-light me-3">Términos</a>
-          <a href="#" class="link-light">Privacidad</a>
+          <a href="terminos-condiciones.php" class="link-light me-3">Términos</a>
+          <a href="politica-privacidad.php" class="link-light">Privacidad</a>
         </div>
       </div>
     </div>

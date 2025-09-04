@@ -142,7 +142,7 @@ if (isLoggedIn()) {
                 <div class="form-check mb-4">
                   <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
                   <label class="form-check-label text-light" for="terms">
-                    Acepto los <a href="#" class="text-primary">términos y condiciones</a> y la <a href="#" class="text-primary">política de privacidad</a>
+                    Acepto los <a href="terminos-condiciones.php" class="text-primary" target="_blank">términos y condiciones</a> y la <a href="politica-privacidad.php" class="text-primary" target="_blank">política de privacidad</a>
                   </label>
                 </div>
               </div>

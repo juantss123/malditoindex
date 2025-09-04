@@ -99,6 +99,9 @@ function handleGetRequests() {
                 tr.status,
                 tr.admin_notes,
                 tr.processed_at,
+                tr.trial_website,
+                tr.trial_username,
+                tr.trial_password,
                 CONCAT(up.first_name, ' ', up.last_name) as user_name,
                 up.email,
                 up.clinic_name,
@@ -192,7 +195,8 @@ function handleUpdateRequest() {
         
         $stmt = $db->prepare("
             UPDATE trial_requests 
-            SET status = ?, admin_notes = ?, processed_by = ?, processed_at = NOW()
+            SET status = ?, admin_notes = ?, processed_by = ?, processed_at = NOW(),
+                trial_website = ?, trial_username = ?, trial_password = ?
             WHERE id = ?
         ");
         
@@ -200,6 +204,9 @@ function handleUpdateRequest() {
             $input['status'],
             $input['admin_notes'] ?? '',
             $adminId,
+            $input['trial_website'] ?? null,
+            $input['trial_username'] ?? null,
+            $input['trial_password'] ?? null,
             $requestId
         ]);
         

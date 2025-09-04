@@ -154,6 +154,127 @@ try {
 
       <!-- Subscription Status -->
       <?php if ($userProfile && $userProfile['subscription_status'] === 'trial'): ?>
+      
+      <!-- Trial Request Status -->
+      <?php
+      // Check if user has trial request and get status
+      $trialRequest = null;
+      try {
+          $stmt = $db->prepare("
+              SELECT status, trial_website, trial_username, trial_password, admin_notes, processed_at
+              FROM trial_requests 
+              WHERE user_id = ? 
+              ORDER BY request_date DESC 
+              LIMIT 1
+          ");
+          $stmt->execute([$_SESSION['user_id']]);
+          $trialRequest = $stmt->fetch();
+      } catch (Exception $e) {
+          // Ignore error if table doesn't exist
+      }
+      ?>
+      
+      <?php if ($trialRequest && $trialRequest['status'] === 'approved'): ?>
+      <div class="row mb-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+          <div class="glass-card p-4 p-sm-5 border-success">
+            <div class="row align-items-center">
+              <div class="col-lg-8">
+                <h3 class="text-success mb-2">
+                  <i class="bi bi-check-circle-fill me-2"></i>¡Prueba gratuita aprobada!
+                </h3>
+                <p class="text-light opacity-85 mb-3">
+                  Tu solicitud de prueba gratuita ha sido aprobada. Aquí tienes los datos de acceso:
+                </p>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <div class="glass-card p-3">
+                      <div class="mb-3">
+                        <strong class="text-light">Página web:</strong>
+                        <div class="mt-1">
+                          <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="text-primary">
+                            <?php echo htmlspecialchars($trialRequest['trial_website']); ?>
+                            <i class="bi bi-box-arrow-up-right ms-1"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <strong class="text-light">Usuario:</strong>
+                          <div class="mt-1">
+                            <code class="text-white bg-dark px-2 py-1 rounded"><?php echo htmlspecialchars($trialRequest['trial_username']); ?></code>
+                            <button class="btn btn-sm btn-outline-light ms-2" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_username']); ?>')">
+                              <i class="bi bi-clipboard"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <strong class="text-light">Contraseña:</strong>
+                          <div class="mt-1">
+                            <code class="text-white bg-dark px-2 py-1 rounded"><?php echo htmlspecialchars($trialRequest['trial_password']); ?></code>
+                            <button class="btn btn-sm btn-outline-light ms-2" onclick="copyToClipboard('<?php echo htmlspecialchars($trialRequest['trial_password']); ?>')">
+                              <i class="bi bi-clipboard"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <?php if ($trialRequest['admin_notes']): ?>
+                      <div class="mt-3">
+                        <strong class="text-light">Notas del administrador:</strong>
+                        <div class="text-light opacity-85 mt-1"><?php echo htmlspecialchars($trialRequest['admin_notes']); ?></div>
+                      </div>
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <a href="<?php echo htmlspecialchars($trialRequest['trial_website']); ?>" target="_blank" class="btn btn-success btn-lg w-100">
+                  <i class="bi bi-play-circle me-2"></i>Acceder a la prueba
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php elseif ($trialRequest && $trialRequest['status'] === 'pending'): ?>
+      <div class="row mb-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+          <div class="glass-card p-4 p-sm-5 border-warning">
+            <div class="text-center">
+              <h3 class="text-warning mb-2">
+                <i class="bi bi-clock-history me-2"></i>Solicitud en revisión
+              </h3>
+              <p class="text-light opacity-85 mb-0">
+                Tu solicitud de prueba gratuita está siendo revisada por nuestro equipo. Te notificaremos cuando esté lista.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php elseif ($trialRequest && $trialRequest['status'] === 'rejected'): ?>
+      <div class="row mb-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+          <div class="glass-card p-4 p-sm-5 border-danger">
+            <div class="text-center">
+              <h3 class="text-danger mb-2">
+                <i class="bi bi-x-circle-fill me-2"></i>Solicitud no aprobada
+              </h3>
+              <p class="text-light opacity-85 mb-3">
+                Tu solicitud de prueba gratuita no pudo ser aprobada en este momento.
+              </p>
+              <?php if ($trialRequest['admin_notes']): ?>
+              <div class="glass-card p-3">
+                <strong class="text-light">Motivo:</strong>
+                <div class="text-light opacity-85 mt-1"><?php echo htmlspecialchars($trialRequest['admin_notes']); ?></div>
+              </div>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+      </div>
+      <?php endif; ?>
+      
       <div class="row">
         <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="600">
           <div class="glass-card p-4 p-sm-5">
@@ -271,6 +392,24 @@ try {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Show temporary success message
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed top-0 end-0 m-3 alert alert-success glass-card';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = '<i class="bi bi-check-circle me-2"></i>Copiado al portapapeles';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.remove();
+        }, 2000);
+      }).catch(err => {
+        console.error('Error copying to clipboard:', err);
+      });
+    }
+    
     // Dashboard functionality inline
     document.addEventListener('DOMContentLoaded', () => {
       // Init AOS

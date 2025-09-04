@@ -28,6 +28,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const trialRequestForm = document.getElementById('trialRequestForm');
   if (trialRequestForm) {
     trialRequestForm.addEventListener('submit', handleTrialRequest);
+    
+    // Show/hide trial access fields based on status selection
+    const statusSelect = trialRequestForm.querySelector('select[name="status"]');
+    const trialAccessFields = document.getElementById('trialAccessFields');
+    const trialWebsiteInput = trialRequestForm.querySelector('input[name="trial_website"]');
+    const trialUsernameInput = trialRequestForm.querySelector('input[name="trial_username"]');
+    const trialPasswordInput = trialRequestForm.querySelector('input[name="trial_password"]');
+    
+    if (statusSelect && trialAccessFields) {
+      statusSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'approved') {
+          trialAccessFields.style.display = 'block';
+          trialWebsiteInput.required = true;
+          trialUsernameInput.required = true;
+          trialPasswordInput.required = true;
+        } else {
+          trialAccessFields.style.display = 'none';
+          trialWebsiteInput.required = false;
+          trialUsernameInput.required = false;
+          trialPasswordInput.required = false;
+        }
+      });
+    }
   }
 
   async function loadUsers() {

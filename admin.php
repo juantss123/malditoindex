@@ -269,6 +269,31 @@ try {
               </select>
             </div>
             
+            <!-- Campos para datos de acceso (solo si se aprueba) -->
+            <div id="trialAccessFields" style="display: none;">
+              <div class="mb-4">
+                <h6 class="text-white mb-3">
+                  <i class="bi bi-globe me-2"></i>Datos de acceso a la prueba gratuita
+                </h6>
+                <div class="glass-card p-3">
+                  <div class="mb-3">
+                    <label class="form-label text-light">Página web de la prueba *</label>
+                    <input type="url" name="trial_website" class="form-control glass-input" placeholder="https://demo.dentexapro.com/cliente123">
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label text-light">Usuario *</label>
+                      <input type="text" name="trial_username" class="form-control glass-input" placeholder="usuario_demo">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label text-light">Contraseña *</label>
+                      <input type="text" name="trial_password" class="form-control glass-input" placeholder="contraseña123">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <div class="mb-4">
               <label class="form-label text-light">Notas del administrador</label>
               <textarea name="admin_notes" class="form-control glass-input" rows="3" placeholder="Comentarios opcionales sobre la decisión..."></textarea>

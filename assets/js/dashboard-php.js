@@ -77,9 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     
-    const container = document.querySelector('.container');
+    // Insert alert at the top of the main content area
+    const mainContent = document.querySelector('main .container');
     if (container) {
-      container.insertAdjacentHTML('beforeend', alertHtml);
+      mainContent.insertAdjacentHTML('afterbegin', alertHtml);
       
       // Scroll to alert
       setTimeout(() => {

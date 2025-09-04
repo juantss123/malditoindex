@@ -88,6 +88,15 @@ try {
                 $sample['admin_notes'] ?? null
             ]);
         }
+    } else {
+        // Verificar que la tabla existe y tiene las columnas necesarias
+        $stmt = $db->query("SHOW COLUMNS FROM trial_requests LIKE 'trial_website'");
+        if ($stmt->rowCount() == 0) {
+            // Agregar columnas faltantes
+            $db->exec("ALTER TABLE trial_requests ADD COLUMN trial_website VARCHAR(255) DEFAULT NULL");
+            $db->exec("ALTER TABLE trial_requests ADD COLUMN trial_username VARCHAR(100) DEFAULT NULL");
+            $db->exec("ALTER TABLE trial_requests ADD COLUMN trial_password VARCHAR(100) DEFAULT NULL");
+        }
     }
     
     // Paso 5: Manejar la petición según el método

@@ -553,7 +553,7 @@ console.log('Dashboard: No features found for start plan or features array is em
                 const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
                 if (modalClinicFeaturesEl) {
                   modalClinicFeaturesEl.innerHTML = clinicPlan.features.map(feature => 
-                    `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
+                    `<li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
                   ).join('');
                   console.log('Dashboard: Updated clinic features:', clinicPlan.features);
                 }
@@ -563,10 +563,10 @@ console.log('Dashboard: No features found for start plan or features array is em
                 const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
                 if (modalClinicFeaturesEl) {
                   modalClinicFeaturesEl.innerHTML = `
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
-                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
                   `;
                 }
               }
@@ -589,10 +589,10 @@ console.log('Dashboard: No features found for start plan or features array is em
                 const modalStartFeaturesEl = document.getElementById('modalStartFeatures');
                 if (modalStartFeaturesEl) {
                   modalStartFeaturesEl.innerHTML = startPlan.features.map(feature => 
-                    `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
-                  ).join('');
-                  console.log('Dashboard: Updated start features:', startPlan.features);
-                }
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>Agenda & turnos</li>
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>Historia clínica</li>
+                    <li class="mb-2 text-info"><i class="bi bi-check2-circle text-success me-2"></i>Recordatorios</li>
               }
             }
             

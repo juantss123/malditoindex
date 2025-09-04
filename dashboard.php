@@ -132,10 +132,23 @@ try {
               </div>
               <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 d-lg-flex justify-content-lg-end align-items-center">
     <?php if ($userProfile && $userProfile['subscription_status'] === 'trial'): ?>
+        <?php
+        // Check if user has approved trial request
+        $hasApprovedTrial = false;
+        try {
+            $stmt = $db->prepare("SELECT status FROM trial_requests WHERE user_id = ? AND status = 'approved' LIMIT 1");
+            $stmt->execute([$_SESSION['user_id']]);
+            $hasApprovedTrial = $stmt->fetch() !== false;
+        } catch (Exception $e) {
+            // Ignore error if table doesn't exist
+        }
+        ?>
         
+        <?php if (!$hasApprovedTrial): ?>
         <button class="btn btn-primary btn-lg me-2" id="startTrialBtn">
             <i class="bi bi-play-circle me-2"></i>Iniciar prueba gratuita
         </button>
+        <?php endif; ?>
 
         <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#plansModal">
             <i class="bi bi-star me-2"></i>Actualizar plan

@@ -120,6 +120,9 @@ function handleGetPlans() {
         // Decode JSON features
         foreach ($plans as &$plan) {
             $plan['features'] = json_decode($plan['features'], true);
+            // Ensure numeric values are properly formatted
+            $plan['price_monthly'] = (float) $plan['price_monthly'];
+            $plan['price_yearly'] = (float) $plan['price_yearly'];
         }
         
         echo json_encode(['success' => true, 'plans' => $plans]);

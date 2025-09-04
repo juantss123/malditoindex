@@ -639,17 +639,21 @@ if (isLoggedIn()) {
     
     async function loadDynamicPricing() {
       try {
+        console.log('Loading dynamic pricing...');
         const response = await fetch('api/plans.php');
+        console.log('API response status:', response.status);
         const data = await response.json();
+        console.log('API response data:', data);
         
         if (data.success && data.plans && data.plans.length > 0) {
+          console.log('Plans found:', data.plans.length);
           updatePlanPrices(data.plans);
         } else {
-          console.log('Using default prices - API returned:', data);
+          console.log('No plans found or API error - using default prices. API returned:', data);
         }
       } catch (error) {
         console.error('Error loading dynamic pricing:', error);
-        console.log('Using default prices due to error');
+        console.log('Using default prices due to error:', error.message);
       }
     }
     
@@ -657,11 +661,13 @@ if (isLoggedIn()) {
       // Update Start plan
       const startPlan = plans.find(p => p.plan_type === 'start');
       if (startPlan) {
-        const monthlyPrice = (startPlan.price_monthly / 100).toLocaleString('es-AR');
-        const yearlyPrice = (startPlan.price_yearly / 100).toLocaleString('es-AR');
+        console.log('Start plan data:', startPlan);
+        const monthlyPrice = Math.round(startPlan.price_monthly / 100).toLocaleString('es-AR');
+        const yearlyPrice = Math.round(startPlan.price_yearly / 100).toLocaleString('es-AR');
         
         const startPriceEl = document.getElementById('startPrice');
         if (startPriceEl) {
+          console.log('Updating start price to:', monthlyPrice);
           startPriceEl.textContent = monthlyPrice;
           startPriceEl.dataset.monthly = monthlyPrice;
           startPriceEl.dataset.yearly = yearlyPrice;
@@ -681,11 +687,13 @@ if (isLoggedIn()) {
       // Update Clinic plan
       const clinicPlan = plans.find(p => p.plan_type === 'clinic');
       if (clinicPlan) {
-        const monthlyPrice = (clinicPlan.price_monthly / 100).toLocaleString('es-AR');
-        const yearlyPrice = (clinicPlan.price_yearly / 100).toLocaleString('es-AR');
+        console.log('Clinic plan data:', clinicPlan);
+        const monthlyPrice = Math.round(clinicPlan.price_monthly / 100).toLocaleString('es-AR');
+        const yearlyPrice = Math.round(clinicPlan.price_yearly / 100).toLocaleString('es-AR');
         
         const clinicPriceEl = document.getElementById('clinicPrice');
         if (clinicPriceEl) {
+          console.log('Updating clinic price to:', monthlyPrice);
           clinicPriceEl.textContent = monthlyPrice;
           clinicPriceEl.dataset.monthly = monthlyPrice;
           clinicPriceEl.dataset.yearly = yearlyPrice;

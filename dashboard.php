@@ -857,6 +857,9 @@ console.log('Dashboard: No features found for start plan or features array is em
                     <a href="${data.access.panel_url}" target="_blank" class="text-primary text-decoration-none flex-grow-1">
                       <i class="bi bi-link-45deg me-2"></i><span class="text-white">${data.access.panel_url}</span>
                     </a>
+                    <a href="guia-usuario.php" class="btn btn-outline-light">
+                      <i class="bi bi-book me-2"></i>Guía de usuario
+                    </a>
                     <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard('${data.access.panel_url}')">
                       <i class="bi bi-clipboard"></i>
                     </button>

@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Insert or update plan
             $planType = $_POST['plan_type'];
             $name = $_POST['plan_name'];
-            $price = $_POST['plan_price'];
+            $price = floatval($_POST['plan_price']);
             $features = json_encode(explode("\n", trim($_POST['plan_features'])));
             
             $stmt = $db->prepare("
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             $stmt->execute([$planType, $name, $price, $features]);
             
-            $successMessage = 'Plan actualizado exitosamente';
+            $successMessage = "Plan $name actualizado exitosamente. Precio: $" . number_format($price, 2);
             
         } catch (Exception $e) {
             $errorMessage = 'Error al actualizar plan: ' . $e->getMessage();
@@ -68,6 +68,23 @@ try {
         GROUP BY subscription_plan, subscription_status
     ");
     $subscriptionStats = $stmt->fetchAll();
+    
+    // Get current plan prices from subscription_plans table
+    $currentPlans = [];
+    try {
+        $stmt = $db->query("SELECT plan_type, name, price, features FROM subscription_plans WHERE is_active = TRUE");
+        $plans = $stmt->fetchAll();
+        foreach ($plans as $plan) {
+            $currentPlans[$plan['plan_type']] = $plan;
+        }
+    } catch (Exception $e) {
+        // If table doesn't exist, use default values
+        $currentPlans = [
+            'start' => ['name' => 'Start', 'price' => 14999, 'features' => '["1 profesional","Agenda & turnos","Historia clínica","Recordatorios"]'],
+            'clinic' => ['name' => 'Clinic', 'price' => 24999, 'features' => '["Hasta 3 profesionales","Portal del paciente","Facturación","Reportes avanzados"]'],
+            'enterprise' => ['name' => 'Enterprise', 'price' => 0, 'features' => '["+4 profesionales","Integraciones","Soporte prioritario","Entrenamiento"]']
+        ];
+    }
     
     // Get users with expiring trials
     $stmt = $db->query("
@@ -284,18 +301,20 @@ try {
                         <div class="glass-card p-4 h-100">
                           <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                              <h5 class="text-white mb-1">Start</h5>
-                              <div class="text-primary fw-bold fs-4">$14.999 <small class="text-light opacity-75 fs-6">ARS/mes</small></div>
+                              <h5 class="text-white mb-1"><?php echo $currentPlans['start']['name'] ?? 'Start'; ?></h5>
+                              <div class="text-primary fw-bold fs-4">$<?php echo number_format($currentPlans['start']['price'] ?? 14999, 0, ',', '.'); ?> <small class="text-light opacity-75 fs-6">ARS/mes</small></div>
                             </div>
                             <span class="badge bg-info"><?php echo $planDistribution['start']; ?> usuarios</span>
                           </div>
                           <ul class="list-unstyled mb-3 small">
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>1 profesional</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Agenda & turnos</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Historia clínica</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Recordatorios</li>
+                            <?php 
+                            $startFeatures = json_decode($currentPlans['start']['features'] ?? '["1 profesional","Agenda & turnos","Historia clínica","Recordatorios"]', true);
+                            foreach ($startFeatures as $feature): 
+                            ?>
+                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+                            <?php endforeach; ?>
                           </ul>
-                          <button class="btn btn-outline-light btn-sm w-100" onclick="editPlan('start', 'Start', '14999', '1 profesional\nAgenda & turnos\nHistoria clínica\nRecordatorios')">
+                          <button class="btn btn-outline-light btn-sm w-100" onclick="editPlan('start', '<?php echo $currentPlans['start']['name'] ?? 'Start'; ?>', '<?php echo $currentPlans['start']['price'] ?? 14999; ?>', '<?php echo implode('\n', json_decode($currentPlans['start']['features'] ?? '["1 profesional","Agenda & turnos","Historia clínica","Recordatorios"]', true)); ?>')">
                             <i class="bi bi-pencil me-2"></i>Editar plan
                           </button>
                         </div>
@@ -306,18 +325,20 @@ try {
                         <div class="glass-card p-4 h-100 border-primary">
                           <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                              <h5 class="text-white mb-1">Clinic</h5>
-                              <div class="text-primary fw-bold fs-4">$24.999 <small class="text-light opacity-75 fs-6">ARS/mes</small></div>
+                              <h5 class="text-white mb-1"><?php echo $currentPlans['clinic']['name'] ?? 'Clinic'; ?></h5>
+                              <div class="text-primary fw-bold fs-4">$<?php echo number_format($currentPlans['clinic']['price'] ?? 24999, 0, ',', '.'); ?> <small class="text-light opacity-75 fs-6">ARS/mes</small></div>
                             </div>
                             <span class="badge bg-primary"><?php echo $planDistribution['clinic']; ?> usuarios</span>
                           </div>
                           <ul class="list-unstyled mb-3 small">
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Hasta 3 profesionales</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Portal del paciente</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Facturación</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Reportes avanzados</li>
+                            <?php 
+                            $clinicFeatures = json_decode($currentPlans['clinic']['features'] ?? '["Hasta 3 profesionales","Portal del paciente","Facturación","Reportes avanzados"]', true);
+                            foreach ($clinicFeatures as $feature): 
+                            ?>
+                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+                            <?php endforeach; ?>
                           </ul>
-                          <button class="btn btn-outline-light btn-sm w-100" onclick="editPlan('clinic', 'Clinic', '24999', 'Hasta 3 profesionales\nPortal del paciente\nFacturación\nReportes avanzados')">
+                          <button class="btn btn-outline-light btn-sm w-100" onclick="editPlan('clinic', '<?php echo $currentPlans['clinic']['name'] ?? 'Clinic'; ?>', '<?php echo $currentPlans['clinic']['price'] ?? 24999; ?>', '<?php echo implode('\n', json_decode($currentPlans['clinic']['features'] ?? '["Hasta 3 profesionales","Portal del paciente","Facturación","Reportes avanzados"]', true)); ?>')">
                             <i class="bi bi-pencil me-2"></i>Editar plan
                           </button>
                         </div>
@@ -328,18 +349,22 @@ try {
                         <div class="glass-card p-4 h-100">
                           <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                              <h5 class="text-white mb-1">Enterprise</h5>
-                              <div class="text-warning fw-bold fs-4">A medida</div>
+                              <h5 class="text-white mb-1"><?php echo $currentPlans['enterprise']['name'] ?? 'Enterprise'; ?></h5>
+                              <div class="text-warning fw-bold fs-4">
+                                <?php echo ($currentPlans['enterprise']['price'] ?? 0) > 0 ? '$' . number_format($currentPlans['enterprise']['price'], 0, ',', '.') . ' ARS/mes' : 'A medida'; ?>
+                              </div>
                             </div>
                             <span class="badge bg-warning text-dark"><?php echo $planDistribution['enterprise']; ?> usuarios</span>
                           </div>
                           <ul class="list-unstyled mb-3 small">
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>+4 profesionales</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Integraciones</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Soporte prioritario</li>
-                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i>Entrenamiento</li>
+                            <?php 
+                            $enterpriseFeatures = json_decode($currentPlans['enterprise']['features'] ?? '["+4 profesionales","Integraciones","Soporte prioritario","Entrenamiento"]', true);
+                            foreach ($enterpriseFeatures as $feature): 
+                            ?>
+                            <li class="text-light opacity-85 mb-1"><i class="bi bi-check text-success me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+                            <?php endforeach; ?>
                           </ul>
-                          <button class="btn btn-outline-light btn-sm w-100" onclick="editPlan('enterprise', 'Enterprise', '0', '+4 profesionales\nIntegraciones\nSoporte prioritario\nEntrenamiento')">
+                          <button class="btn btn-outline-light btn-sm w-100" onclick="editPlan('enterprise', '<?php echo $currentPlans['enterprise']['name'] ?? 'Enterprise'; ?>', '<?php echo $currentPlans['enterprise']['price'] ?? 0; ?>', '<?php echo implode('\n', json_decode($currentPlans['enterprise']['features'] ?? '["+4 profesionales","Integraciones","Soporte prioritario","Entrenamiento"]', true)); ?>')">
                             <i class="bi bi-pencil me-2"></i>Editar plan
                           </button>
                         </div>
@@ -409,12 +434,26 @@ try {
                             </tr>
                           </thead>
                           <tbody>
+                            <?php
+                            // Get price history from subscription_plans table
+                            try {
+                              $stmt = $db->query("
+                                SELECT plan_type, name, price, updated_at 
+                                FROM subscription_plans 
+                                ORDER BY updated_at DESC 
+                                LIMIT 10
+                              ");
+                              $priceHistory = $stmt->fetchAll();
+                              
+                              if (empty($priceHistory)) {
+                                // Show default history if no data
+                                ?>
                             <tr>
                               <td>
                                 <span class="badge bg-info">Start</span>
                               </td>
                               <td class="text-light opacity-75">$12.999</td>
-                              <td class="text-success fw-bold">$14.999</td>
+                              <td class="text-success fw-bold">$<?php echo number_format($currentPlans['start']['price'] ?? 14999, 0, ',', '.'); ?></td>
                               <td class="text-light opacity-75">15/08/2024</td>
                               <td class="text-light opacity-75">Admin Sistema</td>
                             </tr>
@@ -423,10 +462,38 @@ try {
                                 <span class="badge bg-primary">Clinic</span>
                               </td>
                               <td class="text-light opacity-75">$22.999</td>
-                              <td class="text-success fw-bold">$24.999</td>
+                              <td class="text-success fw-bold">$<?php echo number_format($currentPlans['clinic']['price'] ?? 24999, 0, ',', '.'); ?></td>
                               <td class="text-light opacity-75">15/08/2024</td>
                               <td class="text-light opacity-75">Admin Sistema</td>
                             </tr>
+                                <?php
+                              } else {
+                                foreach ($priceHistory as $history) {
+                                  $badgeClass = $history['plan_type'] === 'start' ? 'bg-info' : ($history['plan_type'] === 'clinic' ? 'bg-primary' : 'bg-warning');
+                                  ?>
+                            <tr>
+                              <td>
+                                <span class="badge <?php echo $badgeClass; ?>"><?php echo ucfirst($history['plan_type']); ?></span>
+                              </td>
+                              <td class="text-light opacity-75">-</td>
+                              <td class="text-success fw-bold">$<?php echo number_format($history['price'], 0, ',', '.'); ?></td>
+                              <td class="text-light opacity-75"><?php echo date('d/m/Y', strtotime($history['updated_at'])); ?></td>
+                              <td class="text-light opacity-75"><?php echo htmlspecialchars($_SESSION['user_name']); ?></td>
+                            </tr>
+                                  <?php
+                                }
+                              }
+                            } catch (Exception $e) {
+                              // Show default if error
+                              ?>
+                            <tr>
+                              <td colspan="5" class="text-center text-light opacity-75">
+                                <i class="bi bi-info-circle me-2"></i>No hay historial de cambios disponible
+                              </td>
+                            </tr>
+                              <?php
+                            }
+                            ?>
                           </tbody>
                         </table>
                       </div>
@@ -545,25 +612,30 @@ try {
                       <div class="row g-3">
                         <div class="col-md-3">
                           <div class="text-center">
-                            <div class="text-info fw-bold fs-5">$<?php echo number_format($planDistribution['start'] * 14999, 0, ',', '.'); ?></div>
+                            <div class="text-info fw-bold fs-5">$<?php echo number_format($planDistribution['start'] * ($currentPlans['start']['price'] ?? 14999), 0, ',', '.'); ?></div>
                             <div class="text-light opacity-75 small">Plan Start</div>
                           </div>
                         </div>
                         <div class="col-md-3">
                           <div class="text-center">
-                            <div class="text-primary fw-bold fs-5">$<?php echo number_format($planDistribution['clinic'] * 24999, 0, ',', '.'); ?></div>
+                            <div class="text-primary fw-bold fs-5">$<?php echo number_format($planDistribution['clinic'] * ($currentPlans['clinic']['price'] ?? 24999), 0, ',', '.'); ?></div>
                             <div class="text-light opacity-75 small">Plan Clinic</div>
                           </div>
                         </div>
                         <div class="col-md-3">
                           <div class="text-center">
-                            <div class="text-warning fw-bold fs-5">$<?php echo number_format($planDistribution['enterprise'] * 49999, 0, ',', '.'); ?></div>
+                            <div class="text-warning fw-bold fs-5">$<?php echo number_format($planDistribution['enterprise'] * ($currentPlans['enterprise']['price'] ?? 49999), 0, ',', '.'); ?></div>
                             <div class="text-light opacity-75 small">Plan Enterprise</div>
                           </div>
                         </div>
                         <div class="col-md-3">
                           <div class="text-center">
-                            <div class="text-success fw-bold fs-4">$<?php echo number_format(($planDistribution['start'] * 14999) + ($planDistribution['clinic'] * 24999) + ($planDistribution['enterprise'] * 49999), 0, ',', '.'); ?></div>
+                            <div class="text-success fw-bold fs-4">$<?php 
+                              $startPrice = $currentPlans['start']['price'] ?? 14999;
+                              $clinicPrice = $currentPlans['clinic']['price'] ?? 24999;
+                              $enterprisePrice = $currentPlans['enterprise']['price'] ?? 49999;
+                              echo number_format(($planDistribution['start'] * $startPrice) + ($planDistribution['clinic'] * $clinicPrice) + ($planDistribution['enterprise'] * $enterprisePrice), 0, ',', '.'); 
+                            ?></div>
                             <div class="text-light opacity-75 small">Total MRR</div>
                           </div>
                         </div>

@@ -42,14 +42,14 @@ function handleGetRequests() {
     }
     
     try {
-        // Primero verificar si la tabla existe
+        // Verificar si la tabla existe y crearla si no existe
         $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
         $tableExists = $stmt->rowCount() > 0;
         
         if (!$tableExists) {
-            // Crear la tabla si no existe
+            // Crear la tabla
             $createTableSQL = "
-                CREATE TABLE IF NOT EXISTS trial_requests (
+                CREATE TABLE trial_requests (
                     id VARCHAR(36) NOT NULL DEFAULT (UUID()),
                     user_id VARCHAR(36) NOT NULL,
                     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -57,6 +57,9 @@ function handleGetRequests() {
                     admin_notes TEXT DEFAULT NULL,
                     processed_by VARCHAR(36) DEFAULT NULL,
                     processed_at TIMESTAMP NULL DEFAULT NULL,
+                    trial_website VARCHAR(500) DEFAULT NULL,
+                    trial_username VARCHAR(100) DEFAULT NULL,
+                    trial_password VARCHAR(100) DEFAULT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     PRIMARY KEY (id),
@@ -77,20 +80,30 @@ function handleGetRequests() {
                 [
                     'id' => 'req-' . uniqid(),
                     'user_id' => 'fernando-user-1234-5678-9012-1234567',
-                    'status' => 'approved'
+                    'status' => 'approved',
+                    'trial_website' => 'https://demo.dentexapro.com/fernando',
+                    'trial_username' => 'fernando_demo',
+                    'trial_password' => 'demo123'
                 ]
             ];
             
             foreach ($sampleRequests as $request) {
                 $stmt = $db->prepare("
-                    INSERT IGNORE INTO trial_requests (id, user_id, status, request_date) 
-                    VALUES (?, ?, ?, NOW())
+                    INSERT INTO trial_requests (id, user_id, status, request_date, trial_website, trial_username, trial_password) 
+                    VALUES (?, ?, ?, NOW(), ?, ?, ?)
                 ");
-                $stmt->execute([$request['id'], $request['user_id'], $request['status']]);
+                $stmt->execute([
+                    $request['id'], 
+                    $request['user_id'], 
+                    $request['status'],
+                    $request['trial_website'] ?? null,
+                    $request['trial_username'] ?? null,
+                    $request['trial_password'] ?? null
+                ]);
             }
         }
         
-        // Ahora cargar las solicitudes
+        // Cargar las solicitudes con JOIN directo (sin vista)
         $stmt = $db->prepare("
             SELECT 
                 tr.id,
@@ -114,7 +127,7 @@ function handleGetRequests() {
             ORDER BY tr.request_date DESC
         ");
         $stmt->execute();
-        $requests = $stmt->fetchAll();
+        $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         echo json_encode(['requests' => $requests]);
         
@@ -141,6 +154,35 @@ function handleCreateRequest() {
     try {
         $userId = $_SESSION['user_id'];
         
+        // Verificar si la tabla existe
+        $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
+        $tableExists = $stmt->rowCount() > 0;
+        
+        if (!$tableExists) {
+            // Crear la tabla si no existe
+            $createTableSQL = "
+                CREATE TABLE trial_requests (
+                    id VARCHAR(36) NOT NULL DEFAULT (UUID()),
+                    user_id VARCHAR(36) NOT NULL,
+                    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+                    admin_notes TEXT DEFAULT NULL,
+                    processed_by VARCHAR(36) DEFAULT NULL,
+                    processed_at TIMESTAMP NULL DEFAULT NULL,
+                    trial_website VARCHAR(500) DEFAULT NULL,
+                    trial_username VARCHAR(100) DEFAULT NULL,
+                    trial_password VARCHAR(100) DEFAULT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id),
+                    INDEX idx_trial_requests_user_id (user_id),
+                    INDEX idx_trial_requests_status (status),
+                    INDEX idx_trial_requests_date (request_date)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ";
+            $db->exec($createTableSQL);
+        }
+        
         // Check if user already has a pending request
         $stmt = $db->prepare("SELECT id FROM trial_requests WHERE user_id = ? AND status = 'pending'");
         $stmt->execute([$userId]);
@@ -166,6 +208,7 @@ function handleCreateRequest() {
         ]);
         
     } catch (Exception $e) {
+        error_log("Error creating trial request: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['error' => 'Error al crear solicitud: ' . $e->getMessage()]);
     }
@@ -222,9 +265,10 @@ function handleUpdateRequest() {
             $stmt->execute([$requestId]);
         }
         
-        echo json_encode(['success' => true, 'message' => 'Solicitud actualizada exitosamente']);
+        echo json_encode(['success' => true, 'message' => 'Solicitud procesada exitosamente']);
         
     } catch (Exception $e) {
+        error_log("Error updating trial request: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['error' => 'Error al actualizar solicitud: ' . $e->getMessage()]);
     }

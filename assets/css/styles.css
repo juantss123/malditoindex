@@ -531,6 +531,11 @@ a:hover{ color: var(--primary-600); }
 .floating-icon:nth-child(3) { top: 60%; left: 5%; }
 .floating-icon:nth-child(4) { bottom: 30%; right: 10%; }
 .floating-icon:nth-child(5) { bottom: 10%; left: 20%; }
+.floating-icon:nth-child(6) { top: 30%; left: 80%; }
+.floating-icon:nth-child(7) { top: 70%; right: 25%; }
+.floating-icon:nth-child(8) { bottom: 50%; left: 8%; }
+.floating-icon:nth-child(9) { top: 45%; right: 5%; }
+.floating-icon:nth-child(10) { bottom: 15%; right: 40%; }
 
 @keyframes float-around {
   0%, 100% { 

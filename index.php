@@ -2,6 +2,24 @@
 session_start();
 require_once 'config/database.php';
 
+// Check if maintenance mode is enabled
+$database = new Database();
+$db = $database->getConnection();
+
+try {
+    $stmt = $db->prepare("SELECT maintenance_enabled FROM maintenance_settings WHERE id = 1");
+    $stmt->execute();
+    $maintenance = $stmt->fetch();
+    
+    // If maintenance is enabled and user is not admin, redirect to maintenance page
+    if ($maintenance && $maintenance['maintenance_enabled'] && !isAdmin()) {
+        header('Location: maintenance.php');
+        exit();
+    }
+} catch (Exception $e) {
+    // Table might not exist, continue normally
+}
+
 // If logged in, redirect to appropriate dashboard
 if (isLoggedIn()) {
     $redirect = isAdmin() ? 'admin.php' : 'dashboard.php';

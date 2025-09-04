@@ -1,0 +1,8 @@
+@@ .. @@
+ # Páginas principales
+ RewriteRule ^login/?$ login.php [L]
+ RewriteRule ^registro/?$ registro.php [L]
+ RewriteRule ^dashboard/?$ dashboard.php [L]
++RewriteRule ^maintenance/?$ maintenance.php [L]
+
+ # Blog

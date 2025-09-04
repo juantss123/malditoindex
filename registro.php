@@ -1,8 +1,26 @@
 <?php
 session_start();
 
-// Primero, incluimos el archivo con nuestras funciones
+// Check if maintenance mode is enabled
 require_once 'config/database.php';
+$database = new Database();
+$db = $database->getConnection();
+
+try {
+    $stmt = $db->prepare("SELECT maintenance_enabled FROM maintenance_settings WHERE id = 1");
+    $stmt->execute();
+    $maintenance = $stmt->fetch();
+    
+    // If maintenance is enabled and user is not admin, redirect to maintenance page
+    if ($maintenance && $maintenance['maintenance_enabled'] && !isAdmin()) {
+        header('Location: maintenance.php');
+        exit();
+    }
+} catch (Exception $e) {
+    // Table might not exist, continue normally
+}
+
+// Primero, incluimos el archivo con nuestras funciones
 
 // Ahora sí, podemos usar las funciones porque ya están definidas
 if (isLoggedIn()) {

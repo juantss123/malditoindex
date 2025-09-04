@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Verify current password
                 $stmt = $db->prepare("SELECT password_hash FROM user_profiles WHERE user_id = ?");
+                    $action = $_POST['action'] ?? 'payment_settings';
+                    
                 $stmt->execute([$_SESSION['user_id']]);
                 $user = $stmt->fetch();
                 
@@ -211,11 +213,6 @@ try {
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="system-tab" data-bs-toggle="pill" data-bs-target="#system" type="button" role="tab" aria-controls="system" aria-selected="false">
                   <i class="bi bi-server me-2"></i>Sistema
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button class="nav-link" id="maintenance-tab" data-bs-toggle="pill" data-bs-target="#maintenance" type="button" role="tab" aria-controls="maintenance" aria-selected="false">
-                  <i class="bi bi-tools me-2"></i>Mantenimiento
                 </button>
               </li>
               <li class="nav-item" role="presentation">

@@ -2,6 +2,25 @@
 session_start();
 require_once 'config/database.php';
 
+// Check if maintenance mode is enabled (only for non-admin users)
+if (!isAdmin()) {
+    $database = new Database();
+    $db = $database->getConnection();
+    
+    try {
+        $stmt = $db->prepare("SELECT maintenance_enabled FROM maintenance_settings WHERE id = 1");
+        $stmt->execute();
+        $maintenance = $stmt->fetch();
+        
+        if ($maintenance && $maintenance['maintenance_enabled']) {
+            header('Location: maintenance.php');
+            exit();
+        }
+    } catch (Exception $e) {
+        // Table might not exist, continue normally
+    }
+}
+
 // Check authentication
 requireLogin();
 

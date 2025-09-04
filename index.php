@@ -668,6 +668,15 @@ $db = $database->getConnection();
     <i class="bi bi-lightning-charge"></i>
   </a>
 
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/5491112345678?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20DentexaPro" 
+     target="_blank" 
+     rel="noopener" 
+     class="whatsapp-float" 
+     aria-label="Contactar por WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+  </a>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>

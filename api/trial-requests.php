@@ -1,9 +1,8 @@
 <?php
-// Habilitar reporte de errores para debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
+// API simplificada para solicitudes de prueba gratuita
 session_start();
+
+// Headers básicos
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS');
@@ -13,14 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+// Incluir configuración de base de datos
+require_once '../config/database.php';
+
 try {
-    require_once '../config/database.php';
-    
     $database = new Database();
     $db = $database->getConnection();
     
     if (!$db) {
-        throw new Exception('No se pudo conectar a la base de datos');
+        throw new Exception('Error de conexión a la base de datos');
     }
     
     $method = $_SERVER['REQUEST_METHOD'];
@@ -41,92 +41,68 @@ try {
     }
     
 } catch (Exception $e) {
-    error_log("Trial requests API error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
-        'error' => 'Error interno del servidor',
-        'message' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine()
+        'error' => 'Error interno: ' . $e->getMessage(),
+        'line' => $e->getLine(),
+        'file' => basename($e->getFile())
     ]);
 }
 
 function handleGetRequests($db) {
-    // Require admin access for viewing requests
-    if (!isAdmin()) {
+    // Verificar acceso de administrador
+    if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
         http_response_code(403);
-        echo json_encode(['error' => 'Acceso denegado - no es administrador']);
+        echo json_encode(['error' => 'Acceso denegado - requiere rol de administrador']);
         return;
     }
     
     try {
-        // Verificar si la tabla trial_requests existe
+        // Verificar si la tabla existe
         $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
         $tableExists = $stmt->rowCount() > 0;
         
         if (!$tableExists) {
-            // Crear la tabla trial_requests
-            $createTableSQL = "
+            // Crear tabla si no existe
+            $createSQL = "
                 CREATE TABLE trial_requests (
-                    id VARCHAR(36) NOT NULL,
+                    id VARCHAR(36) PRIMARY KEY,
                     user_id VARCHAR(36) NOT NULL,
                     request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
-                    admin_notes TEXT DEFAULT NULL,
-                    processed_by VARCHAR(36) DEFAULT NULL,
-                    processed_at TIMESTAMP NULL DEFAULT NULL,
-                    trial_website VARCHAR(500) DEFAULT NULL,
-                    trial_username VARCHAR(100) DEFAULT NULL,
-                    trial_password VARCHAR(100) DEFAULT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    PRIMARY KEY (id),
-                    INDEX idx_trial_requests_user_id (user_id),
-                    INDEX idx_trial_requests_status (status),
-                    INDEX idx_trial_requests_date (request_date)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+                    admin_notes TEXT,
+                    processed_by VARCHAR(36),
+                    processed_at TIMESTAMP NULL,
+                    trial_website VARCHAR(500),
+                    trial_username VARCHAR(100),
+                    trial_password VARCHAR(100),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
             ";
-            $db->exec($createTableSQL);
+            $db->exec($createSQL);
             
-            // Agregar solicitudes de ejemplo
-            $sampleRequests = [
+            // Insertar datos de ejemplo
+            $sampleData = [
                 [
-                    'id' => 'req-juan-001',
-                    'user_id' => 'juan-user-1234-5678-9012-12345678901',
-                    'status' => 'pending'
+                    'req-001',
+                    'juan-user-1234-5678-9012-12345678901',
+                    'pending'
                 ],
                 [
-                    'id' => 'req-fernando-001',
-                    'user_id' => 'fernando-user-1234-5678-9012-1234567',
-                    'status' => 'approved',
-                    'trial_website' => 'https://demo.dentexapro.com/fernando',
-                    'trial_username' => 'fernando_demo',
-                    'trial_password' => 'demo123',
-                    'admin_notes' => 'Prueba aprobada para Dr. Fernando García',
-                    'processed_by' => 'admin-user-1234-5678-9012-1234567890'
+                    'req-002', 
+                    'fernando-user-1234-5678-9012-1234567',
+                    'approved'
                 ]
             ];
             
-            foreach ($sampleRequests as $request) {
-                $stmt = $db->prepare("
-                    INSERT INTO trial_requests (id, user_id, status, request_date, trial_website, trial_username, trial_password, admin_notes, processed_by, processed_at) 
-                    VALUES (?, ?, ?, NOW(), ?, ?, ?, ?, ?, NOW())
-                ");
-                $stmt->execute([
-                    $request['id'], 
-                    $request['user_id'], 
-                    $request['status'],
-                    $request['trial_website'] ?? null,
-                    $request['trial_username'] ?? null,
-                    $request['trial_password'] ?? null,
-                    $request['admin_notes'] ?? null,
-                    $request['processed_by'] ?? null
-                ]);
+            foreach ($sampleData as $data) {
+                $stmt = $db->prepare("INSERT INTO trial_requests (id, user_id, status) VALUES (?, ?, ?)");
+                $stmt->execute($data);
             }
         }
         
-        // Cargar las solicitudes con información del usuario usando JOIN directo
-        $stmt = $db->prepare("
+        // Obtener solicitudes con información del usuario
+        $sql = "
             SELECT 
                 tr.id,
                 tr.user_id,
@@ -140,118 +116,87 @@ function handleGetRequests($db) {
                 CONCAT(up.first_name, ' ', up.last_name) as user_name,
                 up.email,
                 up.clinic_name,
-                up.phone,
-                up.subscription_status,
-                CONCAT(admin.first_name, ' ', admin.last_name) as processed_by_name
+                up.phone
             FROM trial_requests tr
-            JOIN user_profiles up ON tr.user_id = up.user_id
-            LEFT JOIN user_profiles admin ON tr.processed_by = admin.user_id
+            INNER JOIN user_profiles up ON tr.user_id = up.user_id
             ORDER BY tr.request_date DESC
-        ");
+        ";
+        
+        $stmt = $db->prepare($sql);
         $stmt->execute();
         $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        echo json_encode(['success' => true, 'requests' => $requests]);
+        echo json_encode([
+            'success' => true, 
+            'requests' => $requests
+        ]);
         
     } catch (Exception $e) {
-        error_log("Error in handleGetRequests: " . $e->getMessage());
-        throw new Exception("Error al cargar solicitudes: " . $e->getMessage());
+        throw new Exception('Error al obtener solicitudes: ' . $e->getMessage());
     }
 }
 
 function handleCreateRequest($db) {
-    // Require user to be logged in
-    if (!isLoggedIn()) {
+    // Verificar que el usuario esté logueado
+    if (!isset($_SESSION['user_id'])) {
         http_response_code(401);
-        echo json_encode(['error' => 'Debes iniciar sesión']);
+        echo json_encode(['error' => 'Usuario no autenticado']);
         return;
     }
     
     try {
         $userId = $_SESSION['user_id'];
         
-        // Verificar si la tabla existe, si no, crearla
-        $stmt = $db->query("SHOW TABLES LIKE 'trial_requests'");
-        $tableExists = $stmt->rowCount() > 0;
-        
-        if (!$tableExists) {
-            // Crear tabla si no existe
-            $createTableSQL = "
-                CREATE TABLE trial_requests (
-                    id VARCHAR(36) NOT NULL,
-                    user_id VARCHAR(36) NOT NULL,
-                    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
-                    admin_notes TEXT DEFAULT NULL,
-                    processed_by VARCHAR(36) DEFAULT NULL,
-                    processed_at TIMESTAMP NULL DEFAULT NULL,
-                    trial_website VARCHAR(500) DEFAULT NULL,
-                    trial_username VARCHAR(100) DEFAULT NULL,
-                    trial_password VARCHAR(100) DEFAULT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    PRIMARY KEY (id)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-            ";
-            $db->exec($createTableSQL);
-        }
-        
-        // Check if user already has a pending request
+        // Verificar si ya tiene una solicitud pendiente
         $stmt = $db->prepare("SELECT id FROM trial_requests WHERE user_id = ? AND status = 'pending'");
         $stmt->execute([$userId]);
+        
         if ($stmt->fetch()) {
-            http_response_code(400);
             echo json_encode(['error' => 'Ya tienes una solicitud pendiente']);
             return;
         }
         
-        // Create new trial request
+        // Crear nueva solicitud
         $requestId = 'req-' . uniqid();
-        $stmt = $db->prepare("
-            INSERT INTO trial_requests (id, user_id, request_date, status) 
-            VALUES (?, ?, NOW(), 'pending')
-        ");
+        $stmt = $db->prepare("INSERT INTO trial_requests (id, user_id, status) VALUES (?, ?, 'pending')");
         $stmt->execute([$requestId, $userId]);
         
         echo json_encode([
-            'success' => true, 
-            'message' => '¡Solicitud enviada! Un administrador la revisará pronto.',
-            'request_id' => $requestId
+            'success' => true,
+            'message' => '¡Solicitud enviada! Un administrador la revisará pronto.'
         ]);
         
     } catch (Exception $e) {
-        error_log("Error in handleCreateRequest: " . $e->getMessage());
-        throw new Exception("Error al crear solicitud: " . $e->getMessage());
+        throw new Exception('Error al crear solicitud: ' . $e->getMessage());
     }
 }
 
 function handleUpdateRequest($db) {
-    // Require admin access
-    if (!isAdmin()) {
+    // Verificar acceso de administrador
+    if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
         http_response_code(403);
         echo json_encode(['error' => 'Acceso denegado']);
         return;
     }
     
     $requestId = $_GET['id'] ?? '';
-    $input = json_decode(file_get_contents('php://input'), true);
     
     if (empty($requestId)) {
-        http_response_code(400);
         echo json_encode(['error' => 'ID de solicitud requerido']);
         return;
     }
     
+    $input = json_decode(file_get_contents('php://input'), true);
+    
     if (!$input) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Datos de solicitud requeridos']);
+        echo json_encode(['error' => 'Datos inválidos']);
         return;
     }
     
     try {
         $adminId = $_SESSION['user_id'];
         
-        // Actualizar la solicitud con todos los datos
+        // Actualizar solicitud
         $stmt = $db->prepare("
             UPDATE trial_requests 
             SET status = ?, 
@@ -274,23 +219,13 @@ function handleUpdateRequest($db) {
             $requestId
         ]);
         
-        // Si se aprueba, actualizar el estado del usuario
-        if ($input['status'] === 'approved') {
-            $stmt = $db->prepare("
-                UPDATE user_profiles 
-                SET subscription_status = 'trial', 
-                    trial_start_date = NOW(), 
-                    trial_end_date = DATE_ADD(NOW(), INTERVAL 15 DAY)
-                WHERE user_id = (SELECT user_id FROM trial_requests WHERE id = ?)
-            ");
-            $stmt->execute([$requestId]);
-        }
-        
-        echo json_encode(['success' => true, 'message' => 'Solicitud procesada exitosamente']);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Solicitud procesada exitosamente'
+        ]);
         
     } catch (Exception $e) {
-        error_log("Error in handleUpdateRequest: " . $e->getMessage());
-        throw new Exception("Error al actualizar solicitud: " . $e->getMessage());
+        throw new Exception('Error al procesar solicitud: ' . $e->getMessage());
     }
 }
 ?>

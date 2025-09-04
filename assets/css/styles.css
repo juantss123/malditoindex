@@ -473,3 +473,13 @@ a:hover{ color: var(--primary-600); }
 @media (prefers-reduced-motion: reduce){
   *{ animation: none !important; transition: none !important; }
 }
+/* Hace que el texto de las características de los planes sea celeste */
+#plansModal ul li {
+  color: #2F96EE !important;
+}
+
+/* Hace celeste el texto de las descripciones de planes */
+#pricing .price-card p,
+#pricing .price-card ul li {
+  color: #2F96EE !important;
+}

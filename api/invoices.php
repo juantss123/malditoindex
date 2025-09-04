@@ -45,6 +45,29 @@ function handleGetInvoices() {
     global $db;
     
     try {
+        // Create invoices table if it doesn't exist with correct structure
+        $db->exec("
+            CREATE TABLE IF NOT EXISTS invoices (
+                id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
+                clinic_id VARCHAR(36) NOT NULL,
+                patient_id VARCHAR(36) DEFAULT NULL,
+                invoice_number VARCHAR(50) NOT NULL UNIQUE,
+                invoice_date DATE NOT NULL,
+                due_date DATE DEFAULT NULL,
+                subtotal DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+                tax_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+                total_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+                status ENUM('draft','sent','paid','overdue','cancelled') DEFAULT 'draft',
+                payment_method VARCHAR(50) DEFAULT NULL,
+                payment_date DATE DEFAULT NULL,
+                notes TEXT DEFAULT NULL,
+                plan_type ENUM('start','clinic','enterprise') DEFAULT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (clinic_id) REFERENCES user_profiles(user_id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+        
         $stmt = $db->prepare("
             SELECT 
                 i.*,
@@ -52,7 +75,7 @@ function handleGetInvoices() {
                 up.email,
                 up.clinic_name
             FROM invoices i
-            LEFT JOIN user_profiles up ON i.user_id = up.user_id
+            LEFT JOIN user_profiles up ON i.clinic_id = up.user_id
             ORDER BY i.created_at DESC
         ");
         $stmt->execute();
@@ -72,7 +95,7 @@ function handleCreateInvoice() {
     $input = json_decode(file_get_contents('php://input'), true);
     
     // Validate required fields
-    $required = ['user_id', 'invoice_number', 'plan_type', 'amount', 'invoice_date'];
+    $required = ['clinic_id', 'invoice_number', 'plan_type', 'amount', 'invoice_date'];
     foreach ($required as $field) {
         if (empty($input[$field])) {
             http_response_code(400);
@@ -104,22 +127,21 @@ function handleCreateInvoice() {
         // Create invoice
         $stmt = $db->prepare("
             INSERT INTO invoices (
-                invoice_number, user_id, plan_type, amount, tax_amount, total_amount,
-                invoice_date, due_date, status, notes, created_by
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?)
+                invoice_number, clinic_id, plan_type, subtotal, tax_amount, total_amount,
+                invoice_date, due_date, status, notes
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?)
         ");
         
         $stmt->execute([
             $input['invoice_number'],
-            $input['user_id'],
+            $input['clinic_id'],
             $input['plan_type'],
             $baseAmount,
             $taxAmount,
             $totalAmount,
             $input['invoice_date'],
             $dueDate->format('Y-m-d'),
-            $input['notes'] ?? '',
-            $_SESSION['user_id']
+            $input['notes'] ?? ''
         ]);
         
         echo json_encode(['success' => true, 'message' => 'Factura creada exitosamente']);

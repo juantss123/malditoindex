@@ -312,7 +312,7 @@ try {
             
             <div class="col-12">
               <label class="form-label text-light">Usuario *</label>
-              <select name="user_id" id="userSelect" class="form-select glass-input" required>
+              <select name="clinic_id" id="userSelect" class="form-select glass-input" required>
                 <option value="">Seleccionar usuario</option>
                 <?php foreach ($activeUsers as $user): ?>
                 <option value="<?php echo $user['user_id']; ?>" 

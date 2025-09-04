@@ -412,17 +412,35 @@ $selectedPlan = $planDetails[$plan];
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
 
-      // Simulate file upload and processing
-      setTimeout(() => {
-        document.getElementById('successMessage').textContent = 
-          'Tu comprobante ha sido enviado exitosamente. Verificaremos tu transferencia y activaremos tu plan <?php echo $selectedPlan['name']; ?> dentro de 24-48 horas.';
-        
-        const modal = new bootstrap.Modal(document.getElementById('successModal'));
-        modal.show();
-        
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('transfer_proof', fileInput.files[0]);
+      formData.append('plan_type', '<?php echo $plan; ?>');
+      formData.append('amount', '<?php echo $selectedPlan['price']; ?>');
+
+      // Send to server
+      fetch('api/upload-transfer-proof.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          alert('Error: ' + data.error);
+        } else {
+          document.getElementById('successMessage').textContent = data.message;
+          const modal = new bootstrap.Modal(document.getElementById('successModal'));
+          modal.show();
+        }
+      })
+      .catch(error => {
+        console.error('Error uploading transfer proof:', error);
+        alert('Error al enviar el comprobante. Por favor, intentá nuevamente.');
+      })
+      .finally(() => {
         btn.disabled = false;
         btn.innerHTML = originalText;
-      }, 2000);
+      });
     }
   </script>
 </body>

@@ -39,6 +39,52 @@ function handleGetTransferProofs() {
     global $db;
     
     try {
+        // Create table if it doesn't exist
+        $db->exec("
+            CREATE TABLE IF NOT EXISTS transfer_proofs (
+                id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
+                user_id VARCHAR(36) NOT NULL,
+                plan_type ENUM('start', 'clinic', 'enterprise') NOT NULL,
+                amount DECIMAL(10,2) NOT NULL,
+                file_name VARCHAR(255) NOT NULL,
+                file_path VARCHAR(500) NOT NULL,
+                file_type VARCHAR(50) NOT NULL,
+                file_size INT NOT NULL,
+                status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+                admin_notes TEXT DEFAULT NULL,
+                processed_by VARCHAR(36) DEFAULT NULL,
+                processed_at TIMESTAMP NULL DEFAULT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_transfer_proofs_user_id (user_id),
+                INDEX idx_transfer_proofs_status (status),
+                INDEX idx_transfer_proofs_created_at (created_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+        
+        // Add foreign keys if they don't exist
+        try {
+            $db->exec("
+                ALTER TABLE transfer_proofs 
+                ADD CONSTRAINT fk_transfer_proofs_user 
+                FOREIGN KEY (user_id) REFERENCES user_profiles(user_id) 
+                ON DELETE CASCADE
+            ");
+        } catch (Exception $e) {
+            // Foreign key might already exist, ignore error
+        }
+        
+        try {
+            $db->exec("
+                ALTER TABLE transfer_proofs 
+                ADD CONSTRAINT fk_transfer_proofs_admin 
+                FOREIGN KEY (processed_by) REFERENCES user_profiles(user_id) 
+                ON DELETE SET NULL
+            ");
+        } catch (Exception $e) {
+            // Foreign key might already exist, ignore error
+        }
+        
         $stmt = $db->prepare("
             SELECT 
                 tp.*,

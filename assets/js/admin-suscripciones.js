@@ -289,8 +289,6 @@ async function handleEditPlan(e) {
     const formData = new FormData(e.target);
     const planData = {
       name: formData.get('name'),
-      price_monthly: parseFloat(formData.get('price_monthly')) * 100 || 0, // Convert to cents
-      price_yearly: parseFloat(formData.get('price_yearly')) * 100 || 0,   // Convert to cents
       price_monthly: parseFloat(formData.get('price_monthly')) || 0, // Use direct values
       price_yearly: parseFloat(formData.get('price_yearly')) || 0,   // Use direct values
       features: formData.getAll('features').filter(f => f.trim() !== ''),
@@ -426,7 +424,7 @@ function getPlanName(plan) {
 
 function formatPrice(priceInCents) {
   if (!priceInCents || isNaN(priceInCents)) return '0';
-  return Math.round(priceInCents / 100).toLocaleString('es-AR');
+  return Math.round(priceInCents).toLocaleString('es-AR');
 }
 
 function formatDate(dateString) {

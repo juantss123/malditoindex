@@ -426,6 +426,184 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  window.viewUser = function(userId) {
+    // Find user in the current users list
+    fetch('api/users.php')
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          showAlert('danger', data.error);
+          return;
+        }
+        
+        const user = data.users.find(u => u.user_id === userId);
+        if (!user) {
+          showAlert('danger', 'Usuario no encontrado');
+          return;
+        }
+
+        // Create user details content
+        const content = `
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="glass-card p-3">
+                <h6 class="text-white mb-3">
+                  <i class="bi bi-person-circle me-2"></i>Información personal
+                </h6>
+                <div class="mb-2">
+                  <strong class="text-light">Nombre completo:</strong>
+                  <div class="text-white">${user.first_name} ${user.last_name}</div>
+                </div>
+                <div class="mb-2">
+                  <strong class="text-light">Email:</strong>
+                  <div class="text-white">${user.email}</div>
+                </div>
+                <div class="mb-2">
+                  <strong class="text-light">Teléfono:</strong>
+                  <div class="text-white">${user.phone || 'No especificado'}</div>
+                </div>
+                <div class="mb-2">
+                  <strong class="text-light">Rol:</strong>
+                  <div class="text-white">
+                    <span class="badge ${user.role === 'admin' ? 'bg-danger' : 'bg-info'}">
+                      <i class="bi bi-shield${user.role === 'admin' ? '-check' : ''} me-1"></i>
+                      ${user.role === 'admin' ? 'Administrador' : 'Usuario'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="glass-card p-3">
+                <h6 class="text-white mb-3">
+                  <i class="bi bi-briefcase me-2"></i>Información profesional
+                </h6>
+                <div class="mb-2">
+                  <strong class="text-light">Consultorio:</strong>
+                  <div class="text-white">${user.clinic_name || 'No especificado'}</div>
+                </div>
+                <div class="mb-2">
+                  <strong class="text-light">Matrícula:</strong>
+                  <div class="text-white">${user.license_number || 'No especificada'}</div>
+                </div>
+                <div class="mb-2">
+                  <strong class="text-light">Especialidad:</strong>
+                  <div class="text-white">${getSpecialtyName(user.specialty)}</div>
+                </div>
+                <div class="mb-2">
+                  <strong class="text-light">Tamaño del equipo:</strong>
+                  <div class="text-white">${user.team_size || 'No especificado'}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-12">
+              <div class="glass-card p-3">
+                <h6 class="text-white mb-3">
+                  <i class="bi bi-credit-card me-2"></i>Información de suscripción
+                </h6>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <strong class="text-light">Plan actual:</strong>
+                    <div class="text-white">
+                      <span class="badge ${getPlanBadgeClass(user.subscription_plan)}">
+                        ${getPlanName(user.subscription_plan)}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <strong class="text-light">Estado:</strong>
+                    <div class="text-white">
+                      <span class="badge ${getStatusBadgeClass(user.subscription_status)}">
+                        ${getStatusName(user.subscription_status)}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <strong class="text-light">Fecha de registro:</strong>
+                    <div class="text-white">${formatDate(user.created_at)}</div>
+                  </div>
+                  ${user.subscription_status === 'trial' && user.trial_days_remaining !== null ? `
+                  <div class="col-md-6">
+                    <strong class="text-light">Días de prueba restantes:</strong>
+                    <div class="text-warning fw-bold">${user.trial_days_remaining} días</div>
+                  </div>
+                  <div class="col-md-6">
+                    <strong class="text-light">Fin de prueba:</strong>
+                    <div class="text-white">${formatDate(user.trial_end_date)}</div>
+                  </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Show modal with user details
+        document.getElementById('userDetailsContent').innerHTML = content;
+        const modal = new bootstrap.Modal(document.getElementById('viewUserModal'));
+        modal.show();
+      })
+      .catch(error => {
+        console.error('Error loading user details:', error);
+        showAlert('danger', 'Error al cargar detalles del usuario');
+      });
+  }
+
+  window.editUser = function(userId) {
+    // Find user in the current users list
+    fetch('api/users.php')
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          showAlert('danger', data.error);
+          return;
+        }
+        
+        const user = data.users.find(u => u.user_id === userId);
+        if (!user) {
+          showAlert('danger', 'Usuario no encontrado');
+          return;
+        }
+
+        // Fill form with user data
+        document.getElementById('editUserId').value = user.user_id;
+        document.getElementById('editFirstName').value = user.first_name;
+        document.getElementById('editLastName').value = user.last_name;
+        document.getElementById('editPhone').value = user.phone || '';
+        document.getElementById('editLicenseNumber').value = user.license_number || '';
+        document.getElementById('editClinicName').value = user.clinic_name || '';
+        document.getElementById('editSpecialty').value = user.specialty || '';
+        document.getElementById('editTeamSize').value = user.team_size || '1';
+        document.getElementById('editSubscriptionStatus').value = user.subscription_status || 'trial';
+        document.getElementById('editSubscriptionPlan').value = user.subscription_plan || '';
+
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+        modal.show();
+      })
+      .catch(error => {
+        console.error('Error loading user for edit:', error);
+        showAlert('danger', 'Error al cargar datos del usuario');
+      });
+  }
+
+  // Helper function for specialty names
+  function getSpecialtyName(specialty) {
+    switch(specialty) {
+      case 'general': return 'Odontología General';
+      case 'ortodontia': return 'Ortodoncia';
+      case 'endodoncia': return 'Endodoncia';
+      case 'periodoncia': return 'Periodoncia';
+      case 'cirugia': return 'Cirugía Oral';
+      case 'pediatrica': return 'Odontopediatría';
+      case 'estetica': return 'Odontología Estética';
+      case 'implantes': return 'Implantología';
+      default: return 'No especificada';
+    }
+  }
+
   function formatDateTime(dateString) {
     if (!dateString) return 'Sin fecha';
     return new Date(dateString).toLocaleString('es-AR', {

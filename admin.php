@@ -96,6 +96,9 @@ try {
               <a class="nav-link text-light" href="admin-usuarios.php">
                 <i class="bi bi-people me-2"></i>Usuarios
               </a>
+              <a class="nav-link text-light" href="admin-comprobantes.php">
+                <i class="bi bi-receipt me-2"></i>Comprobantes
+              </a>
               <a class="nav-link text-light" href="#subscriptions">
                 <i class="bi bi-credit-card me-2"></i>Suscripciones
               </a>

@@ -419,7 +419,7 @@ try {
             </div>
             <div class="col-md-6">
               <label class="form-label text-light">Estado de suscripción</label>
-              <select name="subscriptionStatus" id="editSubscriptionStatus" class="form-select glass-input">
+              <select name="subscription_status" id="editSubscriptionStatus" class="form-select glass-input">
                 <option value="trial">Prueba gratuita</option>
                 <option value="active">Activo</option>
                 <option value="expired">Vencido</option>
@@ -428,7 +428,7 @@ try {
             </div>
             <div class="col-md-6">
               <label class="form-label text-light">Plan</label>
-              <select name="subscriptionPlan" id="editSubscriptionPlan" class="form-select glass-input">
+              <select name="subscription_plan" id="editSubscriptionPlan" class="form-select glass-input">
                 <option value="">Sin plan</option>
                 <option value="start">Start</option>
                 <option value="clinic">Clinic</option>

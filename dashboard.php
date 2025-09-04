@@ -434,9 +434,9 @@ try {
               <div class="glass-card p-4 h-100">
                 <div class="text-center mb-3">
                   <h4 class="text-white">Start</h4>
-                  <div class="display-6 fw-bold text-white">$14.999<small class="fs-6 text-light"> ARS/mes</small></div>
+                  <div class="display-6 fw-bold text-white">$<span id="modalStartPrice">14.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
                 </div>
-                <ul class="list-unstyled mb-4">
+                <ul class="list-unstyled mb-4" id="modalStartFeatures">
                   <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>1 profesional</li>
                   <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Agenda & turnos</li>
                   <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Historia clínica</li>
@@ -454,10 +454,10 @@ try {
                 <div class="text-center mb-3">
                   <span class="badge bg-primary mb-2">Recomendado</span>
                   <h4 class="text-white">Clinic</h4>
-                  <div class="display-6 fw-bold text-white">$<span id="clinicPrice">24.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
+                  <div class="display-6 fw-bold text-white">$<span id="modalClinicPrice">24.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
                 </div>
                 <ul class="list-unstyled mb-4">
-                  <div id="clinicFeatures">
+                  <div id="modalClinicFeatures">
                     <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
                     <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
                     <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
@@ -520,26 +520,57 @@ try {
 
       async function loadDynamicPricing() {
         try {
+          console.log('Dashboard: Loading dynamic pricing for modal...');
           const response = await fetch('api/plans.php');
+          console.log('Dashboard: API response status:', response.status);
           const data = await response.json();
+          console.log('Dashboard: API response data:', data);
           
           if (data.success && data.plans) {
             const clinicPlan = data.plans.find(p => p.plan_type === 'clinic');
+            const startPlan = data.plans.find(p => p.plan_type === 'start');
+            
             if (clinicPlan) {
-              const monthlyPrice = Math.round(clinicPlan.price_monthly).toLocaleString('es-AR');
-              document.getElementById('clinicPrice').textContent = monthlyPrice;
+              console.log('Dashboard: Clinic plan data:', clinicPlan);
+              const monthlyPrice = Math.round(clinicPlan.price_monthly / 100).toLocaleString('es-AR');
+              console.log('Dashboard: Updating modal clinic price to:', monthlyPrice);
+              
+              const modalClinicPriceEl = document.getElementById('modalClinicPrice');
+              if (modalClinicPriceEl) {
+                modalClinicPriceEl.textContent = monthlyPrice;
+              }
               
               // Update features if available
               if (clinicPlan.features && clinicPlan.features.length > 0) {
-                const featuresHtml = clinicPlan.features.map(feature => 
-                  `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
-                ).join('');
-                document.getElementById('clinicFeatures').innerHTML = featuresHtml;
+                const modalClinicFeaturesEl = document.getElementById('modalClinicFeatures');
+                if (modalClinicFeaturesEl) {
+                  const featuresHtml = clinicPlan.features.map(feature => 
+                    `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
+                  ).join('');
+                  modalClinicFeaturesEl.innerHTML = featuresHtml;
+                }
               }
             }
+            
+            // Update Start plan in modal if needed
+            if (startPlan) {
+              console.log('Dashboard: Start plan data:', startPlan);
+              const startMonthlyPrice = Math.round(startPlan.price_monthly / 100).toLocaleString('es-AR');
+              console.log('Dashboard: Start plan price:', startMonthlyPrice);
+              
+              // Update Start plan price if element exists
+              const modalStartPriceEl = document.getElementById('modalStartPrice');
+              if (modalStartPriceEl) {
+                modalStartPriceEl.textContent = startMonthlyPrice;
+              }
+            }
+            
+            console.log('Dashboard: Dynamic pricing loaded successfully');
+          } else {
+            console.log('Dashboard: No plans data received or API error');
           }
         } catch (error) {
-          console.error('Error loading dynamic pricing:', error);
+          console.error('Dashboard: Error loading dynamic pricing:', error);
           // Keep default prices if API fails
         }
       }

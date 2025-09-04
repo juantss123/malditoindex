@@ -287,6 +287,130 @@ try {
     </div>
   </div>
 
+  <!-- View User Modal -->
+  <div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="viewUserModalLabel">
+            <i class="bi bi-eye me-2"></i>Detalles del usuario
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="userDetailsContent">
+            <!-- User details will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="editUserModalLabel">
+            <i class="bi bi-pencil me-2"></i>Editar usuario
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="editUserForm" class="row g-3">
+            <input type="hidden" name="userId" id="editUserId">
+            
+            <div class="col-12">
+              <h6 class="text-white mb-3">
+                <i class="bi bi-person-circle me-2"></i>Información personal
+              </h6>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Nombre *</label>
+              <input type="text" name="first_name" id="editFirstName" class="form-control glass-input" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Apellido *</label>
+              <input type="text" name="last_name" id="editLastName" class="form-control glass-input" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Teléfono *</label>
+              <input type="tel" name="phone" id="editPhone" class="form-control glass-input" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Matrícula</label>
+              <input type="text" name="license_number" id="editLicenseNumber" class="form-control glass-input">
+            </div>
+            
+            <div class="col-12 mt-4">
+              <h6 class="text-white mb-3">
+                <i class="bi bi-briefcase me-2"></i>Información profesional
+              </h6>
+            </div>
+            <div class="col-12">
+              <label class="form-label text-light">Nombre del consultorio *</label>
+              <input type="text" name="clinic_name" id="editClinicName" class="form-control glass-input" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Especialidad</label>
+              <select name="specialty" id="editSpecialty" class="form-select glass-input">
+                <option value="">Seleccionar especialidad</option>
+                <option value="general">Odontología General</option>
+                <option value="ortodontia">Ortodoncia</option>
+                <option value="endodoncia">Endodoncia</option>
+                <option value="periodoncia">Periodoncia</option>
+                <option value="cirugia">Cirugía Oral</option>
+                <option value="pediatrica">Odontopediatría</option>
+                <option value="estetica">Odontología Estética</option>
+                <option value="implantes">Implantología</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Tamaño del equipo</label>
+              <select name="team_size" id="editTeamSize" class="form-select glass-input">
+                <option value="1">Solo yo</option>
+                <option value="2-3">2-3 profesionales</option>
+                <option value="4-10">4-10 profesionales</option>
+                <option value="10+">Más de 10 profesionales</option>
+              </select>
+            </div>
+            
+            <div class="col-12 mt-4">
+              <h6 class="text-white mb-3">
+                <i class="bi bi-credit-card me-2"></i>Suscripción
+              </h6>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Estado de suscripción</label>
+              <select name="subscription_status" id="editSubscriptionStatus" class="form-select glass-input">
+                <option value="trial">Prueba gratuita</option>
+                <option value="active">Activo</option>
+                <option value="expired">Vencido</option>
+                <option value="cancelled">Cancelado</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light">Plan</label>
+              <select name="subscription_plan" id="editSubscriptionPlan" class="form-select glass-input">
+                <option value="">Sin plan</option>
+                <option value="start">Start</option>
+                <option value="clinic">Clinic</option>
+                <option value="enterprise">Enterprise</option>
+              </select>
+            </div>
+            
+            <div class="col-12 text-end">
+              <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-2"></i>Guardar cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Add User Modal -->
   <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -357,5 +481,73 @@ try {
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="assets/js/admin-php.js"></script>
+  <script>
+  // Edit user form handler
+  const editUserForm = document.getElementById('editUserForm');
+  if (editUserForm) {
+    editUserForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando cambios...';
+      
+      try {
+        const formData = new FormData(e.target);
+        const userData = Object.fromEntries(formData.entries());
+        const userId = userData.userId;
+        delete userData.userId;
+        
+        const response = await fetch(`api/users.php?id=${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+          showAlert('danger', data.error);
+          return;
+        }
+        
+        showAlert('success', data.message);
+        
+        // Close modal and reload users
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+        modal.hide();
+        loadUsers();
+        
+      } catch (error) {
+        console.error('Error updating user:', error);
+        showAlert('danger', 'Error al actualizar usuario');
+      } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    });
+  }
+
+  // Helper function for specialty names
+  function getSpecialtyName(specialty) {
+    switch(specialty) {
+      case 'general': return 'Odontología General';
+      case 'ortodontia': return 'Ortodoncia';
+      case 'endodoncia': return 'Endodoncia';
+      case 'periodoncia': return 'Periodoncia';
+      case 'cirugia': return 'Cirugía Oral';
+      case 'pediatrica': return 'Odontopediatría';
+      case 'estetica': return 'Odontología Estética';
+      case 'implantes': return 'Implantología';
+      default: return 'No especificada';
+    }
+  }
+  </script>
 </body>
 </html>

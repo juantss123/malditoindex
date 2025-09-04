@@ -1018,6 +1018,61 @@ a:hover{ color: var(--primary-600); }
   .whatsapp-float { animation: heartbeat-single 5s ease-in-out infinite !important; }
 }
 
+/* Fix para evitar layout shift durante animaciones AOS */
+[data-aos] {
+  pointer-events: none;
+}
+
+[data-aos].aos-animate {
+  pointer-events: auto;
+}
+
+/* Prevenir layout shift en elementos con AOS */
+[data-aos="slide-right"],
+[data-aos="slide-left"],
+[data-aos="slide-up"],
+[data-aos="fade-up"],
+[data-aos="zoom-in"],
+[data-aos="fade-down"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+[data-aos="slide-right"].aos-animate,
+[data-aos="slide-left"].aos-animate,
+[data-aos="slide-up"].aos-animate,
+[data-aos="fade-up"].aos-animate,
+[data-aos="zoom-in"].aos-animate,
+[data-aos="fade-down"].aos-animate {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Asegurar que los containers mantengan su estructura */
+.container,
+.container-fluid {
+  min-height: 1px; /* Previene colapso durante animaciones */
+}
+
+/* Fix específico para secciones que se desalinean */
+.section-py,
+.section-pt,
+.section-py-sm {
+  position: relative;
+  width: 100%;
+}
+
+/* Prevenir que las filas de Bootstrap se desalineen */
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.row > * {
+  padding-left: var(--bs-gutter-x, 0.75rem);
+  padding-right: var(--bs-gutter-x, 0.75rem);
+}
+
 /* Hace que el texto de las características de los planes sea celeste */
 #plansModal ul li {
   color: #2F96EE !important;

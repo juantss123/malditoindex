@@ -14,8 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
       useClassNames: false,
       disableMutationObserver: false,
       debounceDelay: 50,
-      throttleDelay: 99
+      throttleDelay: 99,
+      // Configuración para prevenir layout shift
+      disable: function() {
+        var mobile = window.innerWidth < 768;
+        return mobile ? 'mobile' : false;
+      }
     });
+    
+    // Forzar recálculo del layout después de que AOS se inicialice
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
   }
 
   // Year in footer

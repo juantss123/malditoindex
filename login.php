@@ -96,6 +96,7 @@ if (isLoggedIn()) {
                   </label>
                 </div>
                 <a href="#" class="text-primary small">¿Olvidaste tu contraseña?</a>
+                <a href="forgot-password.php" class="text-primary small">¿Olvidaste tu contraseña?</a>
               </div>
 
               <div class="col-12" data-aos="zoom-in-up" data-aos-duration="1000" data-aos-delay="800">

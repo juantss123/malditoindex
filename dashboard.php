@@ -101,7 +101,21 @@ try {
                 <p class="text-light opacity-85 mb-3">
                   <?php 
                   if ($userProfile && $userProfile['subscription_status'] === 'trial') {
-                      echo "Tu prueba gratuita está activa. Explorá todas las funciones sin límites.";
+                      // Check if user has approved trial request
+                      $hasApprovedTrial = false;
+                      try {
+                          $stmt = $db->prepare("SELECT status FROM trial_requests WHERE user_id = ? AND status = 'approved' LIMIT 1");
+                          $stmt->execute([$_SESSION['user_id']]);
+                          $hasApprovedTrial = $stmt->fetch() !== false;
+                      } catch (Exception $e) {
+                          // Ignore error if table doesn't exist
+                      }
+                      
+                      if ($hasApprovedTrial) {
+                          echo "Tu prueba gratuita está activa. Explorá todas las funciones sin límites.";
+                      } else {
+                          echo "Para acceder a la prueba gratuita completa, solicita la activación usando el botón de abajo.";
+                      }
                   } elseif ($userProfile && $userProfile['subscription_status'] === 'active') {
                       echo "Tu plan está activo y funcionando perfectamente.";
                   } else {
@@ -115,7 +129,21 @@ try {
                     <span>
                       <?php 
                       if ($userProfile && $userProfile['subscription_status'] === 'trial') {
-                          echo "Prueba gratuita: $trialDaysRemaining días restantes";
+                          // Check if user has approved trial request
+                          $hasApprovedTrial = false;
+                          try {
+                              $stmt = $db->prepare("SELECT status FROM trial_requests WHERE user_id = ? AND status = 'approved' LIMIT 1");
+                              $stmt->execute([$_SESSION['user_id']]);
+                              $hasApprovedTrial = $stmt->fetch() !== false;
+                          } catch (Exception $e) {
+                              // Ignore error if table doesn't exist
+                          }
+                          
+                          if ($hasApprovedTrial) {
+                              echo "Prueba gratuita: $trialDaysRemaining días restantes";
+                          } else {
+                              echo "Cuenta en período de prueba";
+                          }
                       } elseif ($userProfile && $userProfile['subscription_status'] === 'active') {
                           echo "Plan activo: " . ucfirst($userProfile['subscription_plan']);
                       } else {

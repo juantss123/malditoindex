@@ -527,6 +527,10 @@ try {
         button.disabled = false;
       }, 3000);
     }
+    });
+  </script>
+  
+  <style>
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -537,7 +541,7 @@ try {
         transform: translateY(0);
       }
     }
-  </script>
+  </style>
 </body>
 </html>
 

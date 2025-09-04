@@ -245,6 +245,7 @@ function handleSubscribe() {
         echo json_encode(['success' => true, 'message' => '🎉 ¡Gracias! Te has suscripto exitosamente al newsletter de DentexaPro. Recibirás contenido valioso cada semana.']);
         
     } catch (Exception $e) {
+        error_log("Newsletter subscription error: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['error' => 'Error al suscribir: ' . $e->getMessage()]);
     }

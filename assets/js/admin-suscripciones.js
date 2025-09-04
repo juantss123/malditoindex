@@ -30,7 +30,6 @@ async function loadPlans() {
     console.log('Cargando planes desde API...');
     const response = await fetch('api/plans.php');
     console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
     
     const text = await response.text();
     console.log('Raw response:', text);
@@ -46,7 +45,6 @@ async function loadPlans() {
     }
     
     console.log('Parsed data:', data);
-    const data = await response.json();
     
     if (data.error) {
       console.error('API error:', data.error);

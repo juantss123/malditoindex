@@ -22,34 +22,49 @@ if (!$db) {
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Create plans table if it doesn't exist
+// First, let's check the actual table structure
 try {
-    $db->exec("
-        CREATE TABLE IF NOT EXISTS subscription_plans (
-            id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
-            plan_type ENUM('start', 'clinic', 'enterprise') NOT NULL UNIQUE,
-            name VARCHAR(100) NOT NULL,
-            price_monthly DECIMAL(10,2) NOT NULL,
-            price_yearly DECIMAL(10,2) NOT NULL,
-            features JSON NOT NULL,
-            is_active BOOLEAN DEFAULT TRUE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-    ");
+    $stmt = $db->query("DESCRIBE subscription_plans");
+    $columns = $stmt->fetchAll();
+    $columnNames = array_column($columns, 'Field');
+    
+    // Check if we need to add missing columns
+    $needsUpdate = false;
+    if (!in_array('price_monthly', $columnNames)) {
+        $needsUpdate = true;
+    }
+    if (!in_array('price_yearly', $columnNames)) {
+        $needsUpdate = true;
+    }
+    
+    if ($needsUpdate) {
+        // Add missing columns
+        if (!in_array('price_monthly', $columnNames)) {
+            $db->exec("ALTER TABLE subscription_plans ADD COLUMN price_monthly DECIMAL(10,2) DEFAULT 0.00");
+        }
+        if (!in_array('price_yearly', $columnNames)) {
+            $db->exec("ALTER TABLE subscription_plans ADD COLUMN price_yearly DECIMAL(10,2) DEFAULT 0.00");
+        }
+        
+        // Migrate data from 'price' column to 'price_monthly' if needed
+        if (in_array('price', $columnNames)) {
+            $db->exec("UPDATE subscription_plans SET price_monthly = price WHERE price_monthly = 0");
+            $db->exec("UPDATE subscription_plans SET price_yearly = price * 0.8 WHERE price_yearly = 0"); // 20% discount for yearly
+        }
+    }
     
     // Check if table has data
     $stmt = $db->query("SELECT COUNT(*) as count FROM subscription_plans");
     $count = $stmt->fetch()['count'];
     
     if ($count == 0) {
-        // Insert default plans with correct prices (not in cents)
+        // Insert default plans
         $defaultPlans = [
             [
                 'plan_type' => 'start',
                 'name' => 'Start',
                 'price_monthly' => 14999.00,
-                'price_yearly' => 9999.00,
+                'price_yearly' => 11999.00,
                 'features' => json_encode([
                     '1 profesional',
                     'Agenda & turnos',
@@ -100,7 +115,7 @@ try {
     
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Error creando tabla de planes: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Error configurando tabla de planes: ' . $e->getMessage()]);
     exit();
 }
 
@@ -185,7 +200,7 @@ function handleUpdatePlan() {
         $stmt->execute([$planType]);
         $currentPlan = $stmt->fetch();
         
-        // Validate and prepare data - NO conversion, use direct values
+        // Validate and prepare data - use direct values (no conversion)
         $monthlyPrice = (float) ($input['price_monthly'] ?? 0);
         $yearlyPrice = (float) ($input['price_yearly'] ?? 0);
         $features = $input['features'] ?? [];

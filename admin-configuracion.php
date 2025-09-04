@@ -10,6 +10,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $database = new Database();
     $db = $database->getConnection();
     
+    // Handle password change
+    if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
+        try {
+            $currentPassword = $_POST['current_password'] ?? '';
+            $newPassword = $_POST['new_password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+            
+            if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {
+                $errorMessage = 'Todos los campos de contraseña son requeridos';
+            } elseif ($newPassword !== $confirmPassword) {
+                $errorMessage = 'Las contraseñas nuevas no coinciden';
+            } elseif (strlen($newPassword) < 8) {
+                $errorMessage = 'La nueva contraseña debe tener al menos 8 caracteres';
+            } else {
+                // Verify current password
+                $stmt = $db->prepare("SELECT password_hash FROM user_profiles WHERE user_id = ?");
+                $stmt->execute([$_SESSION['user_id']]);
+                $user = $stmt->fetch();
+                
+                if (!$user || !verifyPassword($currentPassword, $user['password_hash'])) {
+                    $errorMessage = 'La contraseña actual es incorrecta';
+                } else {
+                    // Update password
+                    $newPasswordHash = hashPassword($newPassword);
+                    $stmt = $db->prepare("UPDATE user_profiles SET password_hash = ? WHERE user_id = ?");
+                    $stmt->execute([$newPasswordHash, $_SESSION['user_id']]);
+                    
+                    $successMessage = 'Contraseña actualizada exitosamente';
+                }
+            }
+        } catch (Exception $e) {
+            $errorMessage = 'Error al cambiar contraseña: ' . $e->getMessage();
+        }
+    } else {
+        // Handle payment settings
     try {
         // Create payment_settings table if it doesn't exist
         $db->exec("
@@ -155,6 +190,7 @@ try {
 
           <!-- Payment Configuration Form -->
           <form method="POST" class="row g-4">
+            <input type="hidden" name="action" value="payment_settings">
             <!-- MercadoPago Configuration -->
             <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
               <div class="glass-card p-4">
@@ -265,6 +301,56 @@ try {
             </div>
           </form>
 
+          <!-- Password Change Section -->
+          <div class="glass-card p-4 mt-4" data-aos="fade-up" data-aos-duration="800" data-aos-delay="800">
+            <h4 class="text-white mb-3">
+              <i class="bi bi-shield-lock me-2"></i>Cambiar contraseña
+            </h4>
+            <p class="text-light opacity-75 mb-4">
+              Actualiza tu contraseña de administrador para mantener la seguridad de tu cuenta.
+            </p>
+            
+            <form method="POST" class="row g-3" style="max-width: 600px;">
+              <input type="hidden" name="action" value="change_password">
+              
+              <div class="col-12">
+                <label class="form-label text-light">Contraseña actual *</label>
+                <div class="position-relative">
+                  <input type="password" name="current_password" id="currentPassword" class="form-control glass-input" required>
+                  <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-light opacity-75" onclick="togglePassword('currentPassword', 'currentPasswordIcon')" style="z-index: 10;">
+                    <i class="bi bi-eye" id="currentPasswordIcon"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label text-light">Nueva contraseña *</label>
+                <div class="position-relative">
+                  <input type="password" name="new_password" id="newPassword" class="form-control glass-input" required minlength="8">
+                  <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-light opacity-75" onclick="togglePassword('newPassword', 'newPasswordIcon')" style="z-index: 10;">
+                    <i class="bi bi-eye" id="newPasswordIcon"></i>
+                  </button>
+                </div>
+                <small class="text-light opacity-75">Mínimo 8 caracteres</small>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label text-light">Confirmar nueva contraseña *</label>
+                <div class="position-relative">
+                  <input type="password" name="confirm_password" id="confirmPassword" class="form-control glass-input" required minlength="8">
+                  <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-light opacity-75" onclick="togglePassword('confirmPassword', 'confirmPasswordIcon')" style="z-index: 10;">
+                    <i class="bi bi-eye" id="confirmPasswordIcon"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="col-12">
+                <button type="submit" class="btn btn-warning">
+                  <i class="bi bi-shield-check me-2"></i>Cambiar contraseña
+                </button>
+              </div>
+            </form>
+          </div>
           <!-- Current Status -->
           <div class="glass-card p-4 mt-4" data-aos="fade-up" data-aos-duration="800" data-aos-delay="700">
             <h4 class="text-white mb-3">
@@ -336,6 +422,22 @@ try {
       bankTransferToggle.addEventListener('change', (e) => {
         bankTransferFields.style.display = e.target.checked ? 'block' : 'none';
       });
+    }
+
+    // Password toggle function
+    function togglePassword(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
     }
 
     // CBU/CVU validation

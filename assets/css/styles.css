@@ -520,3 +520,55 @@ a:hover{ color: var(--primary-600); }
 #pricing .price-card ul li {
   color: #2F96EE !important;
 }
+
+/* Timeline styles for tickets */
+.timeline {
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -12px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.timeline-content {
+  margin-left: 8px;
+}
+
+/* Ticket priority indicators */
+.priority-urgent {
+  border-left: 4px solid #dc3545;
+}
+
+.priority-high {
+  border-left: 4px solid #ffc107;
+}
+
+.priority-medium {
+  border-left: 4px solid #17a2b8;
+}
+
+.priority-low {
+  border-left: 4px solid #6c757d;
+}

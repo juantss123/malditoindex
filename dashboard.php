@@ -429,6 +429,77 @@ console.log('Dashboard: No features found for start plan or features array is em
         </div>
       </div>
       <?php endif; ?>
+
+      <!-- Support Section -->
+      <div class="row mt-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="800">
+          <div class="glass-card p-4 p-sm-5">
+            <div class="row align-items-center">
+              <div class="col-lg-8">
+                <h3 class="text-white mb-2">
+                  <i class="bi bi-headset me-2"></i>¿Necesitas ayuda?
+                </h3>
+                <p class="text-light opacity-85 mb-3">
+                  Nuestro equipo de soporte está aquí para ayudarte. Crea un ticket y te responderemos lo antes posible.
+                </p>
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-clock-fill text-info me-2"></i>
+                      <span>Respuesta en 24 horas</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-chat-dots-fill text-success me-2"></i>
+                      <span>Soporte en español</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <button class="btn btn-info btn-lg w-100" data-bs-toggle="modal" data-bs-target="#createTicketModal">
+                  <i class="bi bi-plus-circle me-2"></i>Crear ticket de soporte
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Tickets Section -->
+      <div class="row mt-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="900">
+          <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="text-white mb-0">
+                <i class="bi bi-ticket-perforated me-2"></i>Mis tickets de soporte
+              </h4>
+              <button class="btn btn-primary-soft" onclick="loadMyTickets()">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+              </button>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Asunto</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Última actualización</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="myTicketsTable">
+                  <!-- User tickets will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -587,77 +658,6 @@ console.log('Dashboard: No features found for start plan or features array is em
           </div>
 
           <!-- Plan Access Data -->
-
-      <!-- Support Section -->
-      <div class="row mt-4">
-        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="800">
-          <div class="glass-card p-4 p-sm-5">
-            <div class="row align-items-center">
-              <div class="col-lg-8">
-                <h3 class="text-white mb-2">
-                  <i class="bi bi-headset me-2"></i>¿Necesitas ayuda?
-                </h3>
-                <p class="text-light opacity-85 mb-3">
-                  Nuestro equipo de soporte está aquí para ayudarte. Crea un ticket y te responderemos lo antes posible.
-                </p>
-                <div class="row g-3">
-                  <div class="col-sm-6">
-                    <div class="d-flex align-items-center text-light">
-                      <i class="bi bi-clock-fill text-info me-2"></i>
-                      <span>Respuesta en 24 horas</span>
-                    </div>
-                  </div>
-                  <div class="col-sm-6">
-                    <div class="d-flex align-items-center text-light">
-                      <i class="bi bi-chat-dots-fill text-success me-2"></i>
-                      <span>Soporte en español</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
-                <button class="btn btn-info btn-lg w-100" data-bs-toggle="modal" data-bs-target="#createTicketModal">
-                  <i class="bi bi-plus-circle me-2"></i>Crear ticket de soporte
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- My Tickets Section -->
-      <div class="row mt-4">
-        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="900">
-          <div class="glass-card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <h4 class="text-white mb-0">
-                <i class="bi bi-ticket-perforated me-2"></i>Mis tickets de soporte
-              </h4>
-              <button class="btn btn-primary-soft" onclick="loadMyTickets()">
-                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
-              </button>
-            </div>
-            
-            <div class="table-responsive">
-              <table class="table table-dark table-hover">
-                <thead>
-                  <tr>
-                    <th>Número</th>
-                    <th>Asunto</th>
-                    <th>Categoría</th>
-                    <th>Estado</th>
-                    <th>Última actualización</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="myTicketsTable">
-                  <!-- User tickets will be loaded here -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
           <div class="glass-card p-4 mb-4" id="planAccessSection">
             <h5 class="text-white mb-3">
               <i class="bi bi-globe me-2"></i>Acceso a tu panel
@@ -1099,6 +1099,387 @@ console.log('Dashboard: No features found for start plan or features array is em
         // Redirect to payment page
         window.location.href = `pago.php?plan=${planType}`;
       }
+
+      // Load user's tickets
+      loadMyTickets();
+
+      async function loadMyTickets() {
+        const tbody = document.getElementById('myTicketsTable');
+        
+        // Show loading state
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center text-light opacity-75 py-4">
+              <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+              Cargando tickets...
+            </td>
+          </tr>
+        `;
+
+        try {
+          const response = await fetch('api/tickets.php');
+          const data = await response.json();
+          
+          if (data.error) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="6" class="text-center text-danger py-4">
+                  <i class="bi bi-exclamation-triangle me-2"></i>Error: ${data.error}
+                </td>
+              </tr>
+            `;
+            return;
+          }
+          
+          const tickets = data.tickets || [];
+          
+          if (tickets.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="6" class="text-center text-light opacity-75 py-4">
+                  <i class="bi bi-inbox me-2"></i>No tienes tickets de soporte
+                  <br><small class="mt-2 d-block">Crea tu primer ticket usando el botón de arriba</small>
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          tbody.innerHTML = tickets.map(ticket => `
+            <tr>
+              <td>
+                <div class="text-white fw-bold">${ticket.ticket_number}</div>
+                <small class="text-light opacity-75">
+                  <i class="bi bi-chat-dots me-1"></i>${ticket.response_count || 0} respuestas
+                </small>
+              </td>
+              <td>
+                <div class="text-white">${ticket.subject}</div>
+                <small class="text-light opacity-75">${truncateText(ticket.description, 50)}</small>
+              </td>
+              <td>
+                <span class="badge ${getCategoryBadgeClass(ticket.category)}">
+                  <i class="bi bi-${getCategoryIcon(ticket.category)} me-1"></i>
+                  ${getCategoryName(ticket.category)}
+                </span>
+              </td>
+              <td>
+                <span class="badge ${getStatusBadgeClass(ticket.status)}">
+                  <i class="bi bi-${getStatusIcon(ticket.status)} me-1"></i>
+                  ${getStatusName(ticket.status)}
+                </span>
+              </td>
+              <td class="text-light opacity-75">${formatDateTime(ticket.updated_at)}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="viewMyTicket('${ticket.id}')">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </td>
+            </tr>
+          `).join('');
+
+        } catch (error) {
+          console.error('Error loading tickets:', error);
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-danger py-4">
+                <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar tickets
+              </td>
+            </tr>
+          `;
+        }
+      }
+
+      // Create ticket form handler
+      const createTicketForm = document.getElementById('createTicketForm');
+      if (createTicketForm) {
+        createTicketForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const submitBtn = e.target.querySelector('button[type="submit"]');
+          const originalText = submitBtn.innerHTML;
+          
+          // Disable submit button
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creando ticket...';
+          
+          try {
+            const formData = new FormData(e.target);
+            const ticketData = Object.fromEntries(formData.entries());
+            
+            const response = await fetch('api/tickets.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(ticketData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.error) {
+              showAlert('danger', data.error);
+              return;
+            }
+            
+            showAlert('success', `Ticket ${data.ticket_number} creado exitosamente. Te responderemos pronto.`);
+            
+            // Close modal and reload tickets
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createTicketModal'));
+            modal.hide();
+            e.target.reset();
+            loadMyTickets();
+            
+          } catch (error) {
+            console.error('Error creating ticket:', error);
+            showAlert('danger', 'Error al crear ticket');
+          } finally {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+          }
+        });
+      }
+
+      // View my ticket function
+      window.viewMyTicket = async function(ticketId) {
+        try {
+          const response = await fetch(`api/tickets.php?id=${ticketId}`);
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert('danger', data.error);
+            return;
+          }
+          
+          const ticket = data.ticket;
+          const responses = data.responses || [];
+          
+          const content = `
+            <div class="row g-4">
+              <div class="col-12">
+                <div class="glass-card p-4">
+                  <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <h4 class="text-white mb-1">${ticket.subject}</h4>
+                      <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="badge ${getStatusBadgeClass(ticket.status)}">
+                          <i class="bi bi-${getStatusIcon(ticket.status)} me-1"></i>
+                          ${getStatusName(ticket.status)}
+                        </span>
+                        <span class="badge ${getCategoryBadgeClass(ticket.category)}">
+                          <i class="bi bi-${getCategoryIcon(ticket.category)} me-1"></i>
+                          ${getCategoryName(ticket.category)}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="text-end">
+                      <div class="text-white fw-bold">${ticket.ticket_number}</div>
+                      <small class="text-light opacity-75">${formatDateTime(ticket.created_at)}</small>
+                    </div>
+                  </div>
+                  
+                  <div class="glass-card p-3 mb-4">
+                    <h6 class="text-white mb-2">Tu consulta:</h6>
+                    <p class="text-light opacity-85 mb-0">${ticket.description}</p>
+                  </div>
+                  
+                  <!-- Responses -->
+                  ${responses.length > 0 ? `
+                  <div class="mb-4">
+                    <h6 class="text-white mb-3">
+                      <i class="bi bi-chat-dots me-2"></i>Respuestas del soporte
+                    </h6>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                      ${responses.filter(r => !r.is_internal).map(response => `
+                        <div class="glass-card p-3 mb-3">
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center">
+                              <div class="bg-${response.role === 'admin' ? 'danger' : 'primary'} rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 35px; height: 35px;">
+                                <i class="bi bi-${response.role === 'admin' ? 'shield-check' : 'person'} text-white"></i>
+                              </div>
+                              <div>
+                                <div class="text-white fw-medium">${response.user_name}</div>
+                                <small class="text-light opacity-75">
+                                  ${response.role === 'admin' ? 'Equipo de soporte' : 'Tú'}
+                                </small>
+                              </div>
+                            </div>
+                            <small class="text-light opacity-75">${formatDateTime(response.created_at)}</small>
+                          </div>
+                          <p class="text-light opacity-85 mb-0">${response.message}</p>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                  ` : ''}
+                  
+                  ${ticket.status !== 'closed' && ticket.status !== 'resolved' ? `
+                  <!-- Add User Response -->
+                  <div class="glass-card p-3">
+                    <h6 class="text-white mb-3">Agregar información adicional</h6>
+                    <form id="addUserResponseForm">
+                      <input type="hidden" name="ticketId" value="${ticket.id}">
+                      <div class="mb-3">
+                        <textarea name="message" class="form-control glass-input" rows="3" placeholder="Agrega más información o responde a nuestro equipo..." required></textarea>
+                      </div>
+                      <div class="text-end">
+                        <button type="submit" class="btn btn-info">
+                          <i class="bi bi-send me-2"></i>Enviar respuesta
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+
+          document.getElementById('myTicketDetailsContent').innerHTML = content;
+          
+          // Set up user response form handler
+          const addUserResponseForm = document.getElementById('addUserResponseForm');
+          if (addUserResponseForm) {
+            addUserResponseForm.addEventListener('submit', handleAddUserResponse);
+          }
+          
+          const modal = new bootstrap.Modal(document.getElementById('viewMyTicketModal'));
+          modal.show();
+          
+        } catch (error) {
+          console.error('Error loading ticket details:', error);
+          showAlert('danger', 'Error al cargar detalles del ticket');
+        }
+      }
+
+      async function handleAddUserResponse(e) {
+        e.preventDefault();
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+        
+        try {
+          const formData = new FormData(e.target);
+          const responseData = {
+            message: formData.get('message'),
+            is_internal: false
+          };
+          const ticketId = formData.get('ticketId');
+          
+          const response = await fetch(`api/tickets.php?id=${ticketId}&action=add_response`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(responseData)
+          });
+          
+          const data = await response.json();
+          
+          if (data.error) {
+            showAlert('danger', data.error);
+            return;
+          }
+          
+          showAlert('success', data.message);
+          
+          // Reload ticket details
+          viewMyTicket(ticketId);
+          
+        } catch (error) {
+          console.error('Error adding response:', error);
+          showAlert('danger', 'Error al agregar respuesta');
+        } finally {
+          // Re-enable submit button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }
+      }
+
+      // Helper functions for tickets
+      function getCategoryBadgeClass(category) {
+        switch(category) {
+          case 'technical': return 'bg-info';
+          case 'billing': return 'bg-warning text-dark';
+          case 'feature': return 'bg-primary';
+          case 'bug': return 'bg-danger';
+          case 'general': return 'bg-secondary';
+          default: return 'bg-secondary';
+        }
+      }
+
+      function getCategoryName(category) {
+        switch(category) {
+          case 'technical': return 'Técnico';
+          case 'billing': return 'Facturación';
+          case 'feature': return 'Funcionalidad';
+          case 'bug': return 'Error';
+          case 'general': return 'General';
+          default: return 'General';
+        }
+      }
+
+      function getCategoryIcon(category) {
+        switch(category) {
+          case 'technical': return 'gear';
+          case 'billing': return 'credit-card';
+          case 'feature': return 'lightbulb';
+          case 'bug': return 'bug';
+          case 'general': return 'chat-dots';
+          default: return 'chat-dots';
+        }
+      }
+
+      function getStatusBadgeClass(status) {
+        switch(status) {
+          case 'open': return 'bg-primary';
+          case 'in_progress': return 'bg-warning text-dark';
+          case 'waiting_user': return 'bg-info';
+          case 'resolved': return 'bg-success';
+          case 'closed': return 'bg-secondary';
+          default: return 'bg-secondary';
+        }
+      }
+
+      function getStatusName(status) {
+        switch(status) {
+          case 'open': return 'Abierto';
+          case 'in_progress': return 'En progreso';
+          case 'waiting_user': return 'Esperando tu respuesta';
+          case 'resolved': return 'Resuelto';
+          case 'closed': return 'Cerrado';
+          default: return 'Abierto';
+        }
+      }
+
+      function getStatusIcon(status) {
+        switch(status) {
+          case 'open': return 'circle';
+          case 'in_progress': return 'play-circle';
+          case 'waiting_user': return 'clock-history';
+          case 'resolved': return 'check-circle';
+          case 'closed': return 'x-circle';
+          default: return 'circle';
+        }
+      }
+
+      function formatDateTime(dateString) {
+        if (!dateString) return 'Sin fecha';
+        return new Date(dateString).toLocaleString('es-AR');
+      }
+
+      function truncateText(text, maxLength) {
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+      }
+
+      // Make loadMyTickets available globally
+      window.loadMyTickets = loadMyTickets;
 
       function showAlert(type, message) {
         const alertHtml = `

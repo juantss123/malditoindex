@@ -587,6 +587,77 @@ console.log('Dashboard: No features found for start plan or features array is em
           </div>
 
           <!-- Plan Access Data -->
+
+      <!-- Support Section -->
+      <div class="row mt-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="800">
+          <div class="glass-card p-4 p-sm-5">
+            <div class="row align-items-center">
+              <div class="col-lg-8">
+                <h3 class="text-white mb-2">
+                  <i class="bi bi-headset me-2"></i>¿Necesitas ayuda?
+                </h3>
+                <p class="text-light opacity-85 mb-3">
+                  Nuestro equipo de soporte está aquí para ayudarte. Crea un ticket y te responderemos lo antes posible.
+                </p>
+                <div class="row g-3">
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-clock-fill text-info me-2"></i>
+                      <span>Respuesta en 24 horas</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center text-light">
+                      <i class="bi bi-chat-dots-fill text-success me-2"></i>
+                      <span>Soporte en español</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <button class="btn btn-info btn-lg w-100" data-bs-toggle="modal" data-bs-target="#createTicketModal">
+                  <i class="bi bi-plus-circle me-2"></i>Crear ticket de soporte
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Tickets Section -->
+      <div class="row mt-4">
+        <div class="col-12" data-aos="fade-up" data-aos-duration="800" data-aos-delay="900">
+          <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="text-white mb-0">
+                <i class="bi bi-ticket-perforated me-2"></i>Mis tickets de soporte
+              </h4>
+              <button class="btn btn-primary-soft" onclick="loadMyTickets()">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+              </button>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Asunto</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Última actualización</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="myTicketsTable">
+                  <!-- User tickets will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
           <div class="glass-card p-4 mb-4" id="planAccessSection">
             <h5 class="text-white mb-3">
               <i class="bi bi-globe me-2"></i>Acceso a tu panel
@@ -611,6 +682,96 @@ console.log('Dashboard: No features found for start plan or features array is em
                 <i class="bi bi-x-circle me-2"></i>Cancelar suscripción
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Ticket Modal -->
+  <div class="modal fade" id="createTicketModal" tabindex="-1" aria-labelledby="createTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="createTicketModalLabel">
+            <i class="bi bi-plus-circle me-2"></i>Crear ticket de soporte
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="createTicketForm" class="row g-3">
+            <div class="col-12">
+              <label class="form-label text-light">Asunto *</label>
+              <input type="text" name="subject" class="form-control glass-input" placeholder="Describe brevemente tu consulta..." required>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-light">Categoría *</label>
+              <select name="category" class="form-select glass-input" required>
+                <option value="">Seleccionar categoría</option>
+                <option value="technical">Problema técnico</option>
+                <option value="billing">Facturación y pagos</option>
+                <option value="feature">Solicitud de funcionalidad</option>
+                <option value="bug">Reporte de error</option>
+                <option value="general">Consulta general</option>
+              </select>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-light">Prioridad</label>
+              <select name="priority" class="form-select glass-input">
+                <option value="low">Baja</option>
+                <option value="medium" selected>Media</option>
+                <option value="high">Alta</option>
+                <option value="urgent">Urgente</option>
+              </select>
+            </div>
+            
+            <div class="col-12">
+              <label class="form-label text-light">Descripción detallada *</label>
+              <textarea name="description" class="form-control glass-input" rows="5" 
+                        placeholder="Describe tu problema o consulta con el mayor detalle posible. Incluye pasos para reproducir el problema si es técnico..." required></textarea>
+            </div>
+            
+            <div class="col-12">
+              <div class="glass-card p-3">
+                <h6 class="text-info mb-2">
+                  <i class="bi bi-lightbulb me-2"></i>Consejos para un mejor soporte:
+                </h6>
+                <ul class="text-light opacity-85 small mb-0">
+                  <li>Sé específico en tu descripción</li>
+                  <li>Incluye capturas de pantalla si es posible</li>
+                  <li>Menciona qué navegador usas</li>
+                  <li>Describe los pasos que seguiste antes del problema</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="col-12 text-end">
+              <button type="button" class="btn btn-outline-light me-2" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-info">
+                <i class="bi bi-send me-2"></i>Crear ticket
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View My Ticket Modal -->
+  <div class="modal fade" id="viewMyTicketModal" tabindex="-1" aria-labelledby="viewMyTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content bg-dark border-0">
+        <div class="modal-header border-bottom border-secondary">
+          <h5 class="modal-title text-white" id="viewMyTicketModalLabel">
+            <i class="bi bi-eye me-2"></i>Mi ticket de soporte
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="myTicketDetailsContent">
+            <!-- Ticket details will be loaded here -->
           </div>
         </div>
       </div>

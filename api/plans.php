@@ -14,6 +14,12 @@ require_once '../config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
+if (!$db) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Error de conexión a la base de datos']);
+    exit();
+}
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Create plans table if it doesn't exist
@@ -32,17 +38,18 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
     
-    // Insert default plans if table is empty
+    // Check if table has data
     $stmt = $db->query("SELECT COUNT(*) as count FROM subscription_plans");
     $count = $stmt->fetch()['count'];
     
     if ($count == 0) {
+        // Insert default plans
         $defaultPlans = [
             [
                 'plan_type' => 'start',
                 'name' => 'Start',
-                'price_monthly' => 1499900, // 14999.00 ARS stored as cents
-                'price_yearly' => 999900,   // 9999.00 ARS stored as cents
+                'price_monthly' => 14999.00,
+                'price_yearly' => 9999.00,
                 'features' => json_encode([
                     '1 profesional',
                     'Agenda & turnos',
@@ -53,22 +60,22 @@ try {
             [
                 'plan_type' => 'clinic',
                 'name' => 'Clinic',
-                'price_monthly' => 2499900, // 24999.00 ARS stored as cents
-                'price_yearly' => 1999900,  // 19999.00 ARS stored as cents
+                'price_monthly' => 24999.00,
+                'price_yearly' => 19999.00,
                 'features' => json_encode([
                     'Hasta 3 profesionales',
                     'Portal del paciente',
                     'Facturación',
-                    'Reportes'
+                    'Reportes avanzados'
                 ])
             ],
             [
                 'plan_type' => 'enterprise',
                 'name' => 'Enterprise',
-                'price_monthly' => 4999900, // 49999.00 ARS stored as cents
-                'price_yearly' => 3999900,  // 39999.00 ARS stored as cents
+                'price_monthly' => 49999.00,
+                'price_yearly' => 39999.00,
                 'features' => json_encode([
-                    '+4 profesionales',
+                    'Profesionales ilimitados',
                     'Integraciones',
                     'Soporte prioritario',
                     'Entrenamiento'
@@ -93,7 +100,7 @@ try {
     
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Error creating plans table: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Error creando tabla de planes: ' . $e->getMessage()]);
     exit();
 }
 
@@ -117,10 +124,9 @@ function handleGetPlans() {
         $stmt->execute();
         $plans = $stmt->fetchAll();
         
-        // Decode JSON features
+        // Decode JSON features and ensure proper number format
         foreach ($plans as &$plan) {
-            $plan['features'] = json_decode($plan['features'], true);
-            // Ensure numeric values are properly formatted
+            $plan['features'] = json_decode($plan['features'], true) ?: [];
             $plan['price_monthly'] = (float) $plan['price_monthly'];
             $plan['price_yearly'] = (float) $plan['price_yearly'];
         }
@@ -152,6 +158,12 @@ function handleUpdatePlan() {
         return;
     }
     
+    if (!$input) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Datos inválidos']);
+        return;
+    }
+    
     try {
         // Create price history table if it doesn't exist
         $db->exec("
@@ -164,8 +176,7 @@ function handleUpdatePlan() {
                 new_price_yearly DECIMAL(10,2),
                 changed_by VARCHAR(36) NOT NULL,
                 change_reason TEXT,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (changed_by) REFERENCES user_profiles(user_id) ON DELETE CASCADE
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
         
@@ -174,6 +185,16 @@ function handleUpdatePlan() {
         $stmt->execute([$planType]);
         $currentPlan = $stmt->fetch();
         
+        // Validate and prepare data
+        $monthlyPrice = (float) ($input['price_monthly'] ?? 0);
+        $yearlyPrice = (float) ($input['price_yearly'] ?? 0);
+        $features = $input['features'] ?? [];
+        
+        if ($monthlyPrice <= 0 || $yearlyPrice <= 0) {
+            echo json_encode(['error' => 'Los precios deben ser mayores a 0']);
+            return;
+        }
+        
         // Update plan
         $stmt = $db->prepare("
             UPDATE subscription_plans 
@@ -181,18 +202,18 @@ function handleUpdatePlan() {
             WHERE plan_type = ?
         ");
         
-        $monthlyPrice = $input['price_monthly'];
-        $yearlyPrice = $input['price_yearly'];
-        
-        echo error_log("Updating plan $planType with monthly: $monthlyPrice, yearly: $yearlyPrice");
-        
-        $stmt->execute([
-            $input['name'],
+        $result = $stmt->execute([
+            $input['name'] ?? '',
             $monthlyPrice,
             $yearlyPrice,
-            json_encode($input['features']),
+            json_encode($features),
             $planType
         ]);
+        
+        if (!$result) {
+            echo json_encode(['error' => 'Error al ejecutar la actualización']);
+            return;
+        }
         
         if ($stmt->rowCount() === 0) {
             echo json_encode(['error' => 'No se encontró el plan para actualizar']);

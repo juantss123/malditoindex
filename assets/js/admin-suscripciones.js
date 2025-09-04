@@ -27,39 +27,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadPlans() {
   try {
+    console.log('Cargando planes desde API...');
     const response = await fetch('api/plans.php');
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+    
+    const text = await response.text();
+    console.log('Raw response:', text);
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseError) {
+      console.error('Error parsing JSON:', parseError);
+      console.error('Response text:', text);
+      showAlert('danger', 'Error: La API no devolvió JSON válido');
+      return;
+    }
+    
+    console.log('Parsed data:', data);
     const data = await response.json();
     
     if (data.error) {
+      console.error('API error:', data.error);
       showAlert('danger', data.error);
       return;
     }
     
     allPlans = data.plans || [];
+    console.log('Plans loaded:', allPlans.length);
     renderPlansTable();
     
   } catch (error) {
     console.error('Error loading plans:', error);
-    showAlert('danger', 'Error al cargar planes');
+    showAlert('danger', 'Error al cargar planes: ' + error.message);
   }
 }
 
 async function loadUsers() {
   try {
+    console.log('Cargando usuarios desde API...');
     const response = await fetch('api/users.php');
+    console.log('Users response status:', response.status);
+    
     const data = await response.json();
+    console.log('Users data:', data);
     
     if (data.error) {
+      console.error('Users API error:', data.error);
       showAlert('danger', data.error);
       return;
     }
     
     allUsers = data.users || [];
+    console.log('Users loaded:', allUsers.length);
     renderSubscriptionStatus();
     
   } catch (error) {
     console.error('Error loading users:', error);
-    showAlert('danger', 'Error al cargar usuarios');
+    showAlert('danger', 'Error al cargar usuarios: ' + error.message);
   }
 }
 

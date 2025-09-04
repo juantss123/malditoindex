@@ -43,7 +43,7 @@ try {
     $count = $stmt->fetch()['count'];
     
     if ($count == 0) {
-        // Insert default plans
+        // Insert default plans with correct prices (not in cents)
         $defaultPlans = [
             [
                 'plan_type' => 'start',
@@ -185,7 +185,7 @@ function handleUpdatePlan() {
         $stmt->execute([$planType]);
         $currentPlan = $stmt->fetch();
         
-        // Validate and prepare data
+        // Validate and prepare data - NO conversion, use direct values
         $monthlyPrice = (float) ($input['price_monthly'] ?? 0);
         $yearlyPrice = (float) ($input['price_yearly'] ?? 0);
         $features = $input['features'] ?? [];

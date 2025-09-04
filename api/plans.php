@@ -181,18 +181,28 @@ function handleUpdatePlan() {
             WHERE plan_type = ?
         ");
         
+        $monthlyPrice = $input['price_monthly'];
+        $yearlyPrice = $input['price_yearly'];
+        
+        echo error_log("Updating plan $planType with monthly: $monthlyPrice, yearly: $yearlyPrice");
+        
         $stmt->execute([
             $input['name'],
-            $input['price_monthly'] * 100, // Convert to cents for storage
-            $input['price_yearly'] * 100,  // Convert to cents for storage
+            $monthlyPrice,
+            $yearlyPrice,
             json_encode($input['features']),
             $planType
         ]);
         
+        if ($stmt->rowCount() === 0) {
+            echo json_encode(['error' => 'No se encontró el plan para actualizar']);
+            return;
+        }
+        
         // Save price history if prices changed
         if ($currentPlan && 
-            ($currentPlan['price_monthly'] != ($input['price_monthly'] * 100) || 
-             $currentPlan['price_yearly'] != ($input['price_yearly'] * 100))) {
+            ($currentPlan['price_monthly'] != $monthlyPrice || 
+             $currentPlan['price_yearly'] != $yearlyPrice)) {
             
             $stmt = $db->prepare("
                 INSERT INTO plan_price_history 
@@ -203,9 +213,9 @@ function handleUpdatePlan() {
             $stmt->execute([
                 $planType,
                 $currentPlan['price_monthly'],
-                $input['price_monthly'] * 100,
+                $monthlyPrice,
                 $currentPlan['price_yearly'],
-                $input['price_yearly'] * 100,
+                $yearlyPrice,
                 $_SESSION['user_id'],
                 $input['change_reason'] ?? 'Actualización de precios'
             ]);

@@ -265,13 +265,15 @@ async function handleEditPlan(e) {
     const formData = new FormData(e.target);
     const planData = {
       name: formData.get('name'),
-      price_monthly: parseFloat(formData.get('price_monthly')) || 0,
-      price_yearly: parseFloat(formData.get('price_yearly')) || 0,
+      price_monthly: parseFloat(formData.get('price_monthly')) * 100 || 0, // Convert to cents
+      price_yearly: parseFloat(formData.get('price_yearly')) * 100 || 0,   // Convert to cents
       features: formData.getAll('features').filter(f => f.trim() !== ''),
       change_reason: formData.get('change_reason')
     };
     
     const planType = formData.get('plan_type');
+    
+    console.log('Sending plan data:', planData);
     
     const response = await fetch(`api/plans.php?plan=${planType}`, {
       method: 'PUT',
@@ -282,6 +284,7 @@ async function handleEditPlan(e) {
     });
     
     const data = await response.json();
+    console.log('API response:', data);
     
     if (data.error) {
       showAlert('danger', data.error);
@@ -313,19 +316,23 @@ window.editPlan = function(planType) {
   const plan = allPlans.find(p => p.plan_type === planType);
   if (!plan) return;
   
+  console.log('Editing plan:', plan);
+  
   // Fill form with current plan data
   document.getElementById('editPlanType').value = plan.plan_type;
   document.getElementById('editPlanName').value = plan.name;
-  document.getElementById('editPriceMonthly').value = (plan.price_monthly / 100).toFixed(2); // Convert from cents
-  document.getElementById('editPriceYearly').value = (plan.price_yearly / 100).toFixed(2); // Convert from cents
+  document.getElementById('editPriceMonthly').value = parseFloat(plan.price_monthly).toFixed(2);
+  document.getElementById('editPriceYearly').value = parseFloat(plan.price_yearly).toFixed(2);
   
   // Fill features
   const featuresContainer = document.getElementById('editFeaturesContainer');
   featuresContainer.innerHTML = '';
   
-  plan.features.forEach((feature, index) => {
-    addFeatureInput(feature);
-  });
+  if (plan.features && Array.isArray(plan.features)) {
+    plan.features.forEach((feature, index) => {
+      addFeatureInput(feature);
+    });
+  }
   
   // Add empty input for new feature
   addFeatureInput('');

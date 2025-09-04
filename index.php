@@ -630,6 +630,45 @@ if (isLoggedIn()) {
     </div>
   </section>
 
+  <!-- Brands Carousel -->
+  <section class="py-5 border-top border-ink-subtle" data-aos="fade-up" data-aos-duration="1000" data-aos-offset="100">
+    <div class="container">
+      <div class="text-center mb-4" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="200">
+        <h4 class="text-white mb-2">Confían en nosotros</h4>
+        <p class="text-light opacity-75 mb-0">Marcas líderes que eligen DentexaPro</p>
+      </div>
+      
+      <div class="brands-carousel-container" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="400">
+        <div class="brands-carousel">
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/6749778/pexels-photo-6749778.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Clínica Dental Pro" class="brand-logo">
+          </div>
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Ortodental Center" class="brand-logo">
+          </div>
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Smile Clinic" class="brand-logo">
+          </div>
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/6749778/pexels-photo-6749778.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Dental Excellence" class="brand-logo">
+          </div>
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Odonto Plus" class="brand-logo">
+          </div>
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/5452293/pexels-photo-5452293.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Centro Dental" class="brand-logo">
+          </div>
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/6749778/pexels-photo-6749778.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Implant Clinic" class="brand-logo">
+          </div>
+          <div class="brand-item">
+            <img src="https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=120&h=60&fit=crop" alt="Dental Care" class="brand-logo">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="py-5 border-top border-ink-subtle" data-aos="slide-up" data-aos-duration="1200" data-aos-offset="50">
     <div class="container">

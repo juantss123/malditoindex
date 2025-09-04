@@ -38,25 +38,47 @@ try {
 }
 
 // Plan details
-$planDetails = [
-    'start' => [
-        'name' => 'Start',
-        'price' => 14999,
-        'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
-    ],
-    'clinic' => [
-        'name' => 'Clinic',
-        'price' => 24999,
-        'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
-    ],
-    'enterprise' => [
-        'name' => 'Enterprise',
-        'price' => 49999,
-        'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
-    ]
-];
+// Get plan details from database
+$planDetails = null;
+try {
+    $stmt = $db->prepare("SELECT * FROM subscription_plans WHERE plan_type = ?");
+    $stmt->execute([$plan]);
+    $planData = $stmt->fetch();
+    
+    if ($planData) {
+        $planDetails = [
+            'name' => $planData['name'],
+            'price' => $planData['price_monthly'] / 100, // Convert from cents
+            'features' => json_decode($planData['features'], true)
+        ];
+    }
+} catch (Exception $e) {
+    // Fallback to default if database fails
+}
 
-$selectedPlan = $planDetails[$plan];
+// Fallback plan details if not found in database
+if (!$planDetails) {
+    $fallbackPlans = [
+        'start' => [
+            'name' => 'Start',
+            'price' => 14999,
+            'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
+        ],
+        'clinic' => [
+            'name' => 'Clinic',
+            'price' => 24999,
+            'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
+        ],
+        'enterprise' => [
+            'name' => 'Enterprise',
+            'price' => 49999,
+            'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
+        ]
+    ];
+    $planDetails = $fallbackPlans[$plan];
+}
+
+$selectedPlan = $planDetails;
 ?>
 <!doctype html>
 <html lang="es" class="h-100">

@@ -454,13 +454,15 @@ try {
                 <div class="text-center mb-3">
                   <span class="badge bg-primary mb-2">Recomendado</span>
                   <h4 class="text-white">Clinic</h4>
-                  <div class="display-6 fw-bold text-white">$24.999<small class="fs-6 text-light"> ARS/mes</small></div>
+                  <div class="display-6 fw-bold text-white">$<span id="clinicPrice">24.999</span><small class="fs-6 text-light"> ARS/mes</small></div>
                 </div>
                 <ul class="list-unstyled mb-4">
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
-                  <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
+                  <div id="clinicFeatures">
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Hasta 3 profesionales</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Portal del paciente</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Facturación</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>Reportes avanzados</li>
+                  </div>
                 </ul>
                 <button class="btn btn-primary w-100" onclick="selectPlan('clinic')">
                   Seleccionar Clinic
@@ -511,6 +513,35 @@ try {
           offset: 100,
           easing: 'ease-out-quart'
         });
+      }
+
+      // Load dynamic pricing for plans modal
+      loadDynamicPricing();
+
+      async function loadDynamicPricing() {
+        try {
+          const response = await fetch('api/plans.php');
+          const data = await response.json();
+          
+          if (data.success && data.plans) {
+            const clinicPlan = data.plans.find(p => p.plan_type === 'clinic');
+            if (clinicPlan) {
+              const monthlyPrice = (clinicPlan.price_monthly / 100).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+              document.getElementById('clinicPrice').textContent = monthlyPrice;
+              
+              // Update features if available
+              if (clinicPlan.features && clinicPlan.features.length > 0) {
+                const featuresHtml = clinicPlan.features.map(feature => 
+                  `<li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>${feature}</li>`
+                ).join('');
+                document.getElementById('clinicFeatures').innerHTML = featuresHtml;
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error loading dynamic pricing:', error);
+          // Keep default prices if API fails
+        }
       }
 
       // Start trial button functionality

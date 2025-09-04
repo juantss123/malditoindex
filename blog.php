@@ -455,49 +455,78 @@ try {
           .then(response => response.json())
           .then(data => {
             if (data.error) {
-              // Show error message
-              const alert = document.createElement('div');
-              alert.className = 'alert alert-danger glass-card mt-3';
-              alert.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i>${data.error}`;
-              newsletterForm.appendChild(alert);
-              
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = originalText;
+              showNewsletterAlert('danger', data.error);
+              resetNewsletterButton(submitBtn, originalText);
             } else {
-              submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>¡Suscripto!';
-              submitBtn.classList.remove('btn-primary');
-              submitBtn.classList.add('btn-success');
-              
-              // Show success message
-              const alert = document.createElement('div');
-              alert.className = 'alert alert-success glass-card mt-3';
-              alert.innerHTML = `<i class="bi bi-check-circle me-2"></i>${data.message}`;
-              newsletterForm.appendChild(alert);
-              
-              e.target.reset();
+              showNewsletterAlert('success', data.message);
+              successNewsletterButton(submitBtn);
+              emailInput.value = '';
             }
-            
-            // Remove alert after 5 seconds
-            setTimeout(() => {
-              const alerts = newsletterForm.querySelectorAll('.alert');
-              alerts.forEach(alert => alert.remove());
-            }, 5000);
           })
           .catch(error => {
             console.error('Error subscribing to newsletter:', error);
-            
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-danger glass-card mt-3';
-            alert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Error de conexión. Por favor, intentá nuevamente.';
-            newsletterForm.appendChild(alert);
-            
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
+            showNewsletterAlert('danger', 'Error de conexión. Por favor, intentá nuevamente.');
+            resetNewsletterButton(submitBtn, originalText);
           });
         });
       }
     });
 
+    // Newsletter alert functions
+    function showNewsletterAlert(type, message) {
+      // Remove existing alerts
+      const existingAlerts = document.querySelectorAll('.newsletter-alert');
+      existingAlerts.forEach(alert => alert.remove());
+      
+      // Create new alert
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type} glass-card mt-3 newsletter-alert`;
+      alert.innerHTML = `
+        <div class="d-flex align-items-center">
+          <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'} me-2"></i>
+          <span>${message}</span>
+          <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+      `;
+      
+      // Add alert after the form
+      const newsletterSection = document.querySelector('form').closest('.glass-gradient');
+      newsletterSection.appendChild(alert);
+      
+      // Auto-remove after 8 seconds
+      setTimeout(() => {
+        if (alert.parentNode) {
+          alert.remove();
+        }
+      }, 8000);
+      
+      // Scroll to alert
+      setTimeout(() => {
+        alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+    
+    function resetNewsletterButton(button, originalText) {
+      button.disabled = false;
+      button.innerHTML = originalText;
+      button.classList.remove('btn-success');
+      button.classList.add('btn-primary');
+    }
+    
+    function successNewsletterButton(button) {
+      button.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>¡Suscripto exitosamente!';
+      button.classList.remove('btn-primary');
+      button.classList.add('btn-success');
+      button.disabled = true;
+      
+      // Re-enable after 3 seconds
+      setTimeout(() => {
+        button.innerHTML = '<i class="bi bi-send me-2"></i>Suscribirme';
+        button.classList.remove('btn-success');
+        button.classList.add('btn-primary');
+        button.disabled = false;
+      }, 3000);
+    }
     @keyframes fadeInUp {
       from {
         opacity: 0;

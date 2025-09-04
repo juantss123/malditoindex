@@ -212,7 +212,7 @@ function handleSubscribe() {
         
         if ($existing) {
             if ($existing['status'] === 'active') {
-                echo json_encode(['success' => true, 'message' => 'Ya estás suscripto a nuestro newsletter']);
+                echo json_encode(['success' => true, 'message' => '✅ Ya estás suscripto a nuestro newsletter. ¡Gracias por tu interés!']);
                 return;
             } else {
                 // Reactivate subscription
@@ -222,7 +222,7 @@ function handleSubscribe() {
                     WHERE email = ?
                 ");
                 $stmt->execute([$email]);
-                echo json_encode(['success' => true, 'message' => '¡Suscripción reactivada exitosamente!']);
+                echo json_encode(['success' => true, 'message' => '🎉 ¡Suscripción reactivada exitosamente! Volverás a recibir nuestros emails.']);
                 return;
             }
         }
@@ -242,7 +242,7 @@ function handleSubscribe() {
             $_SERVER['HTTP_USER_AGENT'] ?? null
         ]);
         
-        echo json_encode(['success' => true, 'message' => '¡Gracias! Te has suscripto exitosamente al newsletter.']);
+        echo json_encode(['success' => true, 'message' => '🎉 ¡Gracias! Te has suscripto exitosamente al newsletter de DentexaPro. Recibirás contenido valioso cada semana.']);
         
     } catch (Exception $e) {
         http_response_code(500);

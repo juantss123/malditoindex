@@ -114,7 +114,7 @@ try {
                       if ($hasApprovedTrial) {
                           echo "Tu prueba gratuita está activa. Explorá todas las funciones sin límites.";
                       } else {
-                          echo "Para acceder a la prueba gratuita completa, solicita la activación usando el botón de abajo.";
+                          echo "Para acceder a la prueba gratuita completa, solicita la activación usando el botón de iniciar prueba gratuita.";
                       }
                   } elseif ($userProfile && $userProfile['subscription_status'] === 'active') {
                       echo "Tu plan está activo y funcionando perfectamente.";

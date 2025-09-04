@@ -303,7 +303,7 @@ try {
             <div class="d-flex justify-content-between align-items-center">
               <div class="blog-meta">
                 <i class="bi bi-person me-1"></i>
-                <?php echo htmlspecialchars($post['author_name']); ?>
+                DentexaPro Team
               </div>
               <a href="blog-post.php?slug=<?php echo $post['slug']; ?>" class="btn btn-primary-soft btn-sm">
                 <i class="bi bi-arrow-right me-2"></i>Leer más

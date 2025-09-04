@@ -160,7 +160,7 @@ try {
               <div class="d-flex align-items-center justify-content-center gap-4 blog-meta-large">
                 <div>
                   <i class="bi bi-person me-1"></i>
-                  <?php echo htmlspecialchars($post['author_name']); ?>
+                  DentexaPro Team
                 </div>
                 <div>
                   <i class="bi bi-clock me-1"></i>

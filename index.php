@@ -58,11 +58,11 @@ if (isLoggedIn()) {
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-          <li class="nav-item"><a class="nav-link" href="#features">Funciones</a></li>
-          <li class="nav-item"><a class="nav-link" href="#pricing">Precios</a></li>
-          <li class="nav-item"><a class="nav-link" href="#faq">Preguntas</a></li>
-          <li class="nav-item"><a class="nav-link" href="login.php">Iniciar sesión</a></li>
-          <li class="nav-item ms-lg-3"><a class="btn btn-primary-soft" href="#cta">Probar gratis 15 días</a></li>
+          <li class="nav-item"><a class="nav-link" href="#features"><i class="bi bi-grid-3x3-gap me-2"></i>Funciones</a></li>
+          <li class="nav-item"><a class="nav-link" href="#pricing"><i class="bi bi-tag me-2"></i>Precios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq"><i class="bi bi-question-circle me-2"></i>Preguntas</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.php"><i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión</a></li>
+          <li class="nav-item ms-lg-3"><a class="btn btn-primary-soft" href="#cta"><i class="bi bi-rocket-takeoff me-2"></i>Probar gratis 15 días</a></li>
         </ul>
       </div>
     </div>

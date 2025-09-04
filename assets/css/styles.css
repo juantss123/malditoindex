@@ -225,7 +225,7 @@ a:hover{ color: var(--primary-600); }
 .accordion-button::after{ filter: invert(1) contrast(1.5); }
 
 /* Floating Action Button */
-.fab-cta{
+.whatsapp-float{
   position: fixed; right: 18px; bottom: 18px;
   width: 56px; height: 56px; border-radius: 16px;
   display:grid; place-items:center;
@@ -238,7 +238,7 @@ a:hover{ color: var(--primary-600); }
   animation: pulse-whatsapp 4s ease-in-out infinite;
   text-decoration: none;
 }
-.fab-cta:hover{ 
+.whatsapp-float:hover{ 
   transform: translateY(-4px) scale(1.1); 
   color:#fff; 
   box-shadow: 0 20px 60px rgba(47,150,238,.7);

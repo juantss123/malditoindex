@@ -216,6 +216,32 @@ a:hover{ color: var(--primary-600); }
   color: #68c4ff;
   font-size: 1.1rem;
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.trust-badge:hover i {
+  transform: scale(1.2) rotate(5deg);
+}
+
+/* Staggered animation for trust badges */
+.trust-badge:nth-child(1) { animation-delay: 0.1s; }
+.trust-badge:nth-child(2) { animation-delay: 0.2s; }
+.trust-badge:nth-child(3) { animation-delay: 0.3s; }
+.trust-badge:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .floating-elements {
+    display: none; /* Hide floating icons on mobile for performance */
+  }
+  
+  .tilt-card:hover {
+    transform: translateY(-5px); /* Simpler effect on mobile */
+  }
+  
+  .magnetic-hover:hover {
+    transform: translateY(-5px) scale(1.01); /* Reduced effect on mobile */
+  }
 }
 
 /* Accordion tweaks */
@@ -466,6 +492,327 @@ a:hover{ color: var(--primary-600); }
   51%, 100% { border-color: transparent; }
 }
 
+/* Animated gradient text */
+.animated-gradient {
+  background: linear-gradient(-45deg, var(--primary), #68c4ff, #9ad8ff, var(--primary));
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 4s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Floating icons animation */
+.floating-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating-icon {
+  position: absolute;
+  color: rgba(47,150,238,0.3);
+  font-size: 2rem;
+  animation: float-around var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+.floating-icon:nth-child(1) { top: 10%; left: 10%; }
+.floating-icon:nth-child(2) { top: 20%; right: 15%; }
+.floating-icon:nth-child(3) { top: 60%; left: 5%; }
+.floating-icon:nth-child(4) { bottom: 30%; right: 10%; }
+.floating-icon:nth-child(5) { bottom: 10%; left: 20%; }
+
+@keyframes float-around {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: translateY(-20px) translateX(10px) rotate(90deg);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translateY(-10px) translateX(-15px) rotate(180deg);
+    opacity: 0.4;
+  }
+  75% { 
+    transform: translateY(-30px) translateX(5px) rotate(270deg);
+    opacity: 0.5;
+  }
+}
+
+/* Magnetic hover effect */
+.magnetic-hover {
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.magnetic-hover:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+/* Tilt effect for cards */
+.tilt-card {
+  transition: transform 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.tilt-card:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(5deg) translateY(-10px);
+}
+
+/* Glow border effect */
+.glow-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--primary), #68c4ff, #9ad8ff, var(--primary));
+  background-size: 400% 400%;
+  border-radius: 24px;
+  z-index: -1;
+  animation: glowRotate 3s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes glowRotate {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Enhanced button effects */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(47,150,238,.35);
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn-glow:hover::before {
+  left: 100%;
+}
+
+.btn-shimmer {
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+
+.pulse-on-hover:hover {
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 10px 30px rgba(47,150,238,.35);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 15px 40px rgba(47,150,238,.6);
+    transform: scale(1.05);
+  }
+}
+
+/* Features section background grid */
+.features-grid-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(47,150,238,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47,150,238,0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+/* Enhanced feature icons */
+.feature-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+}
+
+.feature-card:hover .feature-icon::before {
+  width: 100px;
+  height: 100px;
+}
+
+/* Pricing cards enhanced */
+.price-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.price-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(47,150,238,0.1), transparent);
+  animation: rotate 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.price-card:hover::after {
+  opacity: 1;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Testimonials enhanced */
+.review-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.review-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(47,150,238,0.1), transparent);
+  transition: left 0.8s ease;
+}
+
+.review-card:hover::before {
+  left: 100%;
+}
+
+/* Morphing shapes */
+.morphing-shape {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: rgba(47,150,238,0.1);
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  animation: morph 8s ease-in-out infinite;
+}
+
+@keyframes morph {
+  0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+  50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+  75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+}
+
+/* Particle system */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(47,150,238,0.6);
+  border-radius: 50%;
+  animation: particleFloat 6s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px);
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+  50% { 
+    transform: translateY(-100px) translateX(50px);
+    opacity: 0.8;
+  }
+}
+
+/* Text reveal animation */
+.text-reveal {
+  overflow: hidden;
+  position: relative;
+}
+
+.text-reveal::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  transform: translateX(-100%);
+  animation: reveal 1.5s ease-out forwards;
+}
+
+@keyframes reveal {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Enhanced trust badges */
 /* CMS Preview Carousel Enhancements */
 #cmsPreviewCarousel {
   border-radius: 16px;
@@ -489,7 +836,7 @@ a:hover{ color: var(--primary-600); }
   padding: 15px 20px;
   bottom: 20px;
   left: 20px;
-  right: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #cmsPreviewCarousel .carousel-caption h5 {
@@ -753,9 +1100,27 @@ a:hover{ color: var(--primary-600); }
   min-width: 200px;
 }
 
+  position: relative;
+  overflow: hidden;
+}
+
+.trust-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(47,150,238,0.2), transparent);
+  transition: left 0.6s ease;
 /* For last few rows, use dropup */
+
 .table tbody tr:nth-last-child(-n+2) .dropdown-menu {
   top: auto;
-  bottom: 100%;
-  transform: translateY(-2px);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(47,150,238,.4);
+}
+
+.trust-badge:hover::before {
+  left: 100%;
 }

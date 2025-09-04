@@ -134,25 +134,44 @@ $db = $database->getConnection();
 
   <!-- Hero -->
   <header class="hero section-pt pb-5 position-relative overflow-hidden">
+    <!-- Floating Elements -->
+    <div class="floating-elements" aria-hidden="true">
+      <div class="floating-icon" style="--delay: 0s; --duration: 8s;">
+        <i class="bi bi-calendar-check"></i>
+      </div>
+      <div class="floating-icon" style="--delay: 2s; --duration: 10s;">
+        <i class="bi bi-people"></i>
+      </div>
+      <div class="floating-icon" style="--delay: 4s; --duration: 12s;">
+        <i class="bi bi-graph-up"></i>
+      </div>
+      <div class="floating-icon" style="--delay: 6s; --duration: 9s;">
+        <i class="bi bi-shield-check"></i>
+      </div>
+      <div class="floating-icon" style="--delay: 1s; --duration: 11s;">
+        <i class="bi bi-heart-pulse"></i>
+      </div>
+    </div>
+
     <div class="container">
       <div class="row align-items-center g-5">
         <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
           <h1 class="display-5 fw-bold lh-1 text-white mb-3">
-            El CMS para <span class="gradient-text">dentistas</span> que <span id="typingText" class="typing-text"></span>
+            El CMS para <span class="gradient-text animated-gradient">dentistas</span> que <span id="typingText" class="typing-text"></span>
           </h1>
           <p class="lead text-light opacity-85 mb-4">
             Agenda inteligente, historia clínica digital, recordatorios automáticos por WhatsApp/Email y facturación. Todo en una sola plataforma suscripción mensual.
           </p>
           <div class="d-flex gap-3 flex-wrap" data-aos="fade-up" data-aos-delay="300" data-aos-duration="800">
-            <a href="#cta" class="btn btn-primary btn-lg"><i class="bi bi-rocket-takeoff me-2"></i>Probar gratis 15 días</a>
-            <a href="#features" class="btn btn-outline-light btn-lg"><i class="bi bi-play-circle me-2"></i>Ver funciones</a>
+            <a href="#cta" class="btn btn-primary btn-lg btn-glow pulse-on-hover"><i class="bi bi-rocket-takeoff me-2"></i>Probar gratis 15 días</a>
+            <a href="#features" class="btn btn-outline-light btn-lg btn-shimmer"><i class="bi bi-play-circle me-2"></i>Ver funciones</a>
           </div>
           <div class="mt-4 small text-light opacity-75" data-aos="fade-up" data-aos-delay="500" data-aos-duration="800">
             <i class="bi bi-shield-check me-1"></i> SSL & backups diarios • <i class="bi bi-cloud-arrow-up ms-2 me-1"></i> 100% en la nube
           </div>
         </div>
         <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-          <div class="ui-preview glass-card p-3 p-sm-4">
+          <div class="ui-preview glass-card p-3 p-sm-4 magnetic-hover">
             <!-- CMS Preview Carousel -->
             <div id="cmsPreviewCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
               <div class="carousel-indicators">
@@ -273,6 +292,9 @@ $db = $database->getConnection();
   <!-- Features -->
   <section id="features" class="section-py" data-aos="slide-left" data-aos-duration="1400" data-aos-offset="200">
     <div class="container">
+      <!-- Decorative Grid -->
+      <div class="features-grid-bg" aria-hidden="true"></div>
+      
       <div class="text-center mb-5" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
         <h2 class="fw-bold text-white">Todo lo que tu consultorio necesita</h2>
         <p class="text-light opacity-80 mb-0">Diseñado con y para odontólogos en Latinoamérica.</p>
@@ -280,21 +302,21 @@ $db = $database->getConnection();
       <div class="row g-4">
         <!-- Feature cards -->
         <div class="col-md-6 col-lg-4" data-aos="slide-right" data-aos-duration="1000" data-aos-delay="500">
-          <div class="feature-card glass-card h-100">
+          <div class="feature-card glass-card h-100 tilt-card">
             <div class="feature-icon"><i class="bi bi-calendar2-week"></i></div>
             <h3>Agenda & turnos</h3>
             <p>Calendario por profesional, recordatorios automáticos y confirmaciones en un click.</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="600">
-          <div class="feature-card glass-card h-100">
+          <div class="feature-card glass-card h-100 tilt-card">
             <div class="feature-icon"><i class="bi bi-journal-medical"></i></div>
             <h3>Historia clínica digital</h3>
             <p>Odontograma, tratamientos, notas y adjuntos (radiografías, fotos, PDFs).</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-4" data-aos="slide-left" data-aos-duration="1000" data-aos-delay="700">
-          <div class="feature-card glass-card h-100">
+          <div class="feature-card glass-card h-100 tilt-card">
             <div class="feature-icon"><i class="bi bi-whatsapp"></i></div>
             <h3>Recordatorios automáticos</h3>
             <p>WhatsApp/Email con texto personalizable y plantillas por tipo de turno.</p>
@@ -302,21 +324,21 @@ $db = $database->getConnection();
         </div>
 
         <div class="col-md-6 col-lg-4" data-aos="slide-right" data-aos-duration="1000" data-aos-delay="800">
-          <div class="feature-card glass-card h-100">
+          <div class="feature-card glass-card h-100 tilt-card">
             <div class="feature-icon"><i class="bi bi-people"></i></div>
             <h3>Gestión de pacientes</h3>
             <p>Altas/bajas, datos de contacto, historial y alertas de seguimiento.</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-4" data-aos="slide-up" data-aos-duration="1000" data-aos-delay="900">
-          <div class="feature-card glass-card h-100">
+          <div class="feature-card glass-card h-100 tilt-card">
             <div class="feature-icon"><i class="bi bi-cash-coin"></i></div>
             <h3>Facturación</h3>
             <p>Comprobantes, medios de pago, exportaciones y reportes.</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-4" data-aos="slide-left" data-aos-duration="1000" data-aos-delay="1000">
-          <div class="feature-card glass-card h-100">
+          <div class="feature-card glass-card h-100 tilt-card">
             <div class="feature-icon"><i class="bi bi-person-badge"></i></div>
             <h3>Portal del paciente</h3>
             <p>Turnos online, historial y documentación disponible 24/7.</p>
@@ -329,14 +351,14 @@ $db = $database->getConnection();
   <!-- CTA mid -->
   <section class="section-py" id="cta" data-aos="slide-right" data-aos-duration="1300" data-aos-offset="150">
     <div class="container">
-      <div class="cta-banner glass-gradient" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="400">
+      <div class="cta-banner glass-gradient glow-border" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="400">
         <div class="row align-items-center g-4">
           <div class="col-lg-8" data-aos="slide-right" data-aos-delay="600" data-aos-duration="1000">
             <h3 class="mb-1 text-white">Comenzá hoy con 15 días gratis</h3>
             <p class="mb-0 text-light opacity-85">Sin tarjetas, cancelás cuando quieras. Migración asistida incluida.</p>
           </div>
           <div class="col-lg-4 text-lg-end" data-aos="slide-left" data-aos-delay="800" data-aos-duration="1000">
-            <a href="registro.php" class="btn btn-primary btn-lg"><i class="bi bi-magic me-2"></i>Crear mi cuenta</a>
+            <a href="registro.php" class="btn btn-primary btn-lg btn-glow pulse-on-hover"><i class="bi bi-magic me-2"></i>Crear mi cuenta</a>
           </div>
         </div>
       </div>

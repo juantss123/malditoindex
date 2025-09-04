@@ -85,7 +85,7 @@ try {
     }
     
     // Create uploads directory if it doesn't exist
-    $uploadsDir = '../uploads/transfer_proofs';
+    $uploadsDir = 'uploads/transfer_proofs';
     if (!is_dir($uploadsDir)) {
         mkdir($uploadsDir, 0755, true);
     }
@@ -94,6 +94,7 @@ try {
     $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
     $fileName = 'transfer_' . $_SESSION['user_id'] . '_' . time() . '.' . $fileExtension;
     $filePath = $uploadsDir . '/' . $fileName;
+    $relativeFilePath = $uploadsDir . '/' . $fileName; // Para guardar en DB
     
     // Move uploaded file
     if (!move_uploaded_file($file['tmp_name'], $filePath)) {
@@ -114,7 +115,7 @@ try {
         $planType,
         $amount,
         $file['name'],
-        $filePath,
+        $relativeFilePath,
         $file['type'],
         $file['size']
     ]);

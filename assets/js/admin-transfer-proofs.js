@@ -233,20 +233,23 @@ function previewFile(filePath, fileName) {
   const fileExtension = fileName.split('.').pop().toLowerCase();
   const previewContent = document.getElementById('filePreviewContent');
   
+  // Ensure the file path is correct (remove any ../ and ensure it starts from root)
+  const cleanFilePath = filePath.replace(/^\.\.\//, '');
+  
   if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
     previewContent.innerHTML = `
-      <img src="${filePath}" class="img-fluid rounded" alt="Comprobante de transferencia" style="max-height: 70vh;">
+      <img src="${cleanFilePath}" class="img-fluid rounded" alt="Comprobante de transferencia" style="max-height: 70vh;">
     `;
   } else if (fileExtension === 'pdf') {
     previewContent.innerHTML = `
-      <embed src="${filePath}" type="application/pdf" width="100%" height="600px" class="rounded">
+      <embed src="${cleanFilePath}" type="application/pdf" width="100%" height="600px" class="rounded">
     `;
   } else {
     previewContent.innerHTML = `
       <div class="text-center text-light opacity-75 py-5">
         <i class="bi bi-file-earmark fs-1 mb-3"></i>
         <p>Vista previa no disponible para este tipo de archivo</p>
-        <button class="btn btn-primary" onclick="downloadFile('${filePath}', '${fileName}')">
+        <button class="btn btn-primary" onclick="downloadFile('${cleanFilePath}', '${fileName}')">
           <i class="bi bi-download me-2"></i>Descargar archivo
         </button>
       </div>
@@ -258,8 +261,10 @@ function previewFile(filePath, fileName) {
 }
 
 function downloadFile(filePath, fileName) {
+  // Ensure the file path is correct
+  const cleanFilePath = filePath.replace(/^\.\.\//, '');
   const link = document.createElement('a');
-  link.href = filePath;
+  link.href = cleanFilePath;
   link.download = fileName;
   link.click();
 }

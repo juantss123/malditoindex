@@ -325,6 +325,65 @@ a:hover{ color: var(--primary-600); }
   font-family: serif;
 }
 
+/* Testimonials Carousel for Mobile */
+.carousel-indicators {
+  margin-bottom: 0;
+}
+
+.carousel-indicators [data-bs-target] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: none;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicators .active {
+  background-color: var(--primary);
+  transform: scale(1.2);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 40px;
+  height: 40px;
+  background: rgba(47, 150, 238, 0.2);
+  border: 1px solid rgba(47, 150, 238, 0.3);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.carousel-control-prev {
+  left: -20px;
+}
+
+.carousel-control-next {
+  right: -20px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background: rgba(47, 150, 238, 0.4);
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Smooth carousel transitions */
+.carousel-item {
+  transition: transform 0.6s ease-in-out;
+}
+
 /* Custom AOS animations */
 [data-aos="slide-right"] {
   transform: translate3d(-100px, 0, 0);

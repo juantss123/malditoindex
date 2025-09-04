@@ -11,8 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../config/database.php';
 
-// Require admin access for all operations
-if (!isAdmin()) {
+// Check if user is requesting their own data or if admin is managing
+$requestedUserId = $_GET['user_id'] ?? '';
+$isOwnData = isset($_SESSION['user_id']) && $_SESSION['user_id'] === $requestedUserId;
+$isAdmin = isAdmin();
+
+if (!$isOwnData && !$isAdmin) {
     http_response_code(403);
     echo json_encode(['error' => 'Acceso denegado']);
     exit();
@@ -28,6 +32,12 @@ switch ($method) {
         handleGetPlanAccess();
         break;
     case 'POST':
+        // Only admins can save/update plan access data
+        if (!$isAdmin) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Solo administradores pueden modificar datos de acceso']);
+            exit();
+        }
         handleSavePlanAccess();
         break;
     default:
@@ -47,6 +57,17 @@ function handleGetPlanAccess() {
     }
     
     try {
+        // First check if user exists
+        $stmt = $db->prepare("SELECT user_id, first_name, last_name FROM user_profiles WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $user = $stmt->fetch();
+        
+        if (!$user) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Usuario no encontrado']);
+            return;
+        }
+        
         // Create plan_access table if it doesn't exist
         $db->exec("
             CREATE TABLE IF NOT EXISTS plan_access (
@@ -66,11 +87,16 @@ function handleGetPlanAccess() {
         $stmt->execute([$userId]);
         $access = $stmt->fetch();
         
+        if (!$access) {
+            echo json_encode(['success' => true, 'access' => null]);
+            return;
+        }
+        
         echo json_encode(['success' => true, 'access' => $access]);
         
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(['error' => 'Error al cargar datos de acceso: ' . $e->getMessage()]);
+        echo json_encode(['error' => 'Error al cargar datos de acceso: ' . $e->getMessage(), 'debug' => $e->getTraceAsString()]);
     }
 }
 

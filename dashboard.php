@@ -650,11 +650,28 @@ console.log('Dashboard: No features found for start plan or features array is em
     async function loadPlanAccessData() {
       const planAccessContent = document.getElementById('planAccessContent');
       
+      // Show loading state
+      planAccessContent.innerHTML = `
+        <div class="text-center text-light opacity-75 py-4">
+          <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+          Cargando datos de acceso...
+        </div>
+      `;
+      
       try {
+        console.log('Loading plan access for user:', '<?php echo $_SESSION['user_id']; ?>');
         const response = await fetch(`api/plan-access.php?user_id=<?php echo $_SESSION['user_id']; ?>`);
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
         const data = await response.json();
+        console.log('Plan access data:', data);
         
         if (data.success && data.access) {
+          console.log('Access data found:', data.access);
           // Show access data
           planAccessContent.innerHTML = `
             <div class="row g-3">
@@ -749,6 +766,7 @@ console.log('Dashboard: No features found for start plan or features array is em
             </div>
           `;
         } else {
+          console.log('No access data found');
           // No access data configured
           planAccessContent.innerHTML = `
             <div class="text-center text-light opacity-75 py-4">
@@ -766,7 +784,7 @@ console.log('Dashboard: No features found for start plan or features array is em
         console.error('Error loading plan access data:', error);
         planAccessContent.innerHTML = `
           <div class="text-center text-danger py-4">
-            <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar datos de acceso
+            <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar datos de acceso: ${error.message}
           </div>
         `;
       }

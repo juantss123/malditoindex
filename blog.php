@@ -338,7 +338,7 @@ try {
             </p>
             <form class="row g-3 justify-content-center">
               <div class="col-md-8">
-                <input type="email" class="form-control form-control-lg glass-input" placeholder="tu@email.com" required>
+                <input type="email" name="email" class="form-control form-control-lg glass-input" placeholder="tu@email.com" required>
               </div>
               <div class="col-md-4">
                 <button type="submit" class="btn btn-primary btn-lg w-100">
@@ -347,8 +347,11 @@ try {
               </div>
             </form>
             <small class="text-light opacity-75 mt-2 d-block">
-              <i class="bi bi-shield-check me-1"></i>Sin spam. Cancelá cuando quieras.
+              <i class="bi bi-shield-check me-1"></i>Sin spam. Cancelás cuando quieras.
             </small>
+            
+            <!-- Newsletter Messages -->
+            <div id="newsletterMessages" class="mt-3"></div>
           </div>
         </div>
       </div>
@@ -429,7 +432,7 @@ try {
       }
 
       // Newsletter subscription
-      const newsletterForm = document.querySelector('form');
+      const newsletterForm = document.querySelector('.glass-gradient form');
       if (newsletterForm) {
         newsletterForm.addEventListener('submit', (e) => {
           e.preventDefault();
@@ -437,9 +440,13 @@ try {
           const originalText = submitBtn.innerHTML;
           const emailInput = e.target.querySelector('input[type="email"]');
           const email = emailInput.value;
+          const messagesContainer = document.getElementById('newsletterMessages');
           
           submitBtn.disabled = true;
           submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Suscribiendo...';
+          
+          // Clear previous messages
+          messagesContainer.innerHTML = '';
           
           // Send subscription request
           fetch('api/newsletter.php?action=subscribe', {
@@ -456,40 +463,50 @@ try {
           .then(data => {
             if (data.error) {
               // Show error message
-              const alert = document.createElement('div');
-              alert.className = 'alert alert-danger glass-card mt-3';
-              alert.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i>${data.error}`;
-              newsletterForm.appendChild(alert);
+              messagesContainer.innerHTML = `
+                <div class="alert alert-danger glass-card">
+                  <i class="bi bi-exclamation-triangle me-2"></i>${data.error}
+                </div>
+              `;
               
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalText;
             } else {
+              // Show success message
+              messagesContainer.innerHTML = `
+                <div class="alert alert-success glass-card">
+                  <i class="bi bi-check-circle me-2"></i>${data.message}
+                </div>
+              `;
+              
               submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>¡Suscripto!';
               submitBtn.classList.remove('btn-primary');
               submitBtn.classList.add('btn-success');
               
-              // Show success message
-              const alert = document.createElement('div');
-              alert.className = 'alert alert-success glass-card mt-3';
-              alert.innerHTML = `<i class="bi bi-check-circle me-2"></i>${data.message}`;
-              newsletterForm.appendChild(alert);
-              
               e.target.reset();
+              
+              // Reset button after 3 seconds
+              setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                submitBtn.classList.remove('btn-success');
+                submitBtn.classList.add('btn-primary');
+              }, 3000);
             }
             
             // Remove alert after 5 seconds
             setTimeout(() => {
-              const alerts = newsletterForm.querySelectorAll('.alert');
-              alerts.forEach(alert => alert.remove());
+              messagesContainer.innerHTML = '';
             }, 5000);
           })
           .catch(error => {
             console.error('Error subscribing to newsletter:', error);
             
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-danger glass-card mt-3';
-            alert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Error de conexión. Por favor, intentá nuevamente.';
-            newsletterForm.appendChild(alert);
+            messagesContainer.innerHTML = `
+              <div class="alert alert-danger glass-card">
+                <i class="bi bi-exclamation-triangle me-2"></i>Error de conexión. Por favor, intentá nuevamente.
+              </div>
+            `;
             
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
@@ -497,7 +514,9 @@ try {
         });
       }
     });
-
+  </script>
+  
+  <style>
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -508,7 +527,7 @@ try {
         transform: translateY(0);
       }
     }
-  </script>
+  </style>
 </body>
 </html>
 

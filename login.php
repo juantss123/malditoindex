@@ -74,12 +74,16 @@ if (isLoggedIn()) {
           <div class="glass-card p-4 p-sm-5" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="300">
             <form id="loginForm" class="row g-4">
               <div class="col-12" data-aos="slide-up" data-aos-duration="800" data-aos-delay="500">
-                <label class="form-label text-light">Email</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-envelope me-2"></i>Email
+                </label>
                 <input type="email" name="email" class="form-control form-control-lg glass-input" placeholder="tu@email.com" required>
               </div>
 
               <div class="col-12" data-aos="slide-up" data-aos-duration="800" data-aos-delay="600">
-                <label class="form-label text-light">Contraseña</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-lock me-2"></i>Contraseña
+                </label>
                 <div class="position-relative">
                   <input type="password" name="password" id="password" class="form-control form-control-lg glass-input" placeholder="Tu contraseña" required>
                   <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-light opacity-75" id="togglePassword" style="z-index: 10;">

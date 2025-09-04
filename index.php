@@ -594,6 +594,17 @@ if (isLoggedIn()) {
     });
     
     async function loadDynamicPlans() {
+      const container = document.getElementById('plansContainer');
+      
+      // Show loading state
+      container.innerHTML = `
+        <div class="col-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando planes...</span>
+          </div>
+        </div>
+      `;
+      
       try {
         const response = await fetch('api/plans.php');
         const data = await response.json();
@@ -605,6 +616,11 @@ if (isLoggedIn()) {
         }
         
         const plans = data.plans || [];
+        if (plans.length === 0) {
+          loadFallbackPlans();
+          return;
+        }
+        
         renderPlans(plans);
         
       } catch (error) {
@@ -616,18 +632,30 @@ if (isLoggedIn()) {
     function renderPlans(plans) {
       const container = document.getElementById('plansContainer');
       
-      const plansHtml = plans.map((plan, index) => {
-        const monthlyPrice = Math.round(plan.price_monthly).toLocaleString('es-AR');
-        const yearlyPrice = Math.round(plan.price_yearly).toLocaleString('es-AR');
+      // Ensure we have exactly 3 plans in the right order
+      const orderedPlans = ['start', 'clinic', 'enterprise'].map(type => 
+        plans.find(p => p.plan_type === type)
+      ).filter(Boolean);
+      
+      if (orderedPlans.length === 0) {
+        loadFallbackPlans();
+        return;
+      }
+      
+      const plansHtml = orderedPlans.map((plan, index) => {
+        // Convert prices to proper format (assuming they're stored as cents)
+        const monthlyPrice = Math.round(plan.price_monthly / 100).toLocaleString('es-AR');
+        const yearlyPrice = Math.round(plan.price_yearly / 100).toLocaleString('es-AR');
         
         const isPopular = plan.plan_type === 'start';
         const isRecommended = plan.plan_type === 'clinic';
         const isEnterprise = plan.plan_type === 'enterprise';
         
         const delay = 500 + (index * 200);
+        const animation = index === 0 ? 'slide-right' : index === 1 ? 'zoom-in' : 'slide-left';
         
         return `
-          <div class="col-md-6 col-lg-4" data-aos="${index === 0 ? 'slide-right' : index === 1 ? 'zoom-in' : 'slide-left'}" data-aos-duration="1100" data-aos-delay="${delay}">
+          <div class="col-md-6 col-lg-4" data-aos="${animation}" data-aos-duration="1100" data-aos-delay="${delay}">
             <div class="price-card glass-card h-100 ${isRecommended ? 'border-primary' : ''}">
               ${isPopular ? '<div class="price-badge">Popular</div>' : ''}
               ${isRecommended ? '<div class="price-badge bg-primary">Recomendado</div>' : ''}
@@ -648,9 +676,28 @@ if (isLoggedIn()) {
       
       container.innerHTML = plansHtml;
       
+      // Setup billing toggle after rendering
+      setupBillingToggle();
+      
       // Re-initialize AOS for new elements
       if (window.AOS) {
         AOS.refresh();
+      }
+    }
+    
+    function setupBillingToggle() {
+      const toggle = document.getElementById('billingToggle');
+      const amounts = document.querySelectorAll('.price-amount');
+      
+      if (toggle && amounts.length > 0) {
+        toggle.addEventListener('change', (e) => {
+          const yearly = e.target.checked;
+          amounts.forEach(el => {
+            const monthlyPrice = el.dataset.monthly;
+            const yearlyPrice = el.dataset.yearly;
+            el.textContent = yearly ? yearlyPrice : monthlyPrice;
+          });
+        });
       }
     }
     
@@ -660,22 +707,22 @@ if (isLoggedIn()) {
         {
           plan_type: 'start',
           name: 'Start',
-          price_monthly: 14999,
-          price_yearly: 9999,
+          price_monthly: 1499900, // Store as cents for consistency
+          price_yearly: 999900,
           features: ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
         },
         {
           plan_type: 'clinic',
           name: 'Clinic',
-          price_monthly: 24999,
-          price_yearly: 19999,
+          price_monthly: 2499900,
+          price_yearly: 1999900,
           features: ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes']
         },
         {
           plan_type: 'enterprise',
           name: 'Enterprise',
-          price_monthly: 49999,
-          price_yearly: 39999,
+          price_monthly: 4999900,
+          price_yearly: 3999900,
           features: ['+4 profesionales', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
         }
       ];

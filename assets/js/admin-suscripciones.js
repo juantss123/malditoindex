@@ -316,8 +316,8 @@ window.editPlan = function(planType) {
   // Fill form with current plan data
   document.getElementById('editPlanType').value = plan.plan_type;
   document.getElementById('editPlanName').value = plan.name;
-  document.getElementById('editPriceMonthly').value = plan.price_monthly / 100; // Convert from cents
-  document.getElementById('editPriceYearly').value = plan.price_yearly / 100; // Convert from cents
+  document.getElementById('editPriceMonthly').value = (plan.price_monthly / 100).toFixed(2); // Convert from cents
+  document.getElementById('editPriceYearly').value = (plan.price_yearly / 100).toFixed(2); // Convert from cents
   
   // Fill features
   const featuresContainer = document.getElementById('editFeaturesContainer');
@@ -392,7 +392,8 @@ function getPlanName(plan) {
 }
 
 function formatPrice(priceInCents) {
-  return (priceInCents / 100).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  if (!priceInCents || isNaN(priceInCents)) return '0';
+  return Math.round(priceInCents / 100).toLocaleString('es-AR');
 }
 
 function formatDate(dateString) {

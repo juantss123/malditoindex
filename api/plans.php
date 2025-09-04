@@ -41,8 +41,8 @@ try {
             [
                 'plan_type' => 'start',
                 'name' => 'Start',
-                'price_monthly' => 14999,
-                'price_yearly' => 9999,
+                'price_monthly' => 1499900, // Store as cents (14999.00 ARS)
+                'price_yearly' => 999900,   // Store as cents (9999.00 ARS)
                 'features' => json_encode([
                     '1 profesional',
                     'Agenda & turnos',
@@ -53,8 +53,8 @@ try {
             [
                 'plan_type' => 'clinic',
                 'name' => 'Clinic',
-                'price_monthly' => 24999,
-                'price_yearly' => 19999,
+                'price_monthly' => 2499900, // Store as cents (24999.00 ARS)
+                'price_yearly' => 1999900,  // Store as cents (19999.00 ARS)
                 'features' => json_encode([
                     'Hasta 3 profesionales',
                     'Portal del paciente',
@@ -65,8 +65,8 @@ try {
             [
                 'plan_type' => 'enterprise',
                 'name' => 'Enterprise',
-                'price_monthly' => 49999,
-                'price_yearly' => 39999,
+                'price_monthly' => 4999900, // Store as cents (49999.00 ARS)
+                'price_yearly' => 3999900,  // Store as cents (39999.00 ARS)
                 'features' => json_encode([
                     '+4 profesionales',
                     'Integraciones',
@@ -180,16 +180,16 @@ function handleUpdatePlan() {
         
         $stmt->execute([
             $input['name'],
-            $input['price_monthly'],
-            $input['price_yearly'],
+            $input['price_monthly'] * 100, // Convert to cents for storage
+            $input['price_yearly'] * 100,  // Convert to cents for storage
             json_encode($input['features']),
             $planType
         ]);
         
         // Save price history if prices changed
         if ($currentPlan && 
-            ($currentPlan['price_monthly'] != $input['price_monthly'] || 
-             $currentPlan['price_yearly'] != $input['price_yearly'])) {
+            ($currentPlan['price_monthly'] != ($input['price_monthly'] * 100) || 
+             $currentPlan['price_yearly'] != ($input['price_yearly'] * 100))) {
             
             $stmt = $db->prepare("
                 INSERT INTO plan_price_history 
@@ -200,9 +200,9 @@ function handleUpdatePlan() {
             $stmt->execute([
                 $planType,
                 $currentPlan['price_monthly'],
-                $input['price_monthly'],
+                $input['price_monthly'] * 100,
                 $currentPlan['price_yearly'],
-                $input['price_yearly'],
+                $input['price_yearly'] * 100,
                 $_SESSION['user_id'],
                 $input['change_reason'] ?? 'Actualización de precios'
             ]);

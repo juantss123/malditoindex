@@ -25,6 +25,9 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
           <span class="badge bg-danger ms-2" id="comprobantesNotification" style="display: none;">0</span>
         </span>
       </a>
+      <a class="nav-link text-light <?php echo ($currentPage === 'admin-facturas') ? 'active' : ''; ?>" href="admin-facturas.php">
+        <i class="bi bi-file-earmark-text me-2"></i>Facturas
+      </a>
       <a class="nav-link text-light <?php echo ($currentPage === 'admin-suscripciones') ? 'active' : ''; ?>" href="admin-suscripciones.php">
         <i class="bi bi-credit-card me-2"></i>Suscripciones
       </a>

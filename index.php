@@ -6,8 +6,31 @@ require_once 'config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Get dynamic plans data
-$plans = [];
+// Initialize plans with default values first
+$defaultPlans = [
+    'start' => [
+        'name' => 'Start',
+        'price_monthly' => 14999.00,
+        'price_yearly' => 11999.00,
+        'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
+    ],
+    'clinic' => [
+        'name' => 'Clinic',
+        'price_monthly' => 24999.00,
+        'price_yearly' => 19999.00,
+        'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
+    ],
+    'enterprise' => [
+        'name' => 'Enterprise',
+        'price_monthly' => 49999.00,
+        'price_yearly' => 39999.00,
+        'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
+    ]
+];
+
+// Start with default plans
+$plansData = $defaultPlans;
+
 try {
     // Create subscription_plans table if it doesn't exist
     $db->exec("
@@ -30,7 +53,7 @@ try {
     
     if ($count == 0) {
         // Insert default plans
-        $defaultPlans = [
+        $defaultPlansInsert = [
             [
                 'plan_type' => 'start',
                 'name' => 'Start',
@@ -69,11 +92,28 @@ try {
             ]
         ];
         
-        foreach ($defaultPlans as $plan) {
+        foreach ($defaultPlansInsert as $plan) {
             $stmt = $db->prepare("
                 INSERT INTO subscription_plans (plan_type, name, price_monthly, price_yearly, features)
-    // Update with database values if they exist
+                VALUES (?, ?, ?, ?, ?)
             ");
+            $stmt->execute([
+                $plan['plan_type'],
+                $plan['name'],
+                $plan['price_monthly'],
+                $plan['price_yearly'],
+                $plan['features']
+            ]);
+        }
+    }
+    
+    // Get plans from database
+    $stmt = $db->prepare("SELECT * FROM subscription_plans WHERE is_active = TRUE ORDER BY price_monthly ASC");
+    $stmt->execute();
+    $dbPlans = $stmt->fetchAll();
+    
+    // Update with database values if they exist
+    foreach ($dbPlans as $plan) {
         $plansData[$plan['plan_type']] = [
             'name' => $plan['name'],
             'price_monthly' => (float) $plan['price_monthly'],
@@ -82,28 +122,13 @@ try {
         ];
     }
     
-    // Get plans from database
+} catch (Exception $e) {
     // If database fails, keep default values
     error_log("Error loading plans: " . $e->getMessage());
-    $stmt->execute();
-    $plansData = $stmt->fetchAll();
-    
-    // Initialize plans array with defaults first
-    $plans = [
-        'start' => [
-            'name' => 'Start',
-            'price_monthly' => 14999.00,
-            'price_yearly' => 11999.00,
-            'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
-        ],
-        'clinic' => [
-            'name' => 'Clinic',
-            'price_monthly' => 24999.00,
-            'price_yearly' => 19999.00,
-            'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
-        ],
-// Initialize plans with default values first
-$defaultPlans = [
+}
+
+// Initialize plans array with defaults first
+$plans = [
     'start' => [
         'name' => 'Start',
         'price_monthly' => 14999.00,
@@ -123,9 +148,6 @@ $defaultPlans = [
         'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
     ]
 ];
-
-// Start with default plans
-$plansData = $defaultPlans;
 
 try {
     $stmt = $db->prepare("SELECT maintenance_enabled FROM maintenance_settings WHERE id = 1");
@@ -521,7 +543,11 @@ $db = $database->getConnection();
               $<span class="price-amount" data-monthly="<?php echo number_format($plans['start']['price_monthly'], 0, ',', '.'); ?>" data-yearly="<?php echo number_format($plans['start']['price_yearly'], 0, ',', '.'); ?>" id="startPrice"><?php echo number_format($plans['start']['price_monthly'], 0, ',', '.'); ?></span><small class="fs-6 text-light"> ARS/mes</small>
             </div>
             <ul class="list-unstyled mb-4" id="startFeatures">
-              <?php foreach ($plans['start']['features'] as $feature): ?>
+              <?php 
+              $startFeatures = isset($plansData['start']['features']) && is_array($plansData['start']['features']) 
+                ? $plansData['start']['features'] 
+                : $defaultPlans['start']['features'];
+              foreach ($startFeatures as $feature): ?>
               <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
               <?php endforeach; ?>
             </ul>
@@ -538,7 +564,11 @@ $db = $database->getConnection();
               $<span class="price-amount" data-monthly="<?php echo number_format($plans['clinic']['price_monthly'], 0, ',', '.'); ?>" data-yearly="<?php echo number_format($plans['clinic']['price_yearly'], 0, ',', '.'); ?>" id="clinicPrice"><?php echo number_format($plans['clinic']['price_monthly'], 0, ',', '.'); ?></span><small class="fs-6 text-light"> ARS/mes</small>
             </div>
             <ul class="list-unstyled mb-4" id="clinicFeatures">
-              <?php foreach ($plans['clinic']['features'] as $feature): ?>
+              <?php 
+              $clinicFeatures = isset($plansData['clinic']['features']) && is_array($plansData['clinic']['features']) 
+                ? $plansData['clinic']['features'] 
+                : $defaultPlans['clinic']['features'];
+              foreach ($clinicFeatures as $feature): ?>
               <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
               <?php endforeach; ?>
             </ul>
@@ -558,11 +588,13 @@ $db = $database->getConnection();
               <?php endif; ?>
             </div>
             <ul class="list-unstyled mb-4" id="enterpriseFeatures">
-              <?php if (isset($plans['enterprise']) && is_array($plans['enterprise']['features'])): ?>
-                <?php foreach ($plans['enterprise']['features'] as $feature): ?>
-                <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
-                <?php endforeach; ?>
-              <?php endif; ?>
+              <?php 
+              $enterpriseFeatures = isset($plansData['enterprise']['features']) && is_array($plansData['enterprise']['features']) 
+                ? $plansData['enterprise']['features'] 
+                : $defaultPlans['enterprise']['features'];
+              foreach ($enterpriseFeatures as $feature): ?>
+              <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+              <?php endforeach; ?>
             </ul>
             <a href="https://wa.me/5491112345678?text=Hola%2C%20me%20interesa%20el%20plan%20Enterprise%20de%20DentexaPro" target="_blank" rel="noopener" class="btn btn-outline-light w-100">Solicitar cotización</a>
           </div>
@@ -957,3 +989,56 @@ $db = $database->getConnection();
       let currentPhraseIndex = 0;
       let currentCharIndex = 0;
       let isDeleting = false;
+
+      function typeText() {
+        const currentPhrase = phrases[currentPhraseIndex];
+        
+        if (isDeleting) {
+          typingElement.textContent = currentPhrase.substring(0, currentCharIndex - 1);
+          currentCharIndex--;
+        } else {
+          typingElement.textContent = currentPhrase.substring(0, currentCharIndex + 1);
+          currentCharIndex++;
+        }
+
+        let typeSpeed = isDeleting ? 50 : 100;
+
+        if (!isDeleting && currentCharIndex === currentPhrase.length) {
+          typeSpeed = 2000; // Pause at end
+          isDeleting = true;
+        } else if (isDeleting && currentCharIndex === 0) {
+          isDeleting = false;
+          currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+          typeSpeed = 500; // Pause before next phrase
+        }
+
+        setTimeout(typeText, typeSpeed);
+      }
+
+      typeText();
+
+      // Pricing toggle
+      const billingToggle = document.getElementById('billingToggle');
+      const priceAmounts = document.querySelectorAll('.price-amount');
+
+      billingToggle.addEventListener('change', function() {
+        priceAmounts.forEach(amount => {
+          const monthly = amount.getAttribute('data-monthly');
+          const yearly = amount.getAttribute('data-yearly');
+          amount.textContent = this.checked ? yearly : monthly;
+        });
+      });
+
+      // Set current year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Initialize AOS
+      AOS.init({
+        duration: 1000,
+        once: true,
+        offset: 100
+      });
+    });
+  </script>
+</body>
+</html>

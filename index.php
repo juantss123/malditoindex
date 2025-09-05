@@ -382,6 +382,255 @@ $db = $database->getConnection();
     </div>
   </section>
 
+  <!-- Batalla de Sistemas -->
+  <section id="batalla-sistemas" class="section-py position-relative overflow-hidden" data-aos="fade-up" data-aos-duration="1400" data-aos-offset="200">
+    <!-- Battle Background Effects -->
+    <div class="battle-bg-effects" aria-hidden="true">
+      <div class="battle-lightning battle-lightning-1"></div>
+      <div class="battle-lightning battle-lightning-2"></div>
+      <div class="battle-lightning battle-lightning-3"></div>
+    </div>
+
+    <div class="container">
+      <div class="text-center mb-5" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">
+        <h2 class="fw-bold text-white mb-3">
+          <i class="bi bi-lightning me-2"></i>La <span class="gradient-text">batalla</span> por la eficiencia
+        </h2>
+        <p class="text-light opacity-80 mb-0">DentexaPro vs Métodos Tradicionales</p>
+      </div>
+
+      <!-- Battle Arena -->
+      <div class="battle-arena glass-card p-4 p-sm-5 position-relative" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="500">
+        <!-- VS Badge -->
+        <div class="vs-badge">
+          <span class="vs-text">VS</span>
+          <div class="vs-glow"></div>
+        </div>
+
+        <div class="row g-4 align-items-center">
+          <!-- Traditional System (Left Side) -->
+          <div class="col-lg-5">
+            <div class="battle-side traditional-side" data-aos="slide-right" data-aos-duration="1000" data-aos-delay="700">
+              <div class="battle-header mb-4">
+                <div class="battle-avatar traditional-avatar">
+                  <i class="bi bi-file-text"></i>
+                </div>
+                <h3 class="text-white mb-2">Sistema Tradicional</h3>
+                <p class="text-danger opacity-85">Papel, Excel y estrés</p>
+              </div>
+
+              <div class="battle-stats">
+                <div class="battle-stat-item losing">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-clock-history text-danger"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Tiempo perdido</div>
+                    <div class="battle-stat-value text-danger">3-4 horas/día</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item losing">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-person-x text-danger"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Ausencias</div>
+                    <div class="battle-stat-value text-danger">30-40%</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item losing">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-exclamation-triangle text-danger"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Errores</div>
+                    <div class="battle-stat-value text-danger">Frecuentes</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item losing">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-graph-down text-danger"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Crecimiento</div>
+                    <div class="battle-stat-value text-danger">Limitado</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item losing">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-emoji-frown text-danger"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Satisfacción</div>
+                    <div class="battle-stat-value text-danger">Baja</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Traditional Problems -->
+              <div class="battle-problems mt-4">
+                <h5 class="text-white mb-3">
+                  <i class="bi bi-x-circle text-danger me-2"></i>Problemas comunes
+                </h5>
+                <div class="battle-problem-list">
+                  <div class="battle-problem-item">
+                    <i class="bi bi-x text-danger me-2"></i>
+                    <span class="text-light opacity-85">Agendas en papel que se pierden</span>
+                  </div>
+                  <div class="battle-problem-item">
+                    <i class="bi bi-x text-danger me-2"></i>
+                    <span class="text-light opacity-85">Pacientes que no recuerdan turnos</span>
+                  </div>
+                  <div class="battle-problem-item">
+                    <i class="bi bi-x text-danger me-2"></i>
+                    <span class="text-light opacity-85">Historiales médicos desorganizados</span>
+                  </div>
+                  <div class="battle-problem-item">
+                    <i class="bi bi-x text-danger me-2"></i>
+                    <span class="text-light opacity-85">Facturación manual y lenta</span>
+                  </div>
+                  <div class="battle-problem-item">
+                    <i class="bi bi-x text-danger me-2"></i>
+                    <span class="text-light opacity-85">Sin respaldos de información</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Battle Animation Center -->
+          <div class="col-lg-2 text-center">
+            <div class="battle-center" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="1000">
+              <div class="battle-energy-beam"></div>
+              <div class="battle-sparks">
+                <div class="spark spark-1"></div>
+                <div class="spark spark-2"></div>
+                <div class="spark spark-3"></div>
+                <div class="spark spark-4"></div>
+                <div class="spark spark-5"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DentexaPro System (Right Side) -->
+          <div class="col-lg-5">
+            <div class="battle-side dentexapro-side" data-aos="slide-left" data-aos-duration="1000" data-aos-delay="700">
+              <div class="battle-header mb-4">
+                <div class="battle-avatar dentexapro-avatar">
+                  <i class="bi bi-lightning-charge"></i>
+                </div>
+                <h3 class="text-white mb-2">DentexaPro</h3>
+                <p class="text-success opacity-85">Automatización y éxito</p>
+              </div>
+
+              <div class="battle-stats">
+                <div class="battle-stat-item winning">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-stopwatch text-success"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Tiempo ahorrado</div>
+                    <div class="battle-stat-value text-success">2-3 horas/día</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item winning">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-person-check text-success"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Ausencias</div>
+                    <div class="battle-stat-value text-success">-80%</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item winning">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-shield-check text-success"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Errores</div>
+                    <div class="battle-stat-value text-success">Eliminados</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item winning">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-graph-up text-success"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Crecimiento</div>
+                    <div class="battle-stat-value text-success">+150%</div>
+                  </div>
+                </div>
+
+                <div class="battle-stat-item winning">
+                  <div class="battle-stat-icon">
+                    <i class="bi bi-emoji-smile text-success"></i>
+                  </div>
+                  <div class="battle-stat-content">
+                    <div class="battle-stat-label">Satisfacción</div>
+                    <div class="battle-stat-value text-success">98%</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DentexaPro Advantages -->
+              <div class="battle-advantages mt-4">
+                <h5 class="text-white mb-3">
+                  <i class="bi bi-trophy text-warning me-2"></i>Ventajas decisivas
+                </h5>
+                <div class="battle-advantage-list">
+                  <div class="battle-advantage-item">
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                    <span class="text-light opacity-85">Recordatorios automáticos por WhatsApp</span>
+                  </div>
+                  <div class="battle-advantage-item">
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                    <span class="text-light opacity-85">Historia clínica digital completa</span>
+                  </div>
+                  <div class="battle-advantage-item">
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                    <span class="text-light opacity-85">Agenda inteligente sincronizada</span>
+                  </div>
+                  <div class="battle-advantage-item">
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                    <span class="text-light opacity-85">Facturación automática</span>
+                  </div>
+                  <div class="battle-advantage-item">
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                    <span class="text-light opacity-85">Respaldos automáticos en la nube</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Battle Result -->
+        <div class="battle-result text-center mt-5" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1200">
+          <div class="battle-winner-badge">
+            <i class="bi bi-trophy text-warning"></i>
+            <span class="winner-text">¡DentexaPro GANA!</span>
+          </div>
+          <h3 class="text-white mb-3 mt-4">
+            <span class="gradient-text">Victoria total</span> en eficiencia y resultados
+          </h3>
+          <p class="text-light opacity-85 mb-4">
+            No hay competencia. DentexaPro supera a los métodos tradicionales en todas las métricas importantes.
+          </p>
+          <a href="#cta" class="btn btn-primary btn-lg battle-cta-btn">
+            <i class="bi bi-rocket-takeoff me-2"></i>Únete al lado ganador
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Pricing -->
   <section id="pricing" class="section-py" data-aos="slide-left" data-aos-duration="1400" data-aos-offset="200">
     <div class="container">

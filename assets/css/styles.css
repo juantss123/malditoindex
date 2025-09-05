@@ -383,6 +383,534 @@ a:hover{ color: var(--primary-600); }
   min-height: 400px;
 }
 
+/* Batalla de Sistemas Styles */
+.battle-arena {
+  position: relative;
+  background: linear-gradient(135deg, rgba(220,53,69,0.1), rgba(47,150,238,0.1));
+  border: 2px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.battle-arena::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(47,150,238,0.1), transparent, rgba(220,53,69,0.1), transparent);
+  animation: battle-arena-rotate 8s linear infinite;
+  z-index: -1;
+}
+
+@keyframes battle-arena-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* VS Badge */
+.vs-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #dc3545, #ffc107, #28a745);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: vs-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(255,255,255,0.3);
+}
+
+.vs-text {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.vs-glow {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  animation: vs-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vs-pulse {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 30px rgba(255,255,255,0.3);
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 50px rgba(255,255,255,0.6);
+  }
+}
+
+@keyframes vs-glow-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% { 
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Battle Sides */
+.battle-side {
+  position: relative;
+  padding: 2rem;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.traditional-side {
+  background: rgba(220,53,69,0.1);
+  border: 1px solid rgba(220,53,69,0.3);
+}
+
+.traditional-side:hover {
+  background: rgba(220,53,69,0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(220,53,69,0.2);
+}
+
+.dentexapro-side {
+  background: rgba(47,150,238,0.1);
+  border: 1px solid rgba(47,150,238,0.3);
+}
+
+.dentexapro-side:hover {
+  background: rgba(47,150,238,0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(47,150,238,0.2);
+}
+
+/* Battle Avatars */
+.battle-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto 1rem;
+  position: relative;
+  animation: battle-avatar-float 3s ease-in-out infinite;
+}
+
+.traditional-avatar {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(220,53,69,0.4);
+}
+
+.dentexapro-avatar {
+  background: linear-gradient(135deg, #2F96EE, #68c4ff);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(47,150,238,0.4);
+}
+
+@keyframes battle-avatar-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Battle Stats */
+.battle-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.battle-stat-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.battle-stat-item.losing {
+  background: rgba(220,53,69,0.1);
+  border: 1px solid rgba(220,53,69,0.2);
+}
+
+.battle-stat-item.winning {
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
+}
+
+.battle-stat-item:hover {
+  transform: translateX(5px);
+}
+
+.battle-stat-item.losing:hover {
+  background: rgba(220,53,69,0.15);
+  box-shadow: 0 5px 20px rgba(220,53,69,0.2);
+}
+
+.battle-stat-item.winning:hover {
+  background: rgba(34,197,94,0.15);
+  box-shadow: 0 5px 20px rgba(34,197,94,0.2);
+}
+
+.battle-stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.battle-stat-content {
+  flex-grow: 1;
+}
+
+.battle-stat-label {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.battle-stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Battle Problems & Advantages */
+.battle-problem-item,
+.battle-advantage-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
+}
+
+.battle-problem-item:hover,
+.battle-advantage-item:hover {
+  padding-left: 0.5rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+}
+
+.battle-problem-item:last-child,
+.battle-advantage-item:last-child {
+  border-bottom: none;
+}
+
+/* Battle Center Effects */
+.battle-center {
+  position: relative;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.battle-energy-beam {
+  width: 4px;
+  height: 100px;
+  background: linear-gradient(180deg, #dc3545, #ffc107, #28a745);
+  border-radius: 2px;
+  animation: energy-beam-pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+
+@keyframes energy-beam-pulse {
+  0%, 100% { 
+    transform: scaleY(1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scaleY(1.2);
+    opacity: 1;
+  }
+}
+
+.battle-sparks {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffc107;
+  border-radius: 50%;
+  animation: spark-fly 2s ease-out infinite;
+}
+
+.spark-1 { animation-delay: 0s; }
+.spark-2 { animation-delay: 0.4s; }
+.spark-3 { animation-delay: 0.8s; }
+.spark-4 { animation-delay: 1.2s; }
+.spark-5 { animation-delay: 1.6s; }
+
+@keyframes spark-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--spark-x, 50px), var(--spark-y, -50px)) scale(0);
+    opacity: 0;
+  }
+}
+
+.spark-1 { --spark-x: 40px; --spark-y: -30px; }
+.spark-2 { --spark-x: -35px; --spark-y: -40px; }
+.spark-3 { --spark-x: 30px; --spark-y: 35px; }
+.spark-4 { --spark-x: -40px; --spark-y: 25px; }
+.spark-5 { --spark-x: 0px; --spark-y: -60px; }
+
+/* Battle Background Effects */
+.battle-bg-effects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.battle-lightning {
+  position: absolute;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(180deg, transparent, #ffc107, transparent);
+  opacity: 0;
+  animation: lightning-strike 4s ease-in-out infinite;
+}
+
+.battle-lightning-1 {
+  top: 20%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.battle-lightning-2 {
+  top: 60%;
+  right: 25%;
+  animation-delay: 1.5s;
+}
+
+.battle-lightning-3 {
+  top: 40%;
+  left: 70%;
+  animation-delay: 3s;
+}
+
+@keyframes lightning-strike {
+  0%, 90%, 100% { opacity: 0; }
+  91%, 93%, 95% { opacity: 1; }
+  92%, 94% { opacity: 0.3; }
+}
+
+/* Battle Winner Badge */
+.battle-winner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #ffc107, #fd7e14);
+  color: #000;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 10px 30px rgba(255,193,7,0.4);
+  animation: winner-badge-glow 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.battle-winner-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: winner-shine 3s ease-in-out infinite;
+}
+
+@keyframes winner-badge-glow {
+  0%, 100% { 
+    box-shadow: 0 10px 30px rgba(255,193,7,0.4);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 15px 40px rgba(255,193,7,0.6);
+    transform: scale(1.05);
+  }
+}
+
+@keyframes winner-shine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.winner-text {
+  background: linear-gradient(45deg, #000, #333, #000);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: winner-text-glow 2s ease-in-out infinite;
+}
+
+@keyframes winner-text-glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+  50% { text-shadow: 0 0 20px rgba(0,0,0,0.8); }
+}
+
+/* Battle CTA Button */
+.battle-cta-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  border: none;
+  box-shadow: 0 10px 30px rgba(40,167,69,0.4);
+  animation: battle-cta-pulse 3s ease-in-out infinite;
+}
+
+.battle-cta-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.battle-cta-btn:hover::before {
+  left: 100%;
+}
+
+.battle-cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(40,167,69,0.6);
+}
+
+@keyframes battle-cta-pulse {
+  0%, 100% { 
+    box-shadow: 0 10px 30px rgba(40,167,69,0.4);
+  }
+  50% { 
+    box-shadow: 0 15px 40px rgba(40,167,69,0.6);
+  }
+}
+
+/* Responsive Battle */
+@media (max-width: 991.98px) {
+  .vs-badge {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 2rem auto;
+    display: flex;
+  }
+  
+  .battle-arena::before {
+    animation: none; /* Reduce motion on mobile */
+  }
+  
+  .battle-side {
+    padding: 1.5rem;
+  }
+  
+  .battle-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+  
+  .battle-stat-item {
+    padding: 0.75rem;
+  }
+  
+  .battle-stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .battle-arena::before,
+  .vs-badge,
+  .battle-avatar,
+  .battle-energy-beam,
+  .spark,
+  .battle-lightning,
+  .battle-winner-badge {
+    animation: none !important;
+  }
+  
+  .battle-cta-btn {
+    animation: none !important;
+  }
+}
+
+/* Battle Hover Effects */
+.battle-stat-item.winning::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(34,197,94,0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.battle-stat-item.winning:hover::before {
+  left: 100%;
+}
+
+.battle-stat-item.losing::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(220,53,69,0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.battle-stat-item.losing:hover::before {
+  left: 100%;
+}
+
 /* Reviews/Testimonials */
 .review-card{
   transition: transform 0.3s ease, box-shadow 0.3s ease;

@@ -80,14 +80,12 @@ try {
             'email' => $user['email']
         ],
         'back_urls' => [
-            'success' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-exitoso.php?plan=" . $planType,
-            'failure' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-fallido.php?plan=" . $planType,
-            'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php?plan=" . $planType
+            'success' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-exitoso.php?plan=" . urlencode($planType),
+            'failure' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-fallido.php?plan=" . urlencode($planType),
+            'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php?plan=" . urlencode($planType)
         ],
         'auto_return' => 'approved',
         'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time(),
-        'notification_url' => "http://" . $_SERVER['HTTP_HOST'] . "/api/mercadopago-webhook.php"
-    ];
     
     // Send request to MercadoPago
     $ch = curl_init();

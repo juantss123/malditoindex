@@ -64,30 +64,38 @@ try {
     }
     
     // Create payment preference
+    // Simplify preference structure to avoid validation errors
     $preference = [
         'items' => [
             [
-                'title' => "DentexaPro - Plan {$planName}",
-                'description' => "Suscripción mensual al plan {$planName} de DentexaPro",
+                'title' => "Plan {$planName} - DentexaPro",
                 'quantity' => 1,
                 'unit_price' => $amount,
                 'currency_id' => 'ARS'
             ]
         ],
-        'payer' => [
+        'back_urls' => [
+            'success' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-exitoso.php?plan=" . urlencode($planType),
+            'failure' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-fallido.php?plan=" . urlencode($planType),
+            'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php?plan=" . urlencode($planType)
+        ],
+        'auto_return' => 'approved',
+        'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time()
+    ];
+    
+    // Add payer info only if we have complete data
+    if (!empty($user['first_name']) && !empty($user['last_name']) && !empty($user['email'])) {
+        $preference['payer'] = [
             'name' => $user['first_name'],
             'surname' => $user['last_name'],
             'email' => $user['email']
-        ],
-        'back_urls' => [
-            'success' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-exitoso.php",
-            'failure' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-fallido.php", 
-            'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php"
-        ],
-        'auto_return' => 'all',
-        'notification_url' => "http://" . $_SERVER['HTTP_HOST'] . "/api/mercadopago-webhook.php",
-        'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time()
-    ];
+        ];
+    }
+    
+    // Add notification URL only for production (not localhost)
+    if ($_SERVER['HTTP_HOST'] !== 'localhost' && !str_contains($_SERVER['HTTP_HOST'], '127.0.0.1')) {
+        $preference['notification_url'] = "http://" . $_SERVER['HTTP_HOST'] . "/api/mercadopago-webhook.php";
+    }
     
     // Send request to MercadoPago
     $ch = curl_init();
@@ -127,14 +135,24 @@ try {
     
     if ($httpCode !== 201) {
         $responseData = json_decode($response, true);
+        
+        // Log the full request and response for debugging
+        error_log("MercadoPago Request: " . json_encode($preference));
+        error_log("MercadoPago Response: " . $response);
+        
         echo json_encode([
             'error' => 'Error HTTP ' . $httpCode . ' de MercadoPago',
             'debug' => [
                 'http_code' => $httpCode,
                 'response' => $responseData,
-                'request_data' => $preference,
+                'request_sent' => $preference,
+                'raw_response' => $response,
+                'access_token_configured' => !empty($settings['mercadopago_access_token']),
+                'access_token_length' => strlen($settings['mercadopago_access_token']),
+                'curl_info' => $curlInfo,
                 'suggestion' => 'Verifica la estructura de datos enviada a MercadoPago',
-                'mercadopago_error' => $responseData['message'] ?? 'Error desconocido'
+                'mercadopago_error' => $responseData['message'] ?? 'Error desconocido',
+                'mercadopago_details' => $responseData['cause'] ?? null
             ]
         ]);
         exit();

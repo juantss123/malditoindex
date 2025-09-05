@@ -85,7 +85,8 @@ try {
             'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php?plan=" . urlencode($planType)
         ],
         'auto_return' => 'approved',
-        'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time(),
+        'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time()
+    ];
     
     // Send request to MercadoPago
     $ch = curl_init();
@@ -97,32 +98,19 @@ try {
         'Content-Type: application/json',
         'Authorization: Bearer ' . $settings['mercadopago_access_token']
     ]);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For development
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // For development
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch, CURLOPT_USERAGENT, 'DentexaPro/1.0');
-    curl_setopt($ch, CURLOPT_VERBOSE, true); // Enable verbose output for debugging
+    curl_setopt($ch, CURLOPT_VERBOSE, true);
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
     $curlInfo = curl_getinfo($ch);
     curl_close($ch);
-    
-    // Log detailed debug information
-    error_log("=== MercadoPago API Debug ===");
-    error_log("HTTP Code: $httpCode");
-    error_log("cURL Error: " . ($curlError ?: 'None'));
-    error_log("Response: " . ($response ?: 'Empty'));
-    error_log("Connection Info: " . json_encode($curlInfo));
-    error_log("Request Data: " . json_encode($preference));
-    error_log("Access Token (first 10 chars): " . substr($settings['mercadopago_access_token'], 0, 10) . '...');
-    
-    if ($curlError) {
-        error_log("cURL Error Details: " . $curlError);
-    }
     
     // Check for cURL errors first
     if ($curlError) {
@@ -138,30 +126,13 @@ try {
     }
     
     if ($httpCode !== 201) {
-        $errorDetails = '';
-        if ($response) {
-            $errorResponse = json_decode($response, true);
-            if ($errorResponse && isset($errorResponse['message'])) {
-                $errorDetails = $errorResponse['message'];
-            } elseif ($errorResponse && isset($errorResponse['cause'])) {
-                $errorDetails = 'Causa: ' . json_encode($errorResponse['cause']);
-            } elseif ($errorResponse) {
-                $errorDetails = 'Respuesta completa: ' . json_encode($errorResponse);
-            }
-        }
-        
-        $errorMessage = 'Error al crear preferencia de pago en MercadoPago';
-        if ($errorDetails) {
-            $errorMessage .= ': ' . $errorDetails;
-        }
-        
         echo json_encode([
-            'error' => $errorMessage,
+            'error' => 'Error HTTP ' . $httpCode . ' de MercadoPago',
             'debug' => [
                 'http_code' => $httpCode,
                 'response' => $response,
-                'curl_info' => $curlInfo,
-                'access_token_configured' => !empty($settings['mercadopago_access_token'])
+                'request_data' => $preference,
+                'suggestion' => 'Verifica que las credenciales sean de producción si estás en producción'
             ]
         ]);
         exit();

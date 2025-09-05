@@ -98,18 +98,43 @@ try {
         'Authorization: Bearer ' . $settings['mercadopago_access_token']
     ]);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For development
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // For development
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'DentexaPro/1.0');
+    curl_setopt($ch, CURLOPT_VERBOSE, true); // Enable verbose output for debugging
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
+    $curlInfo = curl_getinfo($ch);
     curl_close($ch);
     
-    // Log detailed error information
-    error_log("MercadoPago API Request - HTTP Code: $httpCode");
-    error_log("MercadoPago API Response: " . $response);
+    // Log detailed debug information
+    error_log("=== MercadoPago API Debug ===");
+    error_log("HTTP Code: $httpCode");
+    error_log("cURL Error: " . ($curlError ?: 'None'));
+    error_log("Response: " . ($response ?: 'Empty'));
+    error_log("Connection Info: " . json_encode($curlInfo));
+    error_log("Request Data: " . json_encode($preference));
+    error_log("Access Token (first 10 chars): " . substr($settings['mercadopago_access_token'], 0, 10) . '...');
+    
     if ($curlError) {
-        error_log("cURL Error: " . $curlError);
+        error_log("cURL Error Details: " . $curlError);
+    }
+    
+    // Check for cURL errors first
+    if ($curlError) {
+        echo json_encode([
+            'error' => 'Error de conexión con MercadoPago: ' . $curlError,
+            'debug' => [
+                'curl_error' => $curlError,
+                'curl_info' => $curlInfo,
+                'suggestion' => 'Verifica tu conexión a internet y configuración de firewall'
+            ]
+        ]);
+        exit();
     }
     
     if ($httpCode !== 201) {
@@ -118,8 +143,10 @@ try {
             $errorResponse = json_decode($response, true);
             if ($errorResponse && isset($errorResponse['message'])) {
                 $errorDetails = $errorResponse['message'];
-            } elseif ($errorResponse && isset($errorResponse['error'])) {
-                $errorDetails = $errorResponse['error'];
+            } elseif ($errorResponse && isset($errorResponse['cause'])) {
+                $errorDetails = 'Causa: ' . json_encode($errorResponse['cause']);
+            } elseif ($errorResponse) {
+                $errorDetails = 'Respuesta completa: ' . json_encode($errorResponse);
             }
         }
         
@@ -127,16 +154,14 @@ try {
         if ($errorDetails) {
             $errorMessage .= ': ' . $errorDetails;
         }
-        if ($curlError) {
-            $errorMessage .= ' (cURL: ' . $curlError . ')';
-        }
         
         echo json_encode([
             'error' => $errorMessage,
             'debug' => [
                 'http_code' => $httpCode,
-                'curl_error' => $curlError,
-                'response' => $response
+                'response' => $response,
+                'curl_info' => $curlInfo,
+                'access_token_configured' => !empty($settings['mercadopago_access_token'])
             ]
         ]);
         exit();

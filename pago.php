@@ -428,8 +428,12 @@ $selectedPlan = $planDetails;
           let errorMessage = data.error;
           if (data.debug && data.debug.http_code) {
             errorMessage += `\n\nDetalles técnicos:\n- Código HTTP: ${data.debug.http_code}`;
-            if (data.debug.curl_error) {
-              errorMessage += `\n- Error de conexión: ${data.debug.curl_error}`;
+            if (data.debug.curl_info && data.debug.curl_info.total_time) {
+              errorMessage += `\n- Tiempo de conexión: ${data.debug.curl_info.total_time}s`;
+            }
+            if (!data.debug.access_token_configured) {
+              errorMessage += `\n- ⚠️ PROBLEMA: MercadoPago no está configurado correctamente`;
+              errorMessage += `\n- Ve a Configuración > Métodos de Pago para configurar las credenciales`;
             }
           }
           

@@ -63,7 +63,10 @@ try {
         exit();
     }
     
-    // Create the simplest possible preference structure
+    // Create external reference
+    $externalReference = $_SESSION['user_id'] . '_' . $planType . '_' . time();
+    
+    // Create the EXACT same structure that works in the test
     $preference = [
         'items' => [
             [
@@ -73,18 +76,18 @@ try {
             ]
         ],
         'back_urls' => [
-            'success' => "http://localhost/pago-exitoso.php?plan=" . $planType,
-            'failure' => "http://localhost/pago-fallido.php?plan=" . $planType,
-            'pending' => "http://localhost/pago-pendiente.php?plan=" . $planType
+            'success' => "http://localhost/pago-exitoso.php?plan=" . urlencode($planType),
+            'failure' => "http://localhost/pago-fallido.php?plan=" . urlencode($planType),
+            'pending' => "http://localhost/pago-pendiente.php?plan=" . urlencode($planType)
         ],
         'auto_return' => 'approved',
-        'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time()
+        'external_reference' => $externalReference
     ];
     
     // Log the request for debugging
     error_log("MercadoPago Request: " . json_encode($preference, JSON_PRETTY_PRINT));
     
-    // Send request to MercadoPago with minimal configuration
+    // Send request to MercadoPago using EXACT same configuration as test
     $ch = curl_init();
     curl_setopt_array($ch, [
         CURLOPT_URL => 'https://api.mercadopago.com/checkout/preferences',
@@ -123,10 +126,18 @@ try {
         
         // Extract specific error message from MercadoPago
         $errorMessage = 'Error HTTP ' . $httpCode;
-        if ($responseData && isset($responseData['message'])) {
-            $errorMessage = $responseData['message'];
-        } elseif ($responseData && isset($responseData['error'])) {
-            $errorMessage = $responseData['error'];
+        if ($responseData) {
+            if (isset($responseData['message'])) {
+                $errorMessage = $responseData['message'];
+            } elseif (isset($responseData['error'])) {
+                $errorMessage = $responseData['error'];
+            } elseif (isset($responseData['cause'])) {
+                $causes = [];
+                foreach ($responseData['cause'] as $cause) {
+                    $causes[] = $cause['description'] ?? 'Error desconocido';
+                }
+                $errorMessage = implode(', ', $causes);
+            }
         }
         
         echo json_encode([
@@ -134,7 +145,8 @@ try {
             'debug' => [
                 'http_code' => $httpCode,
                 'mercadopago_response' => $responseData,
-                'request_sent' => $preference
+                'request_sent' => $preference,
+                'access_token_configured' => !empty($settings['mercadopago_access_token'])
             ]
         ]);
         exit();
@@ -174,7 +186,7 @@ try {
             $planType,
             $amount,
             $responseData['id'],
-            $preference['external_reference']
+            $externalReference
         ]);
     } catch (Exception $e) {
         // Log error but don't fail the payment

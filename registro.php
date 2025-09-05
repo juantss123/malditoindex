@@ -125,22 +125,30 @@ if (isLoggedIn()) {
               </div>
               
               <div class="col-md-6" data-aos="slide-right" data-aos-duration="800" data-aos-delay="600">
-                <label class="form-label text-light">Nombre *</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-person me-2"></i>Nombre *
+                </label>
                 <input type="text" name="firstName" class="form-control form-control-lg glass-input" placeholder="Tu nombre" required>
               </div>
               
               <div class="col-md-6" data-aos="slide-left" data-aos-duration="800" data-aos-delay="700">
-                <label class="form-label text-light">Apellido *</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-person-badge me-2"></i>Apellido *
+                </label>
                 <input type="text" name="lastName" class="form-control form-control-lg glass-input" placeholder="Tu apellido" required>
               </div>
 
               <div class="col-12" data-aos="slide-up" data-aos-duration="800" data-aos-delay="800">
-                <label class="form-label text-light">Email *</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-envelope me-2"></i>Email *
+                </label>
                 <input type="email" name="email" class="form-control form-control-lg glass-input" placeholder="tu@email.com" required>
               </div>
 
               <div class="col-12" data-aos="slide-up" data-aos-duration="800" data-aos-delay="900">
-                <label class="form-label text-light">Contraseña *</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-lock me-2"></i>Contraseña *
+                </label>
                 <input type="password" name="password" class="form-control form-control-lg glass-input" placeholder="Mínimo 8 caracteres" required minlength="8">
               </div>
 
@@ -151,22 +159,30 @@ if (isLoggedIn()) {
               </div>
 
               <div class="col-md-6" data-aos="slide-right" data-aos-duration="800" data-aos-delay="1100">
-                <label class="form-label text-light">Número de matrícula</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-award me-2"></i>Número de matrícula
+                </label>
                 <input type="text" name="licenseNumber" class="form-control form-control-lg glass-input" placeholder="Ej: 12345">
               </div>
 
               <div class="col-md-6" data-aos="slide-left" data-aos-duration="800" data-aos-delay="1200">
-                <label class="form-label text-light">Teléfono *</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-telephone me-2"></i>Teléfono *
+                </label>
                 <input type="tel" name="phone" class="form-control form-control-lg glass-input" placeholder="+54 9 11..." required>
               </div>
 
               <div class="col-12" data-aos="slide-up" data-aos-duration="800" data-aos-delay="1300">
-                <label class="form-label text-light">Nombre del consultorio *</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-building me-2"></i>Nombre del consultorio *
+                </label>
                 <input type="text" name="clinicName" class="form-control form-control-lg glass-input" placeholder="Ej: Consultorio Dr. González" required>
               </div>
 
               <div class="col-md-6" data-aos="slide-right" data-aos-duration="800" data-aos-delay="1400">
-                <label class="form-label text-light">Especialidad</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-heart-pulse me-2"></i>Especialidad
+                </label>
                 <select name="specialty" class="form-select form-select-lg glass-input">
                   <option value="">Seleccionar especialidad</option>
                   <option value="general">Odontología General</option>
@@ -181,7 +197,9 @@ if (isLoggedIn()) {
               </div>
 
               <div class="col-md-6" data-aos="slide-left" data-aos-duration="800" data-aos-delay="1500">
-                <label class="form-label text-light">Tamaño del equipo</label>
+                <label class="form-label text-light">
+                  <i class="bi bi-people me-2"></i>Tamaño del equipo
+                </label>
                 <select name="teamSize" class="form-select form-select-lg glass-input">
                   <option value="1">Solo yo</option>
                   <option value="2-3">2-3 profesionales</option>

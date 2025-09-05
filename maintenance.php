@@ -341,17 +341,7 @@
     <span></span><span></span><span></span>
   </div>
 
-  <!-- Floating Particles -->
-  <div class="floating-particles" aria-hidden="true">
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-  </div>
+  
 
   <!-- Maintenance Page -->
   <div class="maintenance-hero">
@@ -361,24 +351,15 @@
           <div class="text-center">
             <!-- Logo with glow effect -->
             <div class="mb-5">
-              <img src="assets/img/logo.svg" width="80" height="80" alt="DentexaPro logo" class="maintenance-logo mb-4" />
-              <h2 class="text-white mb-2">DentexaPro</h2>
+             
+              <h2 class="text-white mb-2 mt-5">DentexaPro</h2>
               <div class="d-flex align-items-center justify-content-center">
                 <div class="status-indicator"></div>
                 <span class="text-warning small fw-medium">Sistema en mantenimiento</span>
               </div>
             </div>
 
-            <!-- Enhanced Maintenance Icon -->
-            <div class="mb-5">
-              <div class="position-relative d-inline-block">
-                <i class="bi bi-gear-fill maintenance-icon"></i>
-                <div class="position-absolute top-50 start-50 translate-middle">
-                  <i class="bi bi-wrench text-white" style="font-size: 2rem; animation: rotate 2s linear infinite;"></i>
-                </div>
-              </div>
-            </div>
-
+           
             <!-- Main Content Card -->
             <div class="maintenance-card p-5 mb-4">
               <h1 class="text-white mb-4 display-6 fw-bold">
@@ -540,43 +521,8 @@
               </div>
             </div>
 
-            <!-- Social Links -->
-            <div class="text-center">
-              <p class="text-light opacity-85 mb-3">Seguinos para estar al día con las novedades:</p>
-              <div class="social-links">
-                <a href="#" class="social-link" title="Facebook">
-                  <i class="bi bi-facebook"></i>
-                </a>
-                <a href="#" class="social-link" title="Twitter">
-                  <i class="bi bi-twitter"></i>
-                </a>
-                <a href="#" class="social-link" title="LinkedIn">
-                  <i class="bi bi-linkedin"></i>
-                </a>
-                <a href="#" class="social-link" title="Instagram">
-                  <i class="bi bi-instagram"></i>
-                </a>
-                <a href="#" class="social-link" title="YouTube">
-                  <i class="bi bi-youtube"></i>
-                </a>
-              </div>
-            </div>
-
-            <!-- Fun fact -->
-            <div class="mt-4 text-center">
-              <div class="glass-card p-3">
-                <p class="text-light opacity-75 mb-0 small">
-                  <i class="bi bi-lightbulb text-warning me-2"></i>
-                  <strong>¿Sabías que?</strong> Durante el mantenimiento, estamos implementando mejoras que harán DentexaPro hasta 40% más rápido.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
+           
+            
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   

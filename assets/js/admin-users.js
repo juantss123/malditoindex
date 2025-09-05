@@ -3,7 +3,7 @@
 let allUsers = [];
 let filteredUsers = [];
 let currentPage = 1;
-const usersPerPage = 5;
+const usersPerPage = 10;
 
 document.addEventListener('DOMContentLoaded', () => {
   // Init AOS

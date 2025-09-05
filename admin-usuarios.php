@@ -250,18 +250,6 @@ try {
                 </ul>
               </nav>
             </div>
-
-            <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center mt-4">
-              <div class="text-light opacity-75 small">
-                Mostrando <span id="showingCount">0</span> de <span id="totalCount">0</span> usuarios
-              </div>
-              <nav aria-label="Paginación de usuarios">
-                <ul class="pagination pagination-sm mb-0" id="pagination">
-                  <!-- Pagination will be generated here -->
-                </ul>
-              </nav>
-            </div>
           </div>
         </div>
       </div>

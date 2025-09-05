@@ -420,12 +420,25 @@ $selectedPlan = $planDetails;
       })
       .then(response => response.json())
       .then(data => {
+        console.log('Payment creation response:', data);
+        
         if (data.error) {
-          alert('Error: ' + data.error);
+          console.error('Payment error details:', data.debug);
+          
+          let errorMessage = data.error;
+          if (data.debug && data.debug.http_code) {
+            errorMessage += `\n\nDetalles técnicos:\n- Código HTTP: ${data.debug.http_code}`;
+            if (data.debug.curl_error) {
+              errorMessage += `\n- Error de conexión: ${data.debug.curl_error}`;
+            }
+          }
+          
+          alert('Error: ' + errorMessage);
           btn.disabled = false;
           btn.innerHTML = originalText;
         } else if (data.init_point) {
           // Redirect to MercadoPago
+          console.log('Redirecting to MercadoPago:', data.init_point);
           window.location.href = data.init_point;
         } else {
           alert('Error al crear la preferencia de pago');

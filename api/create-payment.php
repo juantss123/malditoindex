@@ -99,13 +99,48 @@ try {
         'Content-Type: application/json',
         'Authorization: Bearer ' . $settings['mercadopago_access_token']
     ]);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For development
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
     curl_close($ch);
     
+    // Log detailed error information
+    error_log("MercadoPago API Request - HTTP Code: $httpCode");
+    error_log("MercadoPago API Response: " . $response);
+    if ($curlError) {
+        error_log("cURL Error: " . $curlError);
+    }
+    
     if ($httpCode !== 201) {
-        echo json_encode(['error' => 'Error al crear preferencia de pago en MercadoPago']);
+        $errorDetails = '';
+        if ($response) {
+            $errorResponse = json_decode($response, true);
+            if ($errorResponse && isset($errorResponse['message'])) {
+                $errorDetails = $errorResponse['message'];
+            } elseif ($errorResponse && isset($errorResponse['error'])) {
+                $errorDetails = $errorResponse['error'];
+            }
+        }
+        
+        $errorMessage = 'Error al crear preferencia de pago en MercadoPago';
+        if ($errorDetails) {
+            $errorMessage .= ': ' . $errorDetails;
+        }
+        if ($curlError) {
+            $errorMessage .= ' (cURL: ' . $curlError . ')';
+        }
+        
+        echo json_encode([
+            'error' => $errorMessage,
+            'debug' => [
+                'http_code' => $httpCode,
+                'curl_error' => $curlError,
+                'response' => $response
+            ]
+        ]);
         exit();
     }
     

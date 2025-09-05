@@ -82,8 +82,6 @@ try {
         ],
         'auto_return' => 'approved',
         'external_reference' => $externalReference
-    ];
-    
     // Log the request for debugging
     error_log("MercadoPago Request: " . json_encode($preference, JSON_PRETTY_PRINT));
     

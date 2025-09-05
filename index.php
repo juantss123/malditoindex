@@ -89,18 +89,7 @@ try {
     $stmt->execute();
     $plansData = $stmt->fetchAll();
     
-    // Convert to associative array for easy access
-    foreach ($plansData as $plan) {
-        $plans[$plan['plan_type']] = [
-            'name' => $plan['name'],
-            'price_monthly' => (float) $plan['price_monthly'],
-            'price_yearly' => (float) $plan['price_yearly'],
-            'features' => json_decode($plan['features'], true) ?: []
-        ];
-    }
-    
-} catch (Exception $e) {
-    // Fallback to default plans if database fails
+    // Initialize plans array with defaults first
     $plans = [
         'start' => [
             'name' => 'Start',
@@ -121,6 +110,19 @@ try {
             'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
         ]
     ];
+    
+    // Override with database values if available
+    foreach ($plansData as $plan) {
+        $plans[$plan['plan_type']] = [
+            'name' => $plan['name'],
+            'price_monthly' => (float) $plan['price_monthly'],
+            'price_yearly' => (float) $plan['price_yearly'],
+            'features' => json_decode($plan['features'], true) ?: []
+        ];
+    }
+    
+} catch (Exception $e) {
+    // Keep default plans if database fails (already initialized above)
 }
 
 try {

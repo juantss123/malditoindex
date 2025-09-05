@@ -111,6 +111,55 @@ $selectedPlan = $planDetails;
     <span></span><span></span><span></span>
   </div>
 
+  <!-- Floating Icons Background -->
+  <div class="floating-elements" aria-hidden="true">
+    <div class="floating-icon" style="--delay: 0s; --duration: 8s;">
+      <i class="bi bi-credit-card"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 2s; --duration: 10s;">
+      <i class="bi bi-shield-check"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 4s; --duration: 12s;">
+      <i class="bi bi-lock"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 6s; --duration: 9s;">
+      <i class="bi bi-bank"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 1s; --duration: 11s;">
+      <i class="bi bi-currency-dollar"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 3s; --duration: 13s;">
+      <i class="bi bi-wallet2"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 5s; --duration: 7s;">
+      <i class="bi bi-receipt"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 7s; --duration: 14s;">
+      <i class="bi bi-check-circle"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 1.5s; --duration: 10s;">
+      <i class="bi bi-star"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 4.5s; --duration: 8s;">
+      <i class="bi bi-award"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 2.5s; --duration: 15s;">
+      <i class="bi bi-gem"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 6.5s; --duration: 9s;">
+      <i class="bi bi-safe"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 0.5s; --duration: 12s;">
+      <i class="bi bi-cash-coin"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 3.5s; --duration: 11s;">
+      <i class="bi bi-piggy-bank"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 5.5s; --duration: 13s;">
+      <i class="bi bi-trophy"></i>
+    </div>
+  </div>
+
   <!-- Nav -->
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-nav">
     <div class="container-fluid">

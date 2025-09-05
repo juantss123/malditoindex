@@ -34,7 +34,7 @@ try {
     $settings = $stmt->fetch();
     
     if (!$settings || !$settings['mercadopago_enabled'] || !$settings['mercadopago_access_token']) {
-        echo json_encode(['error' => 'MercadoPago no está configurado']);
+        echo json_encode(['error' => 'MercadoPago no está configurado correctamente']);
         exit();
     }
     
@@ -63,72 +63,57 @@ try {
         exit();
     }
     
-    // Create payment preference
-    // Simplify preference structure to avoid validation errors
+    // Create the simplest possible preference structure
     $preference = [
         'items' => [
             [
-                'title' => "Plan {$planName} - DentexaPro",
+                'title' => "Suscripción DentexaPro - Plan " . ucfirst($planType),
                 'quantity' => 1,
-                'unit_price' => $amount,
-                'currency_id' => 'ARS'
+                'unit_price' => $amount
             ]
         ],
         'back_urls' => [
-            'success' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-exitoso.php?plan=" . urlencode($planType),
-            'failure' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-fallido.php?plan=" . urlencode($planType),
-            'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php?plan=" . urlencode($planType)
+            'success' => "http://localhost/pago-exitoso.php?plan=" . $planType,
+            'failure' => "http://localhost/pago-fallido.php?plan=" . $planType,
+            'pending' => "http://localhost/pago-pendiente.php?plan=" . $planType
         ],
         'auto_return' => 'approved',
         'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time()
     ];
     
-    // Add payer info only if we have complete data
-    if (!empty($user['first_name']) && !empty($user['last_name']) && !empty($user['email'])) {
-        $preference['payer'] = [
-            'name' => $user['first_name'],
-            'surname' => $user['last_name'],
-            'email' => $user['email']
-        ];
-    }
+    // Log the request for debugging
+    error_log("MercadoPago Request: " . json_encode($preference, JSON_PRETTY_PRINT));
     
-    // Add notification URL only for production (not localhost)
-    if ($_SERVER['HTTP_HOST'] !== 'localhost' && !str_contains($_SERVER['HTTP_HOST'], '127.0.0.1')) {
-        $preference['notification_url'] = "http://" . $_SERVER['HTTP_HOST'] . "/api/mercadopago-webhook.php";
-    }
-    
-    // Send request to MercadoPago
+    // Send request to MercadoPago with minimal configuration
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'https://api.mercadopago.com/checkout/preferences');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($preference));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $settings['mercadopago_access_token']
+    curl_setopt_array($ch, [
+        CURLOPT_URL => 'https://api.mercadopago.com/checkout/preferences',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($preference),
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $settings['mercadopago_access_token']
+        ],
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_CONNECTTIMEOUT => 10
     ]);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'DentexaPro/1.0');
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
-    $curlInfo = curl_getinfo($ch);
     curl_close($ch);
+    
+    // Log the response for debugging
+    error_log("MercadoPago Response Code: " . $httpCode);
+    error_log("MercadoPago Response: " . $response);
     
     // Check for cURL errors first
     if ($curlError) {
         echo json_encode([
-            'error' => 'Error de conexión con MercadoPago: ' . $curlError,
-            'debug' => [
-                'curl_error' => $curlError,
-                'curl_info' => $curlInfo,
-                'suggestion' => 'Verifica tu conexión a internet y configuración de firewall'
-            ]
+            'error' => 'Error de conexión: ' . $curlError
         ]);
         exit();
     }
@@ -136,23 +121,20 @@ try {
     if ($httpCode !== 201) {
         $responseData = json_decode($response, true);
         
-        // Log the full request and response for debugging
-        error_log("MercadoPago Request: " . json_encode($preference));
-        error_log("MercadoPago Response: " . $response);
+        // Extract specific error message from MercadoPago
+        $errorMessage = 'Error HTTP ' . $httpCode;
+        if ($responseData && isset($responseData['message'])) {
+            $errorMessage = $responseData['message'];
+        } elseif ($responseData && isset($responseData['error'])) {
+            $errorMessage = $responseData['error'];
+        }
         
         echo json_encode([
-            'error' => 'Error HTTP ' . $httpCode . ' de MercadoPago',
+            'error' => $errorMessage,
             'debug' => [
                 'http_code' => $httpCode,
-                'response' => $responseData,
-                'request_sent' => $preference,
-                'raw_response' => $response,
-                'access_token_configured' => !empty($settings['mercadopago_access_token']),
-                'access_token_length' => strlen($settings['mercadopago_access_token']),
-                'curl_info' => $curlInfo,
-                'suggestion' => 'Verifica la estructura de datos enviada a MercadoPago',
-                'mercadopago_error' => $responseData['message'] ?? 'Error desconocido',
-                'mercadopago_details' => $responseData['cause'] ?? null
+                'mercadopago_response' => $responseData,
+                'request_sent' => $preference
             ]
         ]);
         exit();
@@ -166,33 +148,38 @@ try {
     }
     
     // Save payment attempt in database
-    $stmt = $db->prepare("
-        CREATE TABLE IF NOT EXISTS payment_attempts (
-            id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
-            user_id VARCHAR(36) NOT NULL,
-            plan_type ENUM('start', 'clinic', 'enterprise') NOT NULL,
-            amount DECIMAL(10,2) NOT NULL,
-            mp_preference_id VARCHAR(255) NOT NULL,
-            external_reference VARCHAR(255) NOT NULL,
-            status ENUM('pending', 'approved', 'rejected', 'cancelled') DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES user_profiles(user_id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-    ");
-    $stmt->execute();
-    
-    $stmt = $db->prepare("
-        INSERT INTO payment_attempts (user_id, plan_type, amount, mp_preference_id, external_reference)
-        VALUES (?, ?, ?, ?, ?)
-    ");
-    $stmt->execute([
-        $_SESSION['user_id'],
-        $planType,
-        $amount,
-        $responseData['id'],
-        $preference['external_reference']
-    ]);
+    try {
+        $stmt = $db->prepare("
+            CREATE TABLE IF NOT EXISTS payment_attempts (
+                id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
+                user_id VARCHAR(36) NOT NULL,
+                plan_type ENUM('start', 'clinic', 'enterprise') NOT NULL,
+                amount DECIMAL(10,2) NOT NULL,
+                mp_preference_id VARCHAR(255) NOT NULL,
+                external_reference VARCHAR(255) NOT NULL,
+                status ENUM('pending', 'approved', 'rejected', 'cancelled') DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES user_profiles(user_id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+        $stmt->execute();
+        
+        $stmt = $db->prepare("
+            INSERT INTO payment_attempts (user_id, plan_type, amount, mp_preference_id, external_reference)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $_SESSION['user_id'],
+            $planType,
+            $amount,
+            $responseData['id'],
+            $preference['external_reference']
+        ]);
+    } catch (Exception $e) {
+        // Log error but don't fail the payment
+        error_log("Error saving payment attempt: " . $e->getMessage());
+    }
     
     echo json_encode([
         'success' => true,
@@ -201,6 +188,7 @@ try {
     ]);
     
 } catch (Exception $e) {
+    error_log("MercadoPago error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Error del servidor: ' . $e->getMessage()]);
 }

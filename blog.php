@@ -392,11 +392,548 @@ try {
   <!-- Newsletter Subscription -->
   <section class="section-py-sm" data-aos="fade-up" data-aos-duration="800">
     <div class="container">
-      <div class="glass-gradient text-center p-5">
+      <div class="newsletter-enhanced-card position-relative overflow-hidden">
+        <!-- Animated Background Elements -->
+        <div class="newsletter-bg-elements" aria-hidden="true">
+          <div class="newsletter-blob newsletter-blob-1"></div>
+          <div class="newsletter-blob newsletter-blob-2"></div>
+          <div class="newsletter-blob newsletter-blob-3"></div>
+        </div>
+        
+        <!-- Floating Icons -->
+        <div class="newsletter-floating-icons" aria-hidden="true">
+          <i class="bi bi-envelope-heart newsletter-float-icon" style="--delay: 0s; --duration: 6s; top: 20%; left: 10%;"></i>
+          <i class="bi bi-send newsletter-float-icon" style="--delay: 2s; --duration: 8s; top: 30%; right: 15%;"></i>
+          <i class="bi bi-newspaper newsletter-float-icon" style="--delay: 4s; --duration: 7s; bottom: 30%; left: 20%;"></i>
+          <i class="bi bi-star newsletter-float-icon" style="--delay: 1s; --duration: 9s; top: 60%; right: 10%;"></i>
+          <i class="bi bi-lightbulb newsletter-float-icon" style="--delay: 3s; --duration: 10s; bottom: 20%; right: 25%;"></i>
+        </div>
+        
         <div class="row justify-content-center">
-          <div class="col-lg-6">
-            <h3 class="text-white mb-3">
-              <i class="bi bi-envelope-heart me-2"></i>Suscribite a nuestro newsletter
+          <div class="col-lg-8">
+            <!-- Header with animated icon -->
+            <div class="text-center mb-4">
+              <div class="newsletter-icon-container mb-3">
+                <div class="newsletter-main-icon">
+                  <i class="bi bi-envelope-heart"></i>
+                </div>
+                <div class="newsletter-icon-pulse"></div>
+              </div>
+              <h3 class="text-white mb-3 newsletter-title">
+                Suscribite a nuestro <span class="gradient-text">newsletter</span>
+              </h3>
+              <p class="text-light opacity-85 mb-0 newsletter-subtitle">
+                Recibe los últimos artículos, tips exclusivos y novedades de DentexaPro directamente en tu email.
+              </p>
+            </div>
+            
+            <!-- Benefits -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-4">
+                <div class="newsletter-benefit">
+                  <i class="bi bi-journal-medical text-primary"></i>
+                  <span>Artículos exclusivos</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="newsletter-benefit">
+                  <i class="bi bi-lightbulb text-warning"></i>
+                  <span>Tips profesionales</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="newsletter-benefit">
+                  <i class="bi bi-rocket-takeoff text-success"></i>
+                  <span>Novedades primero</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Enhanced Form -->
+            <div class="newsletter-form-container">
+              <form class="newsletter-form">
+                <div class="newsletter-input-group">
+                  <div class="newsletter-input-wrapper">
+                    <i class="bi bi-envelope newsletter-input-icon"></i>
+                    <input type="email" name="email" class="newsletter-input" placeholder="tu@email.com" required>
+                  </div>
+                  <button type="submit" class="newsletter-submit-btn">
+                    <span class="newsletter-btn-text">
+                      <i class="bi bi-send me-2"></i>Suscribirme
+                    </span>
+                    <span class="newsletter-btn-loading" style="display: none;">
+                      <span class="spinner-border spinner-border-sm me-2"></span>Suscribiendo...
+                    </span>
+                  </button>
+                </div>
+              </form>
+              
+              <!-- Trust indicators -->
+              <div class="newsletter-trust-indicators">
+                <div class="newsletter-trust-item">
+                  <i class="bi bi-shield-check text-success"></i>
+                  <span>Sin spam</span>
+                </div>
+                <div class="newsletter-trust-item">
+                  <i class="bi bi-x-circle text-danger"></i>
+                  <span>Cancelás cuando quieras</span>
+                </div>
+                <div class="newsletter-trust-item">
+                  <i class="bi bi-calendar-week text-info"></i>
+                  <span>1 email por semana</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Social Proof -->
+            <div class="newsletter-social-proof text-center">
+              <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
+                <div class="newsletter-stat">
+                  <span class="newsletter-stat-number">500+</span>
+                  <span class="newsletter-stat-label">Suscriptores</span>
+                </div>
+                <div class="newsletter-stat">
+                  <span class="newsletter-stat-number">4.9★</span>
+                  <span class="newsletter-stat-label">Valoración</span>
+                </div>
+                <div class="newsletter-stat">
+                  <span class="newsletter-stat-number">98%</span>
+                  <span class="newsletter-stat-label">Satisfacción</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Enhanced Newsletter Styles -->
+  <style>
+    .newsletter-enhanced-card {
+      background: linear-gradient(135deg, rgba(47,150,238,0.15), rgba(104,196,255,0.08));
+      border: 1px solid rgba(47,150,238,0.2);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .newsletter-enhanced-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(47,150,238,0.1), transparent);
+      animation: newsletter-border-rotate 8s linear infinite;
+      z-index: -1;
+    }
+    
+    @keyframes newsletter-border-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .newsletter-bg-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .newsletter-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.3;
+      animation: newsletter-blob-float 12s ease-in-out infinite;
+    }
+    
+    .newsletter-blob-1 {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(45deg, #2F96EE, #68c4ff);
+      top: -50px;
+      left: -50px;
+      animation-delay: 0s;
+    }
+    
+    .newsletter-blob-2 {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(45deg, #68c4ff, #9ad8ff);
+      bottom: -30px;
+      right: -30px;
+      animation-delay: -4s;
+    }
+    
+    .newsletter-blob-3 {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(45deg, #9ad8ff, #2F96EE);
+      top: 50%;
+      left: 80%;
+      animation-delay: -8s;
+    }
+    
+    @keyframes newsletter-blob-float {
+      0%, 100% { transform: translateY(0px) translateX(0px) scale(1); }
+      33% { transform: translateY(-20px) translateX(10px) scale(1.1); }
+      66% { transform: translateY(10px) translateX(-15px) scale(0.9); }
+    }
+    
+    .newsletter-floating-icons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .newsletter-float-icon {
+      position: absolute;
+      color: rgba(47,150,238,0.4);
+      font-size: 1.5rem;
+      animation: newsletter-icon-float var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+    
+    @keyframes newsletter-icon-float {
+      0%, 100% { 
+        transform: translateY(0px) translateX(0px) rotate(0deg);
+        opacity: 0.4;
+      }
+      25% { 
+        transform: translateY(-15px) translateX(8px) rotate(90deg);
+        opacity: 0.6;
+      }
+      50% { 
+        transform: translateY(-8px) translateX(-12px) rotate(180deg);
+        opacity: 0.3;
+      }
+      75% { 
+        transform: translateY(-20px) translateX(5px) rotate(270deg);
+        opacity: 0.5;
+      }
+    }
+    
+    .newsletter-icon-container {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .newsletter-main-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), #68c4ff);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      position: relative;
+      z-index: 2;
+      animation: newsletter-icon-pulse 3s ease-in-out infinite;
+    }
+    
+    .newsletter-icon-pulse {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      animation: newsletter-pulse-ring 2s ease-out infinite;
+    }
+    
+    @keyframes newsletter-icon-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes newsletter-pulse-ring {
+      0% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.8);
+        opacity: 0;
+      }
+    }
+    
+    .newsletter-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .newsletter-subtitle {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .newsletter-benefit {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    
+    .newsletter-benefit:hover {
+      background: rgba(47,150,238,0.15);
+      border-color: rgba(47,150,238,0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(47,150,238,0.2);
+    }
+    
+    .newsletter-benefit i {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    
+    .newsletter-benefit span {
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    .newsletter-form-container {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 2rem;
+      margin: 2rem 0;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .newsletter-form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+      border-radius: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .newsletter-form-container:hover::before {
+      opacity: 1;
+    }
+    
+    .newsletter-form {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .newsletter-input-group {
+      display: flex;
+      gap: 1rem;
+      align-items: stretch;
+      margin-bottom: 1.5rem;
+    }
+    
+    .newsletter-input-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    
+    .newsletter-input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.6);
+      font-size: 1.1rem;
+      z-index: 2;
+    }
+    
+    .newsletter-input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      color: #fff;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .newsletter-input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .newsletter-input:focus {
+      outline: none;
+      background: rgba(255,255,255,0.12);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(47,150,238,0.2);
+      transform: translateY(-2px);
+    }
+    
+    .newsletter-input:focus + .newsletter-input-icon {
+      color: var(--primary);
+    }
+    
+    .newsletter-submit-btn {
+      background: linear-gradient(135deg, var(--primary), #68c4ff);
+      border: none;
+      border-radius: 16px;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      min-width: 160px;
+    }
+    
+    .newsletter-submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s ease;
+    }
+    
+    .newsletter-submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(47,150,238,0.4);
+    }
+    
+    .newsletter-submit-btn:hover::before {
+      left: 100%;
+    }
+    
+    .newsletter-submit-btn:active {
+      transform: translateY(-1px);
+    }
+    
+    .newsletter-trust-indicators {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .newsletter-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+    }
+    
+    .newsletter-trust-item i {
+      font-size: 1rem;
+    }
+    
+    .newsletter-social-proof {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .newsletter-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .newsletter-stat-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #68c4ff;
+      text-shadow: 0 0 10px rgba(104,196,255,0.5);
+    }
+    
+    .newsletter-stat-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .newsletter-enhanced-card {
+        padding: 2rem 1.5rem;
+      }
+      
+      .newsletter-input-group {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .newsletter-submit-btn {
+        width: 100%;
+      }
+      
+      .newsletter-trust-indicators {
+        gap: 1rem;
+      }
+      
+      .newsletter-floating-icons {
+        display: none; /* Hide floating icons on mobile for performance */
+      }
+      
+      .newsletter-title {
+        font-size: 1.8rem;
+      }
+    }
+    
+    /* Success state */
+    .newsletter-success .newsletter-input {
+      border-color: #28a745;
+      background: rgba(40,167,69,0.1);
+    }
+    
+    .newsletter-success .newsletter-submit-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+    }
+    
+    /* Error state */
+    .newsletter-error .newsletter-input {
+      border-color: #dc3545;
+      background: rgba(220,53,69,0.1);
+    }
+    
+    /* Loading state */
+    .newsletter-loading .newsletter-input {
+      opacity: 0.7;
+    }
+    
+    .newsletter-loading .newsletter-submit-btn {
+      background: linear-gradient(135deg, #6c757d, #adb5bd);
+      cursor: not-allowed;
+    }
+  </style>
             </h3>
             <p class="text-light opacity-85 mb-4">
               Recibe los últimos artículos, tips y novedades de DentexaPro directamente en tu email.

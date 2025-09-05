@@ -549,16 +549,18 @@ $db = $database->getConnection();
           <div class="price-card glass-card h-100">
             <h3 class="mb-2"><?php echo htmlspecialchars($plans['enterprise']['name']); ?></h3>
             <div class="display-6 fw-bold text-white mb-3">
-              <?php if ($plans['enterprise']['price_monthly'] > 0): ?>
+              <?php if (isset($plans['enterprise']) && $plans['enterprise']['price_monthly'] > 0): ?>
               $<span class="price-amount" data-monthly="<?php echo number_format($plans['enterprise']['price_monthly'], 0, ',', '.'); ?>" data-yearly="<?php echo number_format($plans['enterprise']['price_yearly'], 0, ',', '.'); ?>" id="enterprisePrice"><?php echo number_format($plans['enterprise']['price_monthly'], 0, ',', '.'); ?></span><small class="fs-6 text-light"> ARS/mes</small>
               <?php else: ?>
               A medida
               <?php endif; ?>
             </div>
             <ul class="list-unstyled mb-4" id="enterpriseFeatures">
-              <?php foreach ($plans['enterprise']['features'] as $feature): ?>
-              <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
-              <?php endforeach; ?>
+              <?php if (isset($plans['enterprise']) && is_array($plans['enterprise']['features'])): ?>
+                <?php foreach ($plans['enterprise']['features'] as $feature): ?>
+                <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </ul>
             <a href="https://wa.me/5491112345678?text=Hola%2C%20me%20interesa%20el%20plan%20Enterprise%20de%20DentexaPro" target="_blank" rel="noopener" class="btn btn-outline-light w-100">Solicitar cotización</a>
           </div>
@@ -953,4 +955,3 @@ $db = $database->getConnection();
       let currentPhraseIndex = 0;
       let currentCharIndex = 0;
       let isDeleting = false;
-      

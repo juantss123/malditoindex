@@ -6,6 +6,123 @@ require_once 'config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
+// Get dynamic plans data
+$plans = [];
+try {
+    // Create subscription_plans table if it doesn't exist
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS subscription_plans (
+            id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
+            plan_type ENUM('start', 'clinic', 'enterprise') NOT NULL UNIQUE,
+            name VARCHAR(100) NOT NULL,
+            price_monthly DECIMAL(10,2) NOT NULL,
+            price_yearly DECIMAL(10,2) NOT NULL,
+            features JSON NOT NULL,
+            is_active BOOLEAN DEFAULT TRUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+    
+    // Check if table has data
+    $stmt = $db->query("SELECT COUNT(*) as count FROM subscription_plans");
+    $count = $stmt->fetch()['count'];
+    
+    if ($count == 0) {
+        // Insert default plans
+        $defaultPlans = [
+            [
+                'plan_type' => 'start',
+                'name' => 'Start',
+                'price_monthly' => 14999.00,
+                'price_yearly' => 11999.00,
+                'features' => json_encode([
+                    '1 profesional',
+                    'Agenda & turnos',
+                    'Historia clínica',
+                    'Recordatorios'
+                ])
+            ],
+            [
+                'plan_type' => 'clinic',
+                'name' => 'Clinic',
+                'price_monthly' => 24999.00,
+                'price_yearly' => 19999.00,
+                'features' => json_encode([
+                    'Hasta 3 profesionales',
+                    'Portal del paciente',
+                    'Facturación',
+                    'Reportes avanzados'
+                ])
+            ],
+            [
+                'plan_type' => 'enterprise',
+                'name' => 'Enterprise',
+                'price_monthly' => 49999.00,
+                'price_yearly' => 39999.00,
+                'features' => json_encode([
+                    'Profesionales ilimitados',
+                    'Integraciones',
+                    'Soporte prioritario',
+                    'Entrenamiento'
+                ])
+            ]
+        ];
+        
+        foreach ($defaultPlans as $plan) {
+            $stmt = $db->prepare("
+                INSERT INTO subscription_plans (plan_type, name, price_monthly, price_yearly, features)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $plan['plan_type'],
+                $plan['name'],
+                $plan['price_monthly'],
+                $plan['price_yearly'],
+                $plan['features']
+            ]);
+        }
+    }
+    
+    // Get plans from database
+    $stmt = $db->prepare("SELECT * FROM subscription_plans ORDER BY FIELD(plan_type, 'start', 'clinic', 'enterprise')");
+    $stmt->execute();
+    $plansData = $stmt->fetchAll();
+    
+    // Convert to associative array for easy access
+    foreach ($plansData as $plan) {
+        $plans[$plan['plan_type']] = [
+            'name' => $plan['name'],
+            'price_monthly' => (float) $plan['price_monthly'],
+            'price_yearly' => (float) $plan['price_yearly'],
+            'features' => json_decode($plan['features'], true) ?: []
+        ];
+    }
+    
+} catch (Exception $e) {
+    // Fallback to default plans if database fails
+    $plans = [
+        'start' => [
+            'name' => 'Start',
+            'price_monthly' => 14999.00,
+            'price_yearly' => 11999.00,
+            'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
+        ],
+        'clinic' => [
+            'name' => 'Clinic',
+            'price_monthly' => 24999.00,
+            'price_yearly' => 19999.00,
+            'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
+        ],
+        'enterprise' => [
+            'name' => 'Enterprise',
+            'price_monthly' => 49999.00,
+            'price_yearly' => 39999.00,
+            'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
+        ]
+    ];
+}
+
 try {
     $stmt = $db->prepare("SELECT maintenance_enabled FROM maintenance_settings WHERE id = 1");
     $stmt->execute();
@@ -395,15 +512,14 @@ $db = $database->getConnection();
         <div class="col-md-6 col-lg-4" data-aos="slide-right" data-aos-duration="1100" data-aos-delay="500">
           <div class="price-card glass-card h-100">
             <div class="price-badge">Popular</div>
-            <h3 class="mb-2">Start</h3>
+            <h3 class="mb-2"><?php echo htmlspecialchars($plans['start']['name']); ?></h3>
             <div class="display-6 fw-bold text-white mb-3">
-              $<span class="price-amount" data-monthly="14.999" data-yearly="9.999" id="startPrice">14.999</span><small class="fs-6 text-light"> ARS/mes</small>
+              $<span class="price-amount" data-monthly="<?php echo number_format($plans['start']['price_monthly'], 0, ',', '.'); ?>" data-yearly="<?php echo number_format($plans['start']['price_yearly'], 0, ',', '.'); ?>" id="startPrice"><?php echo number_format($plans['start']['price_monthly'], 0, ',', '.'); ?></span><small class="fs-6 text-light"> ARS/mes</small>
             </div>
             <ul class="list-unstyled mb-4" id="startFeatures">
-              <li><i class="bi bi-check2-circle me-2"></i>1 profesional</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Agenda & turnos</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Historia clínica</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Recordatorios</li>
+              <?php foreach ($plans['start']['features'] as $feature): ?>
+              <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+              <?php endforeach; ?>
             </ul>
             <a href="registro.php" class="btn btn-primary w-100">Probar gratis</a>
           </div>
@@ -413,15 +529,14 @@ $db = $database->getConnection();
         <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-duration="1100" data-aos-delay="700">
           <div class="price-card glass-card h-100 border-primary">
             <div class="price-badge bg-primary">Recomendado</div>
-            <h3 class="mb-2">Clinic</h3>
+            <h3 class="mb-2"><?php echo htmlspecialchars($plans['clinic']['name']); ?></h3>
             <div class="display-6 fw-bold text-white mb-3">
-              $<span class="price-amount" data-monthly="24.999" data-yearly="19.999" id="clinicPrice">24.999</span><small class="fs-6 text-light"> ARS/mes</small>
+              $<span class="price-amount" data-monthly="<?php echo number_format($plans['clinic']['price_monthly'], 0, ',', '.'); ?>" data-yearly="<?php echo number_format($plans['clinic']['price_yearly'], 0, ',', '.'); ?>" id="clinicPrice"><?php echo number_format($plans['clinic']['price_monthly'], 0, ',', '.'); ?></span><small class="fs-6 text-light"> ARS/mes</small>
             </div>
             <ul class="list-unstyled mb-4" id="clinicFeatures">
-              <li><i class="bi bi-check2-circle me-2"></i>Hasta 3 profesionales</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Portal del paciente</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Facturación</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Reportes</li>
+              <?php foreach ($plans['clinic']['features'] as $feature): ?>
+              <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+              <?php endforeach; ?>
             </ul>
             <a href="registro.php" class="btn btn-primary w-100">Probar gratis</a>
           </div>
@@ -430,15 +545,18 @@ $db = $database->getConnection();
         <!-- Enterprise Plan -->
         <div class="col-md-6 col-lg-4" data-aos="slide-left" data-aos-duration="1100" data-aos-delay="900">
           <div class="price-card glass-card h-100">
-            <h3 class="mb-2">Enterprise</h3>
+            <h3 class="mb-2"><?php echo htmlspecialchars($plans['enterprise']['name']); ?></h3>
             <div class="display-6 fw-bold text-white mb-3">
+              <?php if ($plans['enterprise']['price_monthly'] > 0): ?>
+              $<span class="price-amount" data-monthly="<?php echo number_format($plans['enterprise']['price_monthly'], 0, ',', '.'); ?>" data-yearly="<?php echo number_format($plans['enterprise']['price_yearly'], 0, ',', '.'); ?>" id="enterprisePrice"><?php echo number_format($plans['enterprise']['price_monthly'], 0, ',', '.'); ?></span><small class="fs-6 text-light"> ARS/mes</small>
+              <?php else: ?>
               A medida
+              <?php endif; ?>
             </div>
             <ul class="list-unstyled mb-4" id="enterpriseFeatures">
-              <li><i class="bi bi-check2-circle me-2"></i>+4 profesionales</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Integraciones</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Soporte prioritario</li>
-              <li><i class="bi bi-check2-circle me-2"></i>Entrenamiento</li>
+              <?php foreach ($plans['enterprise']['features'] as $feature): ?>
+              <li><i class="bi bi-check2-circle me-2"></i><?php echo htmlspecialchars($feature); ?></li>
+              <?php endforeach; ?>
             </ul>
             <a href="https://wa.me/5491112345678?text=Hola%2C%20me%20interesa%20el%20plan%20Enterprise%20de%20DentexaPro" target="_blank" rel="noopener" class="btn btn-outline-light w-100">Solicitar cotización</a>
           </div>

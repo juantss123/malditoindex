@@ -72,20 +72,19 @@ try {
         foreach ($defaultPlans as $plan) {
             $stmt = $db->prepare("
                 INSERT INTO subscription_plans (plan_type, name, price_monthly, price_yearly, features)
-                VALUES (?, ?, ?, ?, ?)
+    // Update with database values if they exist
             ");
-            $stmt->execute([
-                $plan['plan_type'],
-                $plan['name'],
-                $plan['price_monthly'],
-                $plan['price_yearly'],
-                $plan['features']
-            ]);
-        }
+        $plansData[$plan['plan_type']] = [
+            'name' => $plan['name'],
+            'price_monthly' => (float) $plan['price_monthly'],
+            'price_yearly' => (float) $plan['price_yearly'],
+            'features' => json_decode($plan['features'], true) ?: $defaultPlans[$plan['plan_type']]['features']
+        ];
     }
     
     // Get plans from database
-    $stmt = $db->prepare("SELECT * FROM subscription_plans ORDER BY FIELD(plan_type, 'start', 'clinic', 'enterprise')");
+    // If database fails, keep default values
+    error_log("Error loading plans: " . $e->getMessage());
     $stmt->execute();
     $plansData = $stmt->fetchAll();
     
@@ -103,27 +102,30 @@ try {
             'price_yearly' => 19999.00,
             'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
         ],
-        'enterprise' => [
-            'name' => 'Enterprise',
-            'price_monthly' => 49999.00,
-            'price_yearly' => 39999.00,
-            'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
-        ]
-    ];
-    
-    // Override with database values if available
-    foreach ($plansData as $plan) {
-        $plans[$plan['plan_type']] = [
-            'name' => $plan['name'],
-            'price_monthly' => (float) $plan['price_monthly'],
-            'price_yearly' => (float) $plan['price_yearly'],
-            'features' => json_decode($plan['features'], true) ?: []
-        ];
-    }
-    
-} catch (Exception $e) {
-    // Keep default plans if database fails (already initialized above)
-}
+// Initialize plans with default values first
+$defaultPlans = [
+    'start' => [
+        'name' => 'Start',
+        'price_monthly' => 14999.00,
+        'price_yearly' => 11999.00,
+        'features' => ['1 profesional', 'Agenda & turnos', 'Historia clínica', 'Recordatorios']
+    ],
+    'clinic' => [
+        'name' => 'Clinic',
+        'price_monthly' => 24999.00,
+        'price_yearly' => 19999.00,
+        'features' => ['Hasta 3 profesionales', 'Portal del paciente', 'Facturación', 'Reportes avanzados']
+    ],
+    'enterprise' => [
+        'name' => 'Enterprise',
+        'price_monthly' => 49999.00,
+        'price_yearly' => 39999.00,
+        'features' => ['Profesionales ilimitados', 'Integraciones', 'Soporte prioritario', 'Entrenamiento']
+    ]
+];
+
+// Start with default plans
+$plansData = $defaultPlans;
 
 try {
     $stmt = $db->prepare("SELECT maintenance_enabled FROM maintenance_settings WHERE id = 1");

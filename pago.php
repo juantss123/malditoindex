@@ -351,6 +351,8 @@ $selectedPlan = $planDetails;
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <!-- MercadoPago SDK -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
   <script>
     // Init AOS
     if (window.AOS) {
@@ -399,24 +401,44 @@ $selectedPlan = $planDetails;
 
     // Process MercadoPago payment
     function processMercadoPago() {
-      // Show loading
       const btn = event.target;
       const originalText = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
 
-      // Simulate MercadoPago integration
-      setTimeout(() => {
-        // In a real implementation, this would integrate with MercadoPago API
-        document.getElementById('successMessage').textContent = 
-          'Tu pago con MercadoPago ha sido procesado exitosamente. Tu plan <?php echo $selectedPlan['name']; ?> estará activo en unos minutos.';
-        
-        const modal = new bootstrap.Modal(document.getElementById('successModal'));
-        modal.show();
-        
+      // Create payment preference with MercadoPago
+      fetch('api/create-payment.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          plan_type: '<?php echo $plan; ?>',
+          amount: <?php echo $selectedPlan['price']; ?>,
+          plan_name: '<?php echo $selectedPlan['name']; ?>'
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          alert('Error: ' + data.error);
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        } else if (data.init_point) {
+          // Redirect to MercadoPago
+          window.location.href = data.init_point;
+        } else {
+          alert('Error al crear la preferencia de pago');
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      })
+      .catch(error => {
+        console.error('Error creating payment:', error);
+        alert('Error de conexión. Por favor, intentá nuevamente.');
         btn.disabled = false;
         btn.innerHTML = originalText;
-      }, 2000);
+      });
     }
 
     // Process bank transfer

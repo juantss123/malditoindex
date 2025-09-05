@@ -423,7 +423,7 @@ $db = $database->getConnection();
               <li><i class="bi bi-check2-circle me-2"></i>Facturación</li>
               <li><i class="bi bi-check2-circle me-2"></i>Reportes</li>
             </ul>
-            <a href="#cta" class="btn btn-primary w-100">Probar gratis</a>
+            <a href="registro.php" class="btn btn-primary w-100">Probar gratis</a>
           </div>
         </div>
 
@@ -440,7 +440,7 @@ $db = $database->getConnection();
               <li><i class="bi bi-check2-circle me-2"></i>Soporte prioritario</li>
               <li><i class="bi bi-check2-circle me-2"></i>Entrenamiento</li>
             </ul>
-            <a href="#contacto" class="btn btn-outline-light w-100">Solicitar cotización</a>
+            <a href="https://wa.me/5491112345678?text=Hola%2C%20me%20interesa%20el%20plan%20Enterprise%20de%20DentexaPro" target="_blank" class="btn btn-outline-light w-100">Solicitar cotización</a>
           </div>
         </div>
       </div>

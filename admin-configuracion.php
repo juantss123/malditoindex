@@ -319,9 +319,17 @@ try {
                           <ol class="text-light opacity-85 small mb-0">
                             <li>Ingresa a tu <a href="https://www.mercadopago.com.ar/developers" target="_blank" class="text-primary">panel de desarrolladores de MercadoPago</a></li>
                             <li>Ve a "Credenciales" en el menú lateral</li>
-                            <li>Copia el "Access Token" y "Public Key" de producción</li>
+                            <li>Copia el "Access Token" y "Public Key" de <strong>producción</strong> (no de prueba)</li>
                             <li>Pega las credenciales en los campos de arriba</li>
+                            <li><strong>Importante:</strong> Usa credenciales de producción para pagos reales</li>
                           </ol>
+                        
+                        <div class="mt-3 p-2 bg-warning bg-opacity-10 border border-warning rounded">
+                          <small class="text-warning">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            <strong>Nota:</strong> Para testing puedes usar credenciales de prueba, pero para pagos reales necesitas las de producción.
+                          </small>
+                        </div>
                         </div>
                       </div>
                     </div>

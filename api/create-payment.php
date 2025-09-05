@@ -80,11 +80,12 @@ try {
             'email' => $user['email']
         ],
         'back_urls' => [
-            'success' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-exitoso.php?plan=" . urlencode($planType),
-            'failure' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-fallido.php?plan=" . urlencode($planType),
-            'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php?plan=" . urlencode($planType)
+            'success' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-exitoso.php",
+            'failure' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-fallido.php", 
+            'pending' => "http://" . $_SERVER['HTTP_HOST'] . "/pago-pendiente.php"
         ],
-        'auto_return' => 'approved',
+        'auto_return' => 'all',
+        'notification_url' => "http://" . $_SERVER['HTTP_HOST'] . "/api/mercadopago-webhook.php",
         'external_reference' => $_SESSION['user_id'] . '_' . $planType . '_' . time()
     ];
     
@@ -104,7 +105,6 @@ try {
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch, CURLOPT_USERAGENT, 'DentexaPro/1.0');
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -126,13 +126,15 @@ try {
     }
     
     if ($httpCode !== 201) {
+        $responseData = json_decode($response, true);
         echo json_encode([
             'error' => 'Error HTTP ' . $httpCode . ' de MercadoPago',
             'debug' => [
                 'http_code' => $httpCode,
-                'response' => $response,
+                'response' => $responseData,
                 'request_data' => $preference,
-                'suggestion' => 'Verifica que las credenciales sean de producción si estás en producción'
+                'suggestion' => 'Verifica la estructura de datos enviada a MercadoPago',
+                'mercadopago_error' => $responseData['message'] ?? 'Error desconocido'
             ]
         ]);
         exit();

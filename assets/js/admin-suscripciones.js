@@ -70,6 +70,11 @@ async function loadUsers() {
     
     const data = await response.json();
     console.log('Users data:', data);
+    console.log('Users with plans:', data.users?.filter(u => u.subscription_plan).map(u => ({
+      name: u.first_name + ' ' + u.last_name,
+      plan: u.subscription_plan,
+      status: u.subscription_status
+    })));
     
     if (data.error) {
       console.error('Users API error:', data.error);
@@ -79,6 +84,11 @@ async function loadUsers() {
     
     allUsers = data.users || [];
     console.log('Users loaded:', allUsers.length);
+    console.log('Users by plan:', {
+      start: allUsers.filter(u => u.subscription_plan === 'start').length,
+      clinic: allUsers.filter(u => u.subscription_plan === 'clinic').length,
+      enterprise: allUsers.filter(u => u.subscription_plan === 'enterprise').length
+    });
     renderSubscriptionStatus();
     
   } catch (error) {
@@ -102,8 +112,8 @@ function renderPlansTable() {
   }
 
   tbody.innerHTML = allPlans.map(plan => {
-    const usersInPlan = allUsers.filter(u => u.subscription_plan === plan.plan_type).length;
-    const monthlyRevenue = usersInPlan * (plan.price_monthly / 100); // Convert from cents
+    const usersInPlan = allUsers.filter(u => u.subscription_plan === plan.plan_type && u.subscription_status === 'active').length;
+    const monthlyRevenue = usersInPlan * plan.price_monthly; // Use direct value, no conversion needed
     
     return `
       <tr>
@@ -424,7 +434,9 @@ function getPlanName(plan) {
 
 function formatPrice(priceInCents) {
   if (!priceInCents || isNaN(priceInCents)) return '0';
-  return Math.round(priceInCents).toLocaleString('es-AR');
+  // Handle both cents and direct values
+  const price = priceInCents > 1000 ? priceInCents : priceInCents * 100;
+  return Math.round(price).toLocaleString('es-AR');
 }
 
 function formatDate(dateString) {

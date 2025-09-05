@@ -211,6 +211,12 @@ $selectedPlan = $planDetails;
                 <h5 class="text-white mb-3">
                   <i class="bi bi-credit-card me-2"></i>Pago con MercadoPago
                 </h5>
+                <?php if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false): ?>
+                <div class="alert alert-warning glass-card mb-3">
+                  <i class="bi bi-info-circle me-2"></i>
+                  <strong>Modo localhost:</strong> Después del pago, deberás volver manualmente a esta página ya que MercadoPago no puede redirigir a localhost automáticamente.
+                </div>
+                <?php endif; ?>
                 <p class="text-light opacity-85 mb-4">
                   Paga de forma segura con tu tarjeta de crédito o débito a través de MercadoPago.
                 </p>

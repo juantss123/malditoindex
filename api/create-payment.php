@@ -66,23 +66,45 @@ try {
     // Create external reference
     $externalReference = $_SESSION['user_id'] . '_' . $planType . '_' . time();
     
-    // Create the EXACT same structure that works in the test
-    $preference = [
-        'items' => [
-            [
-                'title' => "Suscripción DentexaPro - Plan " . ucfirst($planType),
-                'quantity' => 1,
-                'unit_price' => $amount
-            ]
-        ],
-        'back_urls' => [
-            'success' => "http://localhost/pago-exitoso.php?plan=" . urlencode($planType),
-            'failure' => "http://localhost/pago-fallido.php?plan=" . urlencode($planType),
-            'pending' => "http://localhost/pago-pendiente.php?plan=" . urlencode($planType)
-        ],
-        'auto_return' => 'approved',
-        'external_reference' => $externalReference
-    // Log the request for debugging
+    // Detect if we're on localhost and handle URLs accordingly
+    $isLocalhost = (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || 
+                   strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false);
+    
+    if ($isLocalhost) {
+        // For localhost, use a simpler structure without back_urls
+        $preference = [
+            'items' => [
+                [
+                    'title' => "Suscripción DentexaPro - Plan " . ucfirst($planType),
+                    'quantity' => 1,
+                    'unit_price' => $amount
+                ]
+            ],
+            'external_reference' => $externalReference,
+            'statement_descriptor' => 'DentexaPro'
+        ];
+    } else {
+        // For production, use full structure with back_urls
+        $baseUrl = "https://" . $_SERVER['HTTP_HOST'];
+        $preference = [
+            'items' => [
+                [
+                    'title' => "Suscripción DentexaPro - Plan " . ucfirst($planType),
+                    'quantity' => 1,
+                    'unit_price' => $amount
+                ]
+            ],
+            'back_urls' => [
+                'success' => $baseUrl . "/pago-exitoso.php?plan=" . urlencode($planType),
+                'failure' => $baseUrl . "/pago-fallido.php?plan=" . urlencode($planType),
+                'pending' => $baseUrl . "/pago-pendiente.php?plan=" . urlencode($planType)
+            ],
+            'auto_return' => 'approved',
+            'external_reference' => $externalReference,
+            'statement_descriptor' => 'DentexaPro'
+        ];
+    }
+    
     error_log("MercadoPago Request: " . json_encode($preference, JSON_PRETTY_PRINT));
     
     // Send request to MercadoPago using EXACT same configuration as test

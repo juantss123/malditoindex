@@ -1555,6 +1555,8 @@ a:hover{ color: var(--primary-600); }
   pointer-events: auto;
 }
 
+
+
 /* Prevenir layout shift en elementos con AOS */
 [data-aos="slide-right"],
 [data-aos="slide-left"],
@@ -1765,6 +1767,8 @@ section[id] {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(47,150,238,0.2), transparent);
   transition: left 0.6s ease;
+}
+
 /* For last few rows, use dropup */
 
 .table tbody tr:nth-last-child(-n+2) .dropdown-menu {
@@ -1776,3 +1780,25 @@ section[id] {
 .trust-badge:hover::before {
   left: 100%;
 }
+
+/* --- FIX BOTONES PRICING --- */
+/* 1) No bloquear clics por wrappers con AOS */
+#pricing [data-aos] {
+  pointer-events: auto !important;
+}
+
+/* 2) El overlay decorativo de la tarjeta NO debe interceptar clics */
+.price-card::after,
+.price-card:hover::after {
+  pointer-events: none !important;
+  z-index: -1 !important;   /* mándalo detrás del contenido */
+}
+
+/* 3) Asegurar que los botones queden arriba de todo */
+.price-card .btn {
+  position: relative;
+  z-index: 2;
+}
+
+/* (Opcional, recomendado para recortes limpios del overlay) */
+.price-card { overflow: hidden; }

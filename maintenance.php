@@ -341,6 +341,55 @@
     <span></span><span></span><span></span>
   </div>
 
+  <!-- Floating Icons Background -->
+  <div class="floating-elements" aria-hidden="true">
+    <div class="floating-icon" style="--delay: 0s; --duration: 8s;">
+      <i class="bi bi-gear"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 2s; --duration: 10s;">
+      <i class="bi bi-tools"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 4s; --duration: 12s;">
+      <i class="bi bi-wrench"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 6s; --duration: 9s;">
+      <i class="bi bi-hammer"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 1s; --duration: 11s;">
+      <i class="bi bi-cpu"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 3s; --duration: 13s;">
+      <i class="bi bi-hdd"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 5s; --duration: 7s;">
+      <i class="bi bi-server"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 7s; --duration: 14s;">
+      <i class="bi bi-cloud-upload"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 1.5s; --duration: 10s;">
+      <i class="bi bi-shield-check"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 4.5s; --duration: 8s;">
+      <i class="bi bi-lightning"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 2.5s; --duration: 15s;">
+      <i class="bi bi-rocket"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 6.5s; --duration: 9s;">
+      <i class="bi bi-code-slash"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 0.5s; --duration: 12s;">
+      <i class="bi bi-database"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 3.5s; --duration: 11s;">
+      <i class="bi bi-wifi"></i>
+    </div>
+    <div class="floating-icon" style="--delay: 5.5s; --duration: 13s;">
+      <i class="bi bi-patch-check"></i>
+    </div>
+  </div>
+
   
 
   <!-- Maintenance Page -->
